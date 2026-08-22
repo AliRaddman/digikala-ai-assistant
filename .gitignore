@@ -5,7 +5,7 @@ venv/
 .env
 .ipynb_checkpoints/
 
-data/
+/data/
 *.parquet
 *.csv
 *.faiss
