@@ -1,0 +1,36 @@
+{"query_id": "q001", "query": "یه کوله پشتی مناسب مدرسه می‌خوام که جادار باشه", "intent": "simple", "sub_cat": "clothe"}
+{"query_id": "q002", "query": "شلوار جین مردانه راحت زیر ۵۰۰ هزار تومن", "intent": "price", "sub_cat": "clothe"}
+{"query_id": "q003", "query": "مانتو اداری زنانه ساده و رسمی", "intent": "simple", "sub_cat": "clothe"}
+{"query_id": "q004", "query": "کفش ورزشی مردانه برای پیاده‌روی روزانه", "intent": "simple", "sub_cat": "clothe"}
+{"query_id": "q005", "query": "یه کیف دوشی چرم که خریدارها ازش راضی باشن", "intent": "satisfaction", "sub_cat": "clothe"}
+{"query_id": "q006", "query": "لباس زیر نخی مردانه بسته چندتایی", "intent": "simple", "sub_cat": "clothe"}
+{"query_id": "q007", "query": "جوراب زمستونی ضخیم و گرم", "intent": "simple", "sub_cat": "clothe"}
+{"query_id": "q008", "query": "گردنبند نقره زنانه ساده برای هدیه", "intent": "simple", "sub_cat": "clothe"}
+{"query_id": "q009", "query": "تیشرت آستین کوتاه مردانه رنگ روشن", "intent": "simple", "sub_cat": "clothe"}
+{"query_id": "q010", "query": "ساعت مچی زنانه شیک که خیلی گرون نباشه", "intent": "price", "sub_cat": "clothe"}
+{"query_id": "q011", "query": "روسری نخی تابستونی طرح‌دار", "intent": "simple", "sub_cat": "clothe"}
+{"query_id": "q012", "query": "کاپشن زمستونی مردانه ضدآب با امتیاز بالا", "intent": "satisfaction", "sub_cat": "clothe"}
+{"query_id": "q013", "query": "رمان خارجی معروف که ترجمه خوبی داشته باشه", "intent": "satisfaction", "sub_cat": "book & stationary & art"}
+{"query_id": "q014", "query": "کتاب آموزش زبان انگلیسی برای سطح مبتدی", "intent": "simple", "sub_cat": "book & stationary & art"}
+{"query_id": "q015", "query": "دفتر صد برگ جلد سخت برای دانشگاه", "intent": "simple", "sub_cat": "book & stationary & art"}
+{"query_id": "q016", "query": "کتاب داستایوفسکی از نشر چشمه", "intent": "brand", "sub_cat": "book & stationary & art"}
+{"query_id": "q017", "query": "لوازم نقاشی برای شروع آبرنگ", "intent": "simple", "sub_cat": "book & stationary & art"}
+{"query_id": "q018", "query": "کتاب روانشناسی موفقیت که خواننده‌ها ازش تعریف کرده باشن", "intent": "satisfaction", "sub_cat": "book & stationary & art"}
+{"query_id": "q019", "query": "خودکار و مداد مناسب امتحان کنکور", "intent": "simple", "sub_cat": "book & stationary & art"}
+{"query_id": "q020", "query": "کتاب کودک تصویری برای بچه پنج ساله", "intent": "simple", "sub_cat": "book & stationary & art"}
+{"query_id": "q021", "query": "کتاب تاریخ ایران باستان", "intent": "simple", "sub_cat": "book & stationary & art"}
+{"query_id": "q022", "query": "کرم مرطوب کننده صورت برای پوست خشک", "intent": "simple", "sub_cat": "beauty"}
+{"query_id": "q023", "query": "شامپو ضد ریزش مو مردانه", "intent": "simple", "sub_cat": "beauty"}
+{"query_id": "q024", "query": "رژ لب مات با ماندگاری بالا", "intent": "simple", "sub_cat": "beauty"}
+{"query_id": "q025", "query": "سشوار خانگی که خریدارها ازش راضی بودن", "intent": "satisfaction", "sub_cat": "beauty"}
+{"query_id": "q026", "query": "عطر مردانه تلخ و ماندگار زیر یک میلیون تومن", "intent": "price", "sub_cat": "beauty"}
+{"query_id": "q027", "query": "اسباب بازی فکری برای کودک هفت ساله", "intent": "simple", "sub_cat": "toys and kids"}
+{"query_id": "q028", "query": "لگو ساختنی بزرگ برای هدیه تولد", "intent": "simple", "sub_cat": "toys and kids"}
+{"query_id": "q029", "query": "عروسک پارچه‌ای نرم مناسب نوزاد", "intent": "simple", "sub_cat": "toys and kids"}
+{"query_id": "q030", "query": "ماشین کنترلی شارژی ارزون قیمت", "intent": "price", "sub_cat": "toys and kids"}
+{"query_id": "q031", "query": "عسل طبیعی محلی", "intent": "simple", "sub_cat": "rural goods"}
+{"query_id": "q032", "query": "صنایع دستی سفالی برای دکور خونه", "intent": "simple", "sub_cat": "rural goods"}
+{"query_id": "q033", "query": "زعفران اصل بسته کوچک", "intent": "simple", "sub_cat": "rural goods"}
+{"query_id": "q034", "query": "چمدان مسافرتی چرخدار سایز متوسط", "intent": "simple", "sub_cat": "travel"}
+{"query_id": "q035", "query": "کوله کوهنوردی چهل لیتری مقاوم", "intent": "simple", "sub_cat": "travel"}
+{"query_id": "q036", "query": "چند وسیله کاربردی برای سفر که نظر کاربرا خوب باشه", "intent": "satisfaction", "sub_cat": "travel"}
