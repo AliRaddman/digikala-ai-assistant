@@ -5,15 +5,17 @@ venv/
 .env
 .ipynb_checkpoints/
 
-/data/*
-!/data/eval/
-!/data/eval/*.csv
-/data/eval/emb_cache/
 *.parquet
 *.csv
 *.faiss
 *.pkl
 *.sqlite
+
+/data/*
+!/data/eval/
+!/data/eval/*.csv
+!/data/eval/*.jsonl
+/data/eval/emb_cache/
 
 .vscode/
 .idea/
