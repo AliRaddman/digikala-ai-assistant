@@ -1,20 +1,24 @@
 """Build the product indexes over the full catalogue.
 
-Owner: Ali. Produces three artefacts that together are everything the
-retriever needs, and that fit on the shared Drive:
+Owner: Ali. Produces the artefacts the retriever needs, sized to fit on the
+shared Drive:
 
-    products_meta_v1.parquet   row order + the fields used for filtering
-    products_bm25_v1.npz       pre-weighted sparse BM25 matrix + vocabulary
-    products_e5base_v1.faiss   dense index
+    products_meta_v1.parquet         row order + the fields used for filtering
+    products_bm25_v1.npz             pre-weighted sparse BM25 matrix
+    products_bm25_vocab_v1.json      term -> column
+    products_e5base_<type>_v1.faiss  dense index
 
     python -m scripts.build_index \
         --clean data/processed/products_clean_v1.parquet \
-        --out-dir data/indexes --index-type ivfpq
+        --out-dir data/indexes --index-type ivfsq8
 
-Build `flat` once as the quality reference and `ivfpq` for everyday use: the
-flat index is exact but ~2.9 GB, which cannot realistically be moved over the
-Drive, while ivfpq lands near 100 MB. The recall lost to quantisation is
-measured, not assumed — score both against the eval set.
+Index choice is measured, not assumed — see scripts/compare_indexes.py. On
+this data product quantisation returned under 40% of the exact top-10 no
+matter how it was tuned, while scalar quantisation reached 87% for the same
+latency, so ivfsq8 is the default and flat is kept locally as the reference.
+
+Everything uses L2. The vectors are unit length, so L2 and cosine rank
+identically (||a−b||² = 2 − 2·cos), and FAISS's quantisers are built for L2.
 """
 
 from __future__ import annotations
@@ -28,8 +32,6 @@ import numpy as np
 import pandas as pd
 from scipy import sparse
 
-from src.data.normalize import tokenize
-
 MODEL_ID = "intfloat/multilingual-e5-base"
 PASSAGE_PREFIX = "passage: "
 MAX_SEQ_LEN = 128
@@ -38,9 +40,11 @@ BATCH_SIZE = 128
 BM25_K1 = 1.5
 BM25_B = 0.75
 
-IVF_NLIST = 4096
-PQ_M = 96
-PQ_BITS = 8
+FACTORY = {
+    "flat": "Flat",
+    "ivfsq8": "IVF4096,SQ8",
+    "ivfpq": "IVF4096,PQ96",
+}
 TRAIN_SAMPLE = 200_000
 
 META_COLUMNS = [
@@ -58,8 +62,7 @@ META_COLUMNS = [
 
 
 def build_dense_text(df: pd.DataFrame) -> list[str]:
-    """Same construction as the benchmark, so the chosen model sees the text
-    it was compared on."""
+    """Same construction the model was benchmarked on."""
     texts = []
     for title, brand, cat2, cat1 in zip(df["title"], df["brand"], df["cat2"], df["cat1"]):
         parts = [title]
@@ -76,14 +79,11 @@ def build_dense_text(df: pd.DataFrame) -> list[str]:
 def build_bm25(docs: list[str]) -> tuple[sparse.csc_matrix, dict[str, int]]:
     """Pre-weighted BM25 matrix.
 
-    Each cell holds the full BM25 contribution of one term to one document:
-
         w(t,d) = idf(t) · tf(t,d)·(k1+1) / (tf(t,d) + k1·(1 − b + b·dl(d)/avgdl))
         idf(t) = ln(1 + (N − df(t) + 0.5) / (df(t) + 0.5))
 
-    Baking the weights in once means scoring a query is just summing a few
-    columns, which keeps latency in the low milliseconds without a search
-    server. The cost is that k1 and b are frozen at build time.
+    Weights are baked in once so scoring a query is a few sparse column sums.
+    The trade-off is that k1 and b are frozen at build time.
     """
     vocab: dict[str, int] = {}
     rows: list[int] = []
@@ -117,14 +117,22 @@ def build_bm25(docs: list[str]) -> tuple[sparse.csc_matrix, dict[str, int]]:
     weights = (
         idf[tf.col] * tf.data * (BM25_K1 + 1) / (tf.data + norm[tf.row])
     ).astype(np.float32)
-    matrix = sparse.csc_matrix(
-        (weights, (tf.row, tf.col)), shape=(n_docs, n_terms)
+    return (
+        sparse.csc_matrix((weights, (tf.row, tf.col)), shape=(n_docs, n_terms)),
+        vocab,
     )
-    return matrix, vocab
 
 
-def build_dense(texts: list[str], index_type: str, out_path: Path) -> dict[str, float]:
-    import faiss
+def encode_products(texts: list[str], cache_path: Path) -> tuple[np.ndarray, float]:
+    """Encode once and keep the raw vectors on disk.
+
+    The cache is ~2.9 GB and never leaves this machine, but it means trying
+    another index type later costs seconds instead of another GPU pass.
+    """
+    if cache_path.exists():
+        print(f"reusing embeddings from {cache_path}")
+        return np.load(cache_path, mmap_mode="r"), 0.0
+
     import torch
     from sentence_transformers import SentenceTransformer
 
@@ -141,42 +149,43 @@ def build_dense(texts: list[str], index_type: str, out_path: Path) -> dict[str, 
         convert_to_numpy=True,
         show_progress_bar=True,
     ).astype("float32")
-    encode_seconds = time.perf_counter() - start
+    elapsed = time.perf_counter() - start
 
-    dim = embeddings.shape[1]
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    np.save(cache_path, embeddings)
+    del model
+    torch.cuda.empty_cache()
+    return embeddings, elapsed
+
+
+def build_dense(embeddings: np.ndarray, index_type: str, out_path: Path) -> float:
+    import faiss
+
+    embeddings = np.ascontiguousarray(embeddings, dtype="float32")
+    index = faiss.index_factory(
+        embeddings.shape[1], FACTORY[index_type], faiss.METRIC_L2
+    )
+
     start = time.perf_counter()
-    if index_type == "flat":
-        index = faiss.IndexFlatIP(dim)
-    else:
-        quantiser = faiss.IndexFlatIP(dim)
-        index = faiss.IndexIVFPQ(
-            quantiser, dim, IVF_NLIST, PQ_M, PQ_BITS, faiss.METRIC_INNER_PRODUCT
-        )
+    if not index.is_trained:
         sample = embeddings
         if len(embeddings) > TRAIN_SAMPLE:
             rng = np.random.default_rng(42)
             sample = embeddings[rng.choice(len(embeddings), TRAIN_SAMPLE, replace=False)]
         index.train(sample)
-
     index.add(embeddings)
-    build_seconds = time.perf_counter() - start
-    faiss.write_index(index, str(out_path))
+    elapsed = time.perf_counter() - start
 
-    del model
-    torch.cuda.empty_cache()
-    return {
-        "encode_seconds": round(encode_seconds, 1),
-        "index_seconds": round(build_seconds, 1),
-        "dim": dim,
-        "vectors": int(index.ntotal),
-    }
+    faiss.write_index(index, str(out_path))
+    return elapsed
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Build the product indexes.")
     parser.add_argument("--clean", type=Path, required=True)
     parser.add_argument("--out-dir", type=Path, default=Path("data/indexes"))
-    parser.add_argument("--index-type", choices=["flat", "ivfpq"], default="ivfpq")
+    parser.add_argument("--index-type", choices=sorted(FACTORY), default="ivfsq8")
+    parser.add_argument("--cache", type=Path, default=Path("data/indexes/emb_products_e5base.npy"))
     parser.add_argument("--skip-dense", action="store_true")
     parser.add_argument("--skip-sparse", action="store_true")
     args = parser.parse_args()
@@ -190,7 +199,7 @@ def main() -> None:
     df[META_COLUMNS].to_parquet(meta_path, compression="zstd", index=False)
     print(f"meta -> {meta_path}")
 
-    stats: dict[str, object] = {"rows": len(df)}
+    stats: dict[str, object] = {"rows": len(df), "index_type": args.index_type}
 
     if not args.skip_sparse:
         start = time.perf_counter()
@@ -206,12 +215,21 @@ def main() -> None:
         print(f"bm25 -> {sparse_path}")
 
     if not args.skip_dense:
+        embeddings, encode_seconds = encode_products(build_dense_text(df), args.cache)
         dense_path = args.out_dir / f"products_e5base_{args.index_type}_v1.faiss"
-        stats.update(build_dense(build_dense_text(df), args.index_type, dense_path))
-        stats["dense_mb"] = round(dense_path.stat().st_size / 1e6, 1)
+        index_seconds = build_dense(embeddings, args.index_type, dense_path)
+        stats.update(
+            {
+                "encode_seconds": round(encode_seconds, 1),
+                "index_seconds": round(index_seconds, 1),
+                "dim": int(embeddings.shape[1]),
+                "vectors": int(embeddings.shape[0]),
+                "dense_mb": round(dense_path.stat().st_size / 1e6, 1),
+            }
+        )
         print(f"dense -> {dense_path}")
 
-    (args.out_dir / "index_stats_v1.json").write_text(
+    (args.out_dir / f"index_stats_{args.index_type}_v1.json").write_text(
         json.dumps(stats, ensure_ascii=False, indent=2)
     )
     for key, value in stats.items():

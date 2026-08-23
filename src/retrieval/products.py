@@ -26,6 +26,7 @@ INDEX_DIR = Path(os.getenv("INDEX_DIR", "data/indexes"))
 MODEL_ID = "intfloat/multilingual-e5-base"
 QUERY_PREFIX = "query: "
 IVF_NPROBE = 32
+DEFAULT_INDEX_TYPE = os.getenv("INDEX_TYPE", "ivfsq8")
 OVER_FETCH_STEPS = (10, 50, 200)
 
 STOPWORDS = {
@@ -177,7 +178,7 @@ class DenseRetriever(Retriever):
     scanning the whole catalogue.
     """
 
-    def __init__(self, index_type: str = "ivfpq", index_dir: Path = INDEX_DIR) -> None:
+    def __init__(self, index_type: str = DEFAULT_INDEX_TYPE, index_dir: Path = INDEX_DIR) -> None:
         self.index_type = index_type
         self.index_dir = str(index_dir)
 
@@ -198,7 +199,8 @@ class DenseRetriever(Retriever):
 
         for step in OVER_FETCH_STEPS:
             depth = min(top_k * step, index.ntotal)
-            scores, positions = index.search(vector, depth)
+            distances, positions = index.search(vector, depth)
+            scores = 1.0 - distances / 2.0
             positions, scores = positions[0], scores[0]
             keep = (positions >= 0) & mask[positions]
             if keep.sum() >= top_k or depth >= index.ntotal:
