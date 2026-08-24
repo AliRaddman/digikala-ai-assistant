@@ -1,0 +1,5 @@
+# Runtime dependencies. Owner: Benyamin.
+openai>=1.109.0,<3
+pydantic>=2.8,<3
+pandas>=2.2,<3
+pyarrow>=17,<23
