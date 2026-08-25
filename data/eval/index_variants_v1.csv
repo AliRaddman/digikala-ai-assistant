@@ -1,0 +1,5 @@
+variant,factory,recall@10,size_mb,ms_per_query,build_seconds
+ivfsq8,"IVF4096,SQ8",0.8667,748.5,0.157,14.0
+ivfpq,"IVF4096,PQ96",0.3917,112.0,0.143,25.0
+opq_ivfpq,"OPQ96_768,IVF4096,PQ96",0.3556,114.4,0.078,64.2
+ivfpq_fine,"IVF4096,PQ192x4",0.3194,111.3,0.19,15.4

@@ -1,0 +1,7 @@
+metric,baseline,system,mean_baseline,mean_system,mean_diff,ci_low,ci_high,p_bootstrap,p_ttest,wins,losses,ties
+ndcg@10,dense,hybrid,0.7329,0.7778,0.045,-0.0017,0.0902,0.058,0.0663,21,8,7
+ndcg@10,bm25,hybrid,0.6389,0.7778,0.139,0.0236,0.2567,0.02,0.0256,19,12,5
+recall@10,dense,hybrid,0.5673,0.585,0.0177,-0.0106,0.0467,0.223,0.2376,9,3,24
+recall@10,bm25,hybrid,0.474,0.585,0.111,0.018,0.2035,0.0198,0.0253,18,3,15
+mrr@10,dense,hybrid,0.8978,0.934,0.0363,-0.0081,0.1019,0.1828,0.2177,3,1,32
+mrr@10,bm25,hybrid,0.8489,0.934,0.0851,-0.0058,0.1833,0.0642,0.0869,7,1,28

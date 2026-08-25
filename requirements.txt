@@ -1,5 +1,21 @@
-# Runtime dependencies. Owner: Benyamin.
+# Runtime dependencies. Owners: Ali (retrieval), Benyamin (LLM/evaluation).
+
+# Core data
+pandas>=2.2,<3
+numpy>=1.26,<3
+pyarrow>=17,<23
+scipy>=1.12,<2
+
+# Retrieval
+sentence-transformers>=3.0
+faiss-cpu>=1.8
+rank-bm25>=0.2.2
+
+# LLM and structured outputs
 openai>=1.109.0,<3
 pydantic>=2.8,<3
-pandas>=2.2,<3
-pyarrow>=17,<23
+
+# The exact torch wheel depends on the machine's CUDA version. Recent GPUs
+# (Blackwell / sm_120) may need a newer build than PyPI's default. CPU-only is
+# enough to query existing indexes but not practical for encoding the catalogue.
+torch>=2.4

@@ -91,6 +91,7 @@ After setting `LLM_API_KEY`, both model-backed stages can be enabled explicitly:
 ```bash
 python -m src.eval.harness \
   --input data/eval/queries_v1.jsonl \
+  --qrels data/eval/qrels_d50_v2_labeled.csv \
   --retriever-mode real \
   --use-llm-filters \
   --judge-grounding \
@@ -113,14 +114,15 @@ An existing citation is not counted as proof of entailment. The report's
 `fully_supported_claim_rate` requires the judge to mark a claim `supported` and
 attach at least one supplied evidence ID.
 
-## Retrieval-label limitation
+## Retrieval labels
 
-The current `queries_v1.jsonl` contains query text, intent and expected broad
-subcategory, but no gold product IDs. Therefore the harness reports category
-match and strict-filter pass rates now, while leaving Recall@K, MRR and nDCG@K
-unavailable instead of inventing relevance labels.
+The query JSONL contains query text, intent and expected broad subcategory but
+keeps gold judgments in Ali's separate graded qrels CSV. The harness accepts
+that file through `--qrels`, attaches relevant product IDs by `query_id`, and
+uses the 0/1/2 relevance grades for nDCG. `--min-relevance` controls which
+grades count as relevant for Recall and MRR and defaults to 1.
 
-To activate retrieval metrics, reviewers add a field like this to a query:
+Inline gold IDs remain supported for small or standalone evaluation sets:
 
 ```json
 {"query_id":"q001","query":"...","intent":"simple","sub_cat":"clothe","relevant_product_ids":["3901234","7712045"]}
@@ -130,10 +132,14 @@ The LLM judge still needs validation against the team's independent human
 labels. The prompt, rubric, disagreement cases and human agreement must be
 reported; judge scores alone are not a substitute for human evaluation.
 
-## Known dependency
+## Remaining dependency
 
-`src.retrieval.base.build_retriever(mode="real")` still raises
-`NotImplementedError`. The chain is ready for the real retriever once its
-implementation is published without changing the chain contract.
+Ali's `ali/retrieval` branch has now been integrated locally. Product retrieval
+supports BM25, dense FAISS and hybrid RRF through
+`build_retriever("product", mode="real")`. A real run still needs the index
+artifacts from Drive and the retrieval dependencies installed locally.
+
+The comment index is not implemented yet, so
+`build_retriever("comment", mode="real")` still raises `NotImplementedError`.
 
 No live API request was made while implementing or testing this checkpoint.

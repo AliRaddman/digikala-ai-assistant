@@ -1,0 +1,2 @@
+queries_with_duplicates,queries_total,mean_distinct_ratio,ndcg@10_before,ndcg@10_after_dedup
+14,36,0.939,0.7329,0.7128

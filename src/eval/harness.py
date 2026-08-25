@@ -32,6 +32,12 @@ from src.eval.grounding import (
     LLMGroundingJudge,
     audit_citations,
 )
+from src.eval.retrieval_metrics import (
+    load_qrels,
+    mrr_at_k,
+    ndcg_at_k,
+    recall_at_k,
+)
 from src.llm.client import build_openai_client
 from src.llm.config import LLMSettings
 from src.llm.usage import SQLiteUsageLedger
@@ -46,6 +52,7 @@ class EvalQuery(BaseModel):
     intent: str = Field(min_length=1)
     sub_cat: str | None = None
     relevant_product_ids: list[str] = Field(default_factory=list)
+    relevance_judgements: dict[str, int] = Field(default_factory=dict)
 
     @field_validator("relevant_product_ids", mode="before")
     @classmethod
@@ -55,6 +62,15 @@ class EvalQuery(BaseModel):
         if not isinstance(value, list):
             raise ValueError("relevant_product_ids must be a list")
         return list(dict.fromkeys(str(item) for item in value))
+
+    @field_validator("relevance_judgements", mode="before")
+    @classmethod
+    def normalize_relevance_judgements(cls, value: Any) -> dict[str, int]:
+        if value in (None, ""):
+            return {}
+        if not isinstance(value, dict):
+            raise ValueError("relevance_judgements must be an object")
+        return {str(product_id): int(relevance) for product_id, relevance in value.items()}
 
 
 class ConstraintAudit(BaseModel):
@@ -181,6 +197,7 @@ class DiscoveryEvaluator:
             result.products,
             query.relevant_product_ids,
             self.top_k,
+            query.relevance_judgements,
         )
 
         grounding_run: GroundingJudgeRun | None = None
@@ -235,6 +252,40 @@ def load_eval_queries(path: Path) -> list[EvalQuery]:
     if not queries:
         raise ValueError(f"no evaluation queries found in {path}")
     return queries
+
+
+def attach_qrels(
+    queries: list[EvalQuery],
+    qrels_path: Path,
+    *,
+    min_relevance: int = 1,
+) -> list[EvalQuery]:
+    """Attach Ali's separate graded qrels file to Benyamin's harness queries."""
+
+    if min_relevance < 1:
+        raise ValueError("min_relevance must be at least 1")
+    qrels = load_qrels(qrels_path)
+    query_ids = {query.query_id for query in queries}
+    if not query_ids.intersection(qrels):
+        raise ValueError("qrels file has no query_id in common with the eval set")
+
+    attached: list[EvalQuery] = []
+    for query in queries:
+        judgements = qrels.get(query.query_id, {})
+        relevant_ids = [
+            product_id
+            for product_id, relevance in judgements.items()
+            if relevance >= min_relevance
+        ]
+        attached.append(
+            query.model_copy(
+                update={
+                    "relevant_product_ids": relevant_ids,
+                    "relevance_judgements": judgements,
+                }
+            )
+        )
+    return attached
 
 
 def _category_counts(
@@ -351,11 +402,18 @@ def _retrieval_scores(
     evidence: list[Evidence],
     relevant_product_ids: list[str],
     top_k: int,
+    relevance_judgements: dict[str, int] | None = None,
 ) -> RetrievalScores:
     if not relevant_product_ids:
         return RetrievalScores()
     relevant = set(relevant_product_ids)
     retrieved = [item.product_id or item.id for item in evidence[:top_k]]
+    if relevance_judgements:
+        return RetrievalScores(
+            recall_at_k=recall_at_k(retrieved, relevant, top_k),
+            reciprocal_rank=mrr_at_k(retrieved, relevant, top_k),
+            ndcg_at_k=ndcg_at_k(retrieved, relevance_judgements, top_k),
+        )
     seen_relevant: set[str] = set()
     hits: list[int] = []
     for identifier in retrieved:
@@ -460,7 +518,7 @@ def _summarize(
             "note": (
                 None
                 if labeled
-                else "Recall/MRR/nDCG require relevant_product_ids gold labels."
+                else "Recall/MRR/nDCG require inline gold IDs or --qrels."
             ),
         },
         "grounding_judge": {
@@ -540,6 +598,12 @@ def main() -> None:
         default=Path("data/eval/queries_v1.jsonl"),
     )
     parser.add_argument("--output", type=Path)
+    parser.add_argument(
+        "--qrels",
+        type=Path,
+        help="Optional graded qrels CSV, e.g. data/eval/qrels_d50_v2_labeled.csv.",
+    )
+    parser.add_argument("--min-relevance", type=int, default=1)
     parser.add_argument("--top-k", type=int, default=10)
     parser.add_argument("--retriever-mode", default="mock")
     parser.add_argument("--use-llm-filters", action="store_true")
@@ -572,7 +636,16 @@ def main() -> None:
         ledger=ledger,
         grounding_judge=judge,
     )
-    report = evaluator.evaluate(load_eval_queries(args.input))
+    queries = load_eval_queries(args.input)
+    if args.qrels:
+        queries = attach_qrels(
+            queries,
+            args.qrels,
+            min_relevance=args.min_relevance,
+        )
+    report = evaluator.evaluate(queries)
+    report["configuration"]["qrels"] = str(args.qrels) if args.qrels else None
+    report["configuration"]["min_relevance"] = args.min_relevance
     rendered = json.dumps(report, ensure_ascii=False, indent=2)
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
