@@ -8,6 +8,7 @@ from __future__ import annotations
 import sqlite3
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from math import ceil, floor
 from pathlib import Path
 from typing import Any
 
@@ -125,10 +126,38 @@ class SQLiteUsageLedger:
                 ),
             )
 
-    def summary(self) -> dict[str, Any]:
+    def checkpoint(self) -> int:
+        """Return a stable row id for measuring one later evaluation run."""
+
         with self._connect() as connection:
             row = connection.execute(
-                """
+                "SELECT COALESCE(MAX(id), 0) AS last_id FROM llm_usage"
+            ).fetchone()
+        return int(row["last_id"])
+
+    def summary(
+        self,
+        *,
+        after_id: int = 0,
+        operation: str | None = None,
+    ) -> dict[str, Any]:
+        """Aggregate usage after a checkpoint, optionally for one operation.
+
+        Percentiles are calculated from individual logical-request latencies,
+        so cache hits remain visible instead of being mixed into an API-only
+        timing number.
+        """
+
+        where = ["id > ?"]
+        params: list[Any] = [after_id]
+        if operation is not None:
+            where.append("operation = ?")
+            params.append(operation)
+        where_sql = " AND ".join(where)
+
+        with self._connect() as connection:
+            row = connection.execute(
+                f"""
                 SELECT COUNT(*) AS logical_requests,
                        COALESCE(SUM(CASE WHEN cache_hit = 0 THEN 1 ELSE 0 END), 0)
                            AS api_calls,
@@ -141,6 +170,41 @@ class SQLiteUsageLedger:
                        COALESCE(SUM(saved_cost_usd), 0.0) AS saved_cost_usd,
                        COALESCE(AVG(latency_ms), 0.0) AS mean_latency_ms
                 FROM llm_usage
-                """
+                WHERE {where_sql}
+                """,
+                params,
             ).fetchone()
-        return dict(row)
+            latency_rows = connection.execute(
+                f"""
+                SELECT latency_ms
+                FROM llm_usage
+                WHERE {where_sql}
+                ORDER BY latency_ms
+                """,
+                params,
+            ).fetchall()
+
+        summary = dict(row)
+        latencies = [float(item["latency_ms"]) for item in latency_rows]
+        requests = int(summary["logical_requests"])
+        summary["cache_hit_rate"] = (
+            float(summary["cache_hits"]) / requests if requests else 0.0
+        )
+        summary["p50_latency_ms"] = _percentile(latencies, 50)
+        summary["p95_latency_ms"] = _percentile(latencies, 95)
+        return summary
+
+
+def _percentile(values: list[float], percentile: float) -> float:
+    """Linearly interpolated percentile; returns zero for an empty series."""
+
+    if not values:
+        return 0.0
+    ordered = sorted(values)
+    position = (len(ordered) - 1) * percentile / 100
+    lower = floor(position)
+    upper = ceil(position)
+    if lower == upper:
+        return ordered[lower]
+    weight = position - lower
+    return ordered[lower] * (1 - weight) + ordered[upper] * weight
