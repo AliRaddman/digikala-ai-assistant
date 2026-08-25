@@ -26,6 +26,8 @@ cp .env.example .env               # کلید API داخلش
 
 <div dir="rtl">
 
+`torch` جداگانه نصب می‌شود، چون نسخه‌اش به CUDA سیستم بستگی دارد. دستور درست را از [pytorch.org](https://pytorch.org/get-started/locally/) بردارید. نسخه CPU برای همه چیز کار می‌کند جز ساخت ایندکس روی کل کاتالوگ.
+
 دیتاست از نسخه ثابت زیر:
 
 </div>
@@ -36,6 +38,20 @@ https://huggingface.co/datasets/RadeAI/Digikala_comments_products/tree/89c3133b1
 
 <div dir="rtl">
 
+### گرفتن artifactها
+
+فایل‌های سنگین روی درایو مشترک‌اند و در گیت نیستند. برای اجرای سیستم بدون ساخت مجدد، این‌ها را از `DigikalaProject/` بردارید:
+
+| فایل درایو | مقصد | حجم |
+|---|---|---|
+| `processed/products_clean_v1.parquet` | `data/processed/` | ۳۶ MB |
+| `indexes/products_meta_v1.parquet` | `data/indexes/` | ۳۵ MB |
+| `indexes/products_bm25_v1.npz` | `data/indexes/` | ۶۰ MB |
+| `indexes/products_bm25_vocab_v1.json` | `data/indexes/` | ۱۰ MB |
+| `indexes/products_e5base_ivfsq8_v1.faiss` | `data/indexes/` | ۷۴۹ MB |
+
+اگر جای دیگری گذاشتید، `INDEX_DIR` را در `.env` تنظیم کنید.
+
 ---
 
 ## ساختار
@@ -44,20 +60,137 @@ https://huggingface.co/datasets/RadeAI/Digikala_comments_products/tree/89c3133b1
 
 ```
 src/
-├── config.py       پیکربندی مرکزی
-├── data/           نرمال‌سازی، پاک‌سازی، نمونه‌گیری
-├── retrieval/      BM25، dense، hybrid، rerank
-├── llm/            کلاینت، کش، router، پرامپت‌ها
-├── chains/         بخش‌های ۱ تا ۴ سیستم
-├── classifier/     پیش‌بینی recommendation_status
-└── eval/           متریک‌ها، judge، harness
+├── data/
+│   ├── normalize.py     نرمال‌ساز فارسی مشترک — قفل
+│   ├── products.py      پاک‌سازی محصولات
+│   └── sampling.py      نمونه‌گیری طبقاتی
+├── retrieval/
+│   ├── base.py          Evidence، RetrievalFilters، Retriever، MockRetriever
+│   ├── products.py      BM25Retriever و DenseRetriever
+│   └── hybrid.py        ترکیب با RRF
+├── eval/
+│   └── retrieval_metrics.py   Recall@k، nDCG@k، MRR@k
+├── llm/                 کلاینت، کش، router، پرامپت‌ها
+├── chains/              بخش‌های ۱ تا ۴ سیستم
+└── classifier/          پیش‌بینی recommendation_status
 
-scripts/            اسکریپت‌های اجرایی
-notebooks/<نام>/    هر کس فقط پوشه خودش
-docs/               SCHEMA.md و DECISIONS.md
+scripts/                 اسکریپت‌های اجرایی (ساخت ایندکس، بنچمارک، ارزیابی)
+data/eval/               مجموعه ارزیابی و نتایج — در گیت هست
+notebooks/<نام>/         هر کس فقط پوشه خودش
+docs/                    SCHEMA.md و DECISIONS.md
 ```
 
 <div dir="rtl">
+
+---
+
+## استفاده از بازیابی
+
+</div>
+
+```python
+from src.retrieval.base import build_retriever, RetrievalFilters
+
+retriever = build_retriever("product")
+evidence = retriever.retrieve(
+    "یه کیف چرم برای کار",
+    top_k=10,
+    filters=RetrievalFilters(price_max=1_000_000, exclude_fake=True),
+)
+
+for ev in evidence:
+    print(ev.score, ev.citation(), ev.title)
+```
+
+<div dir="rtl">
+
+خروجی `list[Evidence]` است. هر آیتم `.id`, `.text`, `.score`, `.meta` و `.citation()` دارد.
+
+| متغیر محیطی | مقادیر | پیش‌فرض |
+|---|---|---|
+| `RETRIEVER_MODE` | `mock` / `real` | `mock` |
+| `RETRIEVER_BACKEND` | `dense` / `bm25` / `hybrid` | `dense` |
+| `INDEX_DIR` | مسیر | `data/indexes` |
+| `INDEX_TYPE` | `ivfsq8` / `flat` | `ivfsq8` |
+| `HYBRID_FETCH_DEPTH` | عدد | `50` — **کمترش نکنید**، زیر ۵۰ ترکیب بی‌اثر می‌شود |
+
+**نکات مهم:**
+
+- `product_id` رشته است. سمت مقابل هر join را هم `astype(str)` کنید.
+- قیمت‌ها **ریال**اند. کاربر تومان می‌گوید، پس موقع استخراج فیلتر ضربدر ۱۰ کنید.
+- `rate` از ۱۰۰ است نه ۵، و برای محصول بدون امتیاز `null` است. پس `min_rate` گذاشتن یعنی محصولات بی‌امتیاز خودکار حذف می‌شوند.
+- فیلترها **قید سخت**اند نه امتیاز اضافه: محصول خارج از فیلتر برنمی‌گردد حتی اگر شبیه‌تر باشد.
+- ایندکس نظرات هنوز ساخته نشده. `kind="comment"` در حالت `real` خطا می‌دهد.
+
+---
+
+## بازتولید نتایج بازیابی
+
+</div>
+
+```bash
+# پاک‌سازی محصولات: ۱.۲۸ میلیون ردیف خام ← ۹۴۸ هزار محصول یکتا
+python -m src.data.products \
+  --raw data/raw/products_raw.parquet \
+  --out data/processed/products_clean_v1.parquet
+
+# نمونه ۵۰ هزارتایی طبقاتی برای بنچمارک
+python -m src.data.sampling \
+  --clean data/processed/products_clean_v1.parquet \
+  --out data/processed/products_sample_50k_v1.parquet
+
+# اجرای مدل‌ها و ساخت pool برچسب‌گذاری
+python -m scripts.build_pool \
+  --sample data/processed/products_sample_50k_v1.parquet \
+  --queries data/eval/queries_v1.jsonl --out-dir data/eval
+
+# متریک‌های بازیابی
+python -m src.eval.retrieval_metrics \
+  --qrels data/eval/qrels_v1_labeled.csv \
+  --runs data/eval/runs --queries data/eval/queries_v1.jsonl
+
+# ایندکس کامل روی ۹۴۸ هزار محصول
+python -m scripts.build_index \
+  --clean data/processed/products_clean_v1.parquet \
+  --out-dir data/indexes --index-type ivfsq8
+
+# ارزیابی ترکیبی و آزمون معناداری
+python -m scripts.eval_hybrid \
+  --runs data/eval_d50/runs --qrels data/eval/qrels_d50_v2_labeled.csv
+python -m scripts.test_significance \
+  --runs data/eval_d50/runs --qrels data/eval/qrels_d50_v2_labeled.csv \
+  --rrf-k 60 --w-dense 0.7
+
+# تأخیر
+python -m scripts.measure_latency --queries data/eval/queries_v1.jsonl
+```
+
+<div dir="rtl">
+
+### نتایج
+
+روی ۳۶ کوئری فارسی با برچسب دستی. دلیل هر تصمیم در `docs/DECISIONS.md`.
+
+| مدل embedding | nDCG@10 | Recall@10 | زمان انکد ۵۰k |
+|---|---|---|---|
+| bge-m3 | ۰.۷۰۷ | ۰.۴۳۹ | ۱۷۸ ثانیه |
+| **e5-base** ← انتخاب شد | ۰.۶۹۲ | ۰.۴۳۷ | ۹۳ ثانیه |
+| e5-large | ۰.۶۳۵ | ۰.۳۸۹ | ۱۳۷ ثانیه |
+| BM25 | ۰.۶۱۱ | ۰.۳۷۲ | ۰.۲ ثانیه |
+
+| نوع ایندکس | recall@10 نسبت به دقیق | حجم | جست‌وجو |
+|---|---|---|---|
+| Flat (دقیق) | ۱.۰۰ | ۲۹۱۳ MB | ۱۰.۳ ms |
+| **IVF-SQ8** ← انتخاب شد | ۰.۸۶۷ | ۷۴۹ MB | ۰.۱۶ ms |
+| IVF-PQ96 | ۰.۳۹۲ | ۱۱۲ MB | ۰.۱۴ ms |
+
+| بازیابی (عمق ۵۰) | nDCG@10 | Recall@10 | MRR@10 | p50 |
+|---|---|---|---|---|
+| **Hybrid (RRF، k=60، w=0.7)** | ۰.۷۷۷۸ | ۰.۵۸۵۰ | ۰.۹۳۴۰ | ۲۶.۵ ms |
+| dense تنها | ۰.۷۳۲۹ | ۰.۵۶۷۳ | ۰.۸۹۷۸ | ۱۴.۱ ms |
+| BM25 تنها | ۰.۶۳۸۹ | ۰.۴۷۴۰ | ۰.۸۴۸۹ | ۱۱.۴ ms |
+
+برتری hybrid نسبت به dense تنها به آستانه معناداری نمی‌رسد (p = ۰.۰۵۸، ۲۱ کوئری بهتر و ۸ بدتر). نسبت به BM25 معنادار است (p = ۰.۰۲). cold start ایندکس dense حدود ۱۴.۵ ثانیه است و یک بار کش می‌شود.
 
 ---
 
@@ -75,6 +208,8 @@ docs/               SCHEMA.md و DECISIONS.md
 
 فایل‌های سنگین روی درایو مشترک. اسم فایل‌ها نسخه‌دار (`comments_clean_v2.parquet`) و هیچ‌وقت overwrite نمی‌شود — درایو نه merge دارد نه history، اگر دو نفر همزمان بنویسند یکی بی‌صدا پاک می‌شود.
 
+استثنا: `data/eval/` در گیت است، چون مجموعه ارزیابی باید قابل بازتولید و قابل نشان دادن در ارائه باشد و حجمش چند صد کیلوبایت است.
+
 | پوشه درایو | محتوا | نویسنده |
 |---|---|---|
 | `raw/` | فایل‌های خام | علی |
@@ -89,7 +224,7 @@ docs/               SCHEMA.md و DECISIONS.md
 
 **۵. Mock تا آخر پروژه زنده می‌ماند.**
 
-`MockRetriever` که خروجی ثابت و ساختگی می‌دهد حذف نمی‌شود. هر کس روی chain کار می‌کند با آن شروع می‌کند و بعداً به retriever واقعی سوییچ می‌کند. یعنی هیچ‌کس منتظر آماده شدن کار کس دیگری نمی‌ماند.
+`MockRetriever` که خروجی ثابت و ساختگی می‌دهد حذف نمی‌شود. هر کس روی chain کار می‌کند با آن شروع می‌کند و بعداً به retriever واقعی سوییچ می‌کند. یعنی هیچ‌کس منتظر آماده شدن کار کس دیگری نمی‌ماند. ضمناً تنها راه تست یک chain بدون لود کردن ۷۵۰ مگابایت ایندکس همین است.
 
 **۶. هر شب ساعت ۲۳ همگام‌سازی.**
 
@@ -100,6 +235,10 @@ push کن، artifact را روی درایو بگذار — حتی اگر ناق�
 اگر به کار کسی گیر کردی، بیکار نمان. سراغ تسک ذخیره‌ات برو:
 
 علی → نوشتن eval set · مهیا → برچسب‌گذاری دستی · فاطمه → تحلیل خطا · بنیامین → لاگ هزینه
+
+**۸. برنچ جدا.**
+
+هر کس روی `<نام>/<موضوع>` کار می‌کند و با Pull Request به `main` می‌رود. چهار نفر روی یک برنچ یعنی push rejected مدام.
 
 ---
 
@@ -183,15 +322,15 @@ push کن، artifact را روی درایو بگذار — حتی اگر ناق�
 
 ## ارزیابی
 
-| بعد | متریک | مسئول |
-|---|---|---|
-| کیفیت پاسخ | judge ۱–۵ + برچسب انسانی | بنیامین |
-| Grounding | نسبت claim های دارای شاهد معتبر | بنیامین |
-| Retrieval | Recall@10، nDCG@10، MRR | علی |
-| طبقه‌بندی | **Macro F1** — متریک اصلی بخش سوم | فاطمه |
-| Latency | p50 / p95 به تفکیک سناریو | بنیامین |
-| Cost | تعداد فراخوانی، توکن ورودی/خروجی، دلار | بنیامین |
-| Failure Analysis | حداقل ۱۲ نمونه واقعی با تحلیل | همه |
+| بعد | متریک | مسئول | وضعیت |
+|---|---|---|---|
+| کیفیت پاسخ | judge ۱–۵ + برچسب انسانی | بنیامین | — |
+| Grounding | نسبت claim های دارای شاهد معتبر | بنیامین | — |
+| Retrieval | Recall@10، nDCG@10، MRR | علی | ✅ |
+| طبقه‌بندی | **Macro F1** — متریک اصلی بخش سوم | فاطمه | در جریان |
+| Latency | p50 / p95 به تفکیک سناریو | بنیامین | ✅ بازیابی |
+| Cost | تعداد فراخوانی، توکن ورودی/خروجی، دلار | بنیامین | — |
+| Failure Analysis | حداقل ۱۲ نمونه واقعی با تحلیل | همه | — |
 
 **بودجه:** سقف ۵ دلار برای کل گروه شامل توسعه و تست. کش دیسکی از روز اول فعال باشد — بیشتر هزینه در فاز دیباگ می‌سوزد نه در اجرای نهایی. embedding و مدل‌های محلی از بودجه کم نمی‌کنند.
 
@@ -208,5 +347,7 @@ push کن، artifact را روی درایو بگذار — حتی اگر ناق�
 | معماری دو مدلی | کارهای پرتکرار روی مدل ارزان، پاسخ نهایی روی مدل قوی — همین Router بخش امتیازی است |
 | تقسیم گروهی بر اساس product_id | نظرات یک محصول شبیه هم‌اند؛ split تصادفی یعنی مدل محصول را حفظ می‌کند نه الگوی زبانی را، و Macro F1 مصنوعاً بالا می‌رود |
 | انتخاب embedding با آزمایش | طبق بنچمارک FaMTEB مدل‌های اختصاصی فارسی مثل ParsBERT در retrieval نمره تک‌رقمی دارند و مدل‌های چندزبانه بالای ۴۰؛ ولی داده ما محاوره‌ای و پر از فینگلیش است پس روی داده خودمان می‌سنجیم |
+| IVF-SQ8 به‌جای IVF-PQ | PQ فقط ۳۹٪ نتایج ایندکس دقیق را برمی‌گرداند، با هیچ تنظیمی بهتر نشد. SQ8 به ۸۷٪ می‌رسد با همان سرعت |
+| ترکیب با RRF | مقیاس امتیاز BM25 و کسینوس با هم نمی‌خواند؛ RRF فقط رتبه را می‌بیند و در آزمایش از جمع وزنی بهتر بود |
 
 </div>
