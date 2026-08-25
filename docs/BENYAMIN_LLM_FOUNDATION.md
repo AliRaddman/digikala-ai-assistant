@@ -190,3 +190,40 @@ Query `q016` (a Dostoevsky book from Nashr-e Cheshmeh) had no exact answer in
 the 50k evaluation pool, but the full index returned product `10888139`, an
 exact Dostoevsky/Cheshmeh match, at rank 1. "No answer in the pool" must not be
 presented as "no answer in the full catalogue."
+
+## Orchestrator checkpoint
+
+`src/orchestrator.py` now owns intent routing and chain invocation without
+depending on the unfinished comment index. Its stable intents are:
+
+- `product_discovery`
+- `product_qa`
+- `product_comparison`
+- `category_analytics`
+
+The free rule-based router is the auditable baseline. Explicit discovery
+language takes precedence over satisfaction words, so a request such as
+"find me a bag buyers liked" is not mistaken for Q&A about one product.
+Category analytics and comparisons have stronger dedicated signals.
+
+Only Product Discovery is registered in today's default build. A recognized
+route whose teammate chain is not available returns either `needs_input` or
+`dependency_unavailable`; it does not import the missing chain, instantiate a
+comment retriever, or crash the entire request. Later integration only adds a
+handler to the map and does not change routing or the response schema.
+
+Offline demo:
+
+```bash
+python -m src.orchestrator \
+  "یک کیف روزمره زیر ۲۰۰ هزار تومان معرفی کن" \
+  --retriever-mode mock --top-k 3
+```
+
+Dependency-safe Q&A routing:
+
+```bash
+python -m src.orchestrator \
+  "ایرادهای پرتکرار این محصول چیست؟" \
+  --product-id 3901234
+```
