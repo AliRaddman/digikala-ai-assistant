@@ -212,6 +212,9 @@ class DenseRetriever(Retriever):
 def build_product_retriever(mode: str | None = None) -> Retriever:
     """Factory used by base.build_retriever when RETRIEVER_MODE is not mock."""
     backend = (mode or os.getenv("RETRIEVER_BACKEND", "dense")).lower()
+    if backend == "hybrid":
+        from src.retrieval.hybrid import HybridRetriever
+        return HybridRetriever()
     if backend == "dense":
         return DenseRetriever()
     if backend == "bm25":
