@@ -2,7 +2,7 @@
 
 Owner: Benyamin.
 
-This checkpoint implements the first independent Benyamin task:
+This checkpoint implements Benyamin's LLM and evaluation foundation:
 
 - OpenAI Responses API adapter with Structured Outputs
 - SQLite exact-match cache
@@ -10,6 +10,10 @@ This checkpoint implements the first independent Benyamin task:
 - conservative zero-cost Persian filter-extraction baseline
 - LLM Persian filter extractor
 - product-discovery chain over the shared `Retriever` contract
+- reproducible discovery evaluation over JSONL queries
+- chain and end-to-end latency reports with mean, p50, p95 and max
+- checkpoint-scoped API call, cache, token and USD accounting
+- citation-integrity audit plus an optional structured grounding judge
 
 ## Offline demo
 
@@ -53,8 +57,83 @@ python -m unittest discover -s tests -v
 
 Tests are entirely offline and do not spend API credit.
 
+## Offline evaluation
+
+Run all 36 current product-discovery queries without an API key:
+
+```bash
+python -m src.eval.harness \
+  --input data/eval/queries_v1.jsonl \
+  --retriever-mode mock \
+  --top-k 5 \
+  --output data/eval/runs/benyamin_discovery_mock_v1.json
+```
+
+The console prints the compact summary and `--output` stores the full report,
+including each query's filter plan, retrieved IDs, answer, citations, latency,
+constraint audit and any failure. One broken query is recorded as an error and
+does not discard the rest of the run.
+
+The report separates:
+
+- `chain_latency_ms`: filter extraction + retrieval + answer rendering
+- `end_to_end_latency_ms`: chain work + audits + optional semantic judge
+- `llm_usage`: only LLM ledger rows created after this run's checkpoint
+
+Percentiles use linear interpolation over per-query or per-request latency.
+The LLM usage report keeps logical requests, actual API calls, cache hits,
+input/cached-input/output tokens, billed USD, saved USD, and p50/p95 latency.
+
+## Live filter extraction and grounding judge
+
+After setting `LLM_API_KEY`, both model-backed stages can be enabled explicitly:
+
+```bash
+python -m src.eval.harness \
+  --input data/eval/queries_v1.jsonl \
+  --retriever-mode real \
+  --use-llm-filters \
+  --judge-grounding \
+  --output data/eval/runs/benyamin_discovery_real_judged_v1.json
+```
+
+`--judge-grounding` makes one cached structured-output request per unique
+question/answer/evidence bundle. The prompt is versioned as
+`grounding-judge-v1`, treats retrieved text as untrusted data, forbids outside
+knowledge, and asks for separate relevance and grounding scores from 1 to 5.
+The implementation rejects any judge output that cites an evidence ID not
+present in the supplied context.
+
+Citation integrity and semantic grounding are intentionally separate:
+
+- citation integrity checks that citation IDs exist in retrieved evidence;
+- the LLM judge checks whether the cited evidence actually supports each claim.
+
+An existing citation is not counted as proof of entailment. The report's
+`fully_supported_claim_rate` requires the judge to mark a claim `supported` and
+attach at least one supplied evidence ID.
+
+## Retrieval-label limitation
+
+The current `queries_v1.jsonl` contains query text, intent and expected broad
+subcategory, but no gold product IDs. Therefore the harness reports category
+match and strict-filter pass rates now, while leaving Recall@K, MRR and nDCG@K
+unavailable instead of inventing relevance labels.
+
+To activate retrieval metrics, reviewers add a field like this to a query:
+
+```json
+{"query_id":"q001","query":"...","intent":"simple","sub_cat":"clothe","relevant_product_ids":["3901234","7712045"]}
+```
+
+The LLM judge still needs validation against the team's independent human
+labels. The prompt, rubric, disagreement cases and human agreement must be
+reported; judge scores alone are not a substitute for human evaluation.
+
 ## Known dependency
 
 `src.retrieval.base.build_retriever(mode="real")` still raises
 `NotImplementedError`. The chain is ready for the real retriever once its
 implementation is published without changing the chain contract.
+
+No live API request was made while implementing or testing this checkpoint.

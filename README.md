@@ -195,6 +195,20 @@ push کن، artifact را روی درایو بگذار — حتی اگر ناق�
 
 **بودجه:** سقف ۵ دلار برای کل گروه شامل توسعه و تست. کش دیسکی از روز اول فعال باشد — بیشتر هزینه در فاز دیباگ می‌سوزد نه در اجرای نهایی. embedding و مدل‌های محلی از بودجه کم نمی‌کنند.
 
+اجرای آفلاین harness بنیامین روی مجموعه‌ی فعلی ۳۶ کوئری:
+
+</div>
+
+```bash
+python -m src.eval.harness --retriever-mode mock --top-k 5
+```
+
+<div dir="rtl">
+
+برای اجرای کامل با retriever واقعی و judge، پس از تنظیم کلید API از گزینه‌های
+`--retriever-mode real --use-llm-filters --judge-grounding` استفاده کنید. جزئیات
+خروجی و محدودیت gold label در `docs/BENYAMIN_LLM_FOUNDATION.md` آمده است.
+
 ---
 
 ## تصمیم‌های اصلی
