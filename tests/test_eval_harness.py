@@ -194,6 +194,30 @@ class EvaluationHarnessTests(unittest.TestCase):
         self.assertTrue(report["summary"]["retrieval"]["available"])
         self.assertEqual(report["summary"]["category_match_rate"], 1.0)
 
+    def test_harness_warns_when_pooled_qrels_do_not_cover_a_new_run(self) -> None:
+        evaluator = DiscoveryEvaluator(
+            chain=ProductDiscoveryChain(
+                retriever=StaticRetriever(_products()),
+                extractor=RuleBasedFilterExtractor(),
+            ),
+            top_k=2,
+        )
+        report = evaluator.evaluate(
+            [
+                EvalQuery(
+                    query_id="q1",
+                    query="کیف",
+                    intent="simple",
+                    relevant_product_ids=["p1"],
+                    relevance_judgements={"p1": 2},
+                )
+            ]
+        )
+
+        retrieval = report["summary"]["retrieval"]
+        self.assertEqual(retrieval["judgement_coverage_at_k"], 0.5)
+        self.assertIn("Pooled qrels", retrieval["note"])
+
     def test_harness_integrates_judge_and_scoped_usage(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
