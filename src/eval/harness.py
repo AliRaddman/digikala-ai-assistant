@@ -88,6 +88,9 @@ class RetrievalScores(BaseModel):
     recall_at_k: float | None = None
     reciprocal_rank: float | None = None
     ndcg_at_k: float | None = None
+    retrieved_at_k: int = 0
+    judged_retrieved_at_k: int = 0
+    judgement_coverage_at_k: float | None = Field(default=None, ge=0, le=1)
 
 
 class DiscoveryEvalItem(BaseModel):
@@ -404,16 +407,29 @@ def _retrieval_scores(
     top_k: int,
     relevance_judgements: dict[str, int] | None = None,
 ) -> RetrievalScores:
-    if not relevant_product_ids:
-        return RetrievalScores()
     relevant = set(relevant_product_ids)
     retrieved = [item.product_id or item.id for item in evidence[:top_k]]
     if relevance_judgements:
+        judged_retrieved = sum(
+            identifier in relevance_judgements for identifier in retrieved
+        )
+        coverage = judged_retrieved / len(retrieved) if retrieved else None
+        if not relevant:
+            return RetrievalScores(
+                retrieved_at_k=len(retrieved),
+                judged_retrieved_at_k=judged_retrieved,
+                judgement_coverage_at_k=coverage,
+            )
         return RetrievalScores(
             recall_at_k=recall_at_k(retrieved, relevant, top_k),
             reciprocal_rank=mrr_at_k(retrieved, relevant, top_k),
             ndcg_at_k=ndcg_at_k(retrieved, relevance_judgements, top_k),
+            retrieved_at_k=len(retrieved),
+            judged_retrieved_at_k=judged_retrieved,
+            judgement_coverage_at_k=coverage,
         )
+    if not relevant:
+        return RetrievalScores(retrieved_at_k=len(retrieved))
     seen_relevant: set[str] = set()
     hits: list[int] = []
     for identifier in retrieved:
@@ -431,6 +447,7 @@ def _retrieval_scores(
         recall_at_k=recall,
         reciprocal_rank=reciprocal_rank,
         ndcg_at_k=dcg / ideal_dcg if ideal_dcg else 0.0,
+        retrieved_at_k=len(retrieved),
     )
 
 
@@ -445,6 +462,11 @@ def _summarize(
         item
         for item in successful
         if item.retrieval_scores.recall_at_k is not None
+    ]
+    coverage_items = [
+        item
+        for item in successful
+        if item.retrieval_scores.judgement_coverage_at_k is not None
     ]
     judged = [
         item.grounding_judgment["judgment"]
@@ -479,6 +501,17 @@ def _summarize(
         len(item.citation_audit.valid)
         for item in successful
         if item.citation_audit is not None
+    )
+    retrieved_for_coverage = sum(
+        item.retrieval_scores.retrieved_at_k for item in coverage_items
+    )
+    judged_retrieved = sum(
+        item.retrieval_scores.judged_retrieved_at_k for item in coverage_items
+    )
+    judgement_coverage = (
+        judged_retrieved / retrieved_for_coverage
+        if retrieved_for_coverage
+        else None
     )
 
     return {
@@ -515,11 +548,12 @@ def _summarize(
             "mean_ndcg_at_k": _mean_optional(
                 item.retrieval_scores.ndcg_at_k for item in labeled
             ),
-            "note": (
-                None
-                if labeled
-                else "Recall/MRR/nDCG require inline gold IDs or --qrels."
+            "judgement_coverage_at_k": judgement_coverage,
+            "queries_with_zero_judged_results": sum(
+                item.retrieval_scores.judged_retrieved_at_k == 0
+                for item in coverage_items
             ),
+            "note": _retrieval_note(bool(labeled), judgement_coverage),
         },
         "grounding_judge": {
             "judged_queries": len(judged),
@@ -588,6 +622,21 @@ def _summarize_by_intent(items: list[DiscoveryEvalItem]) -> dict[str, Any]:
         }
         for intent, bucket in sorted(buckets.items())
     }
+
+
+def _retrieval_note(
+    has_labels: bool,
+    judgement_coverage: float | None,
+) -> str | None:
+    if not has_labels:
+        return "Recall/MRR/nDCG require inline gold IDs or --qrels."
+    if judgement_coverage is not None and judgement_coverage < 1:
+        return (
+            "Pooled qrels do not cover every retrieved result. Unjudged items "
+            "are treated as non-relevant, so metrics can be strongly biased "
+            "until this run is added to the judging pool."
+        )
+    return None
 
 
 def main() -> None:

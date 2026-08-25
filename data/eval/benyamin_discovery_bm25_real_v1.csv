@@ -1,0 +1,2 @@
+run_id,backend,index_rows,query_count,top_k,successful_queries,errored_queries,empty_result_queries,p50_ms,p95_ms,first_query_cold_ms,warm_mean_ms,category_match_rate,constraint_pass_rate,citation_integrity_rate,qrels_judgement_coverage_at_10,queries_with_zero_judged_results,retrieval_quality_metrics_status
+benyamin-discovery-bm25-real-v1,bm25,948352,36,10,36,0,0,7.3323,18.2441,2939.3085,8.2180,0.8222,1.0,1.0,0.0556,20,not_reportable_until_full-index-run-is-pooled-and-judged

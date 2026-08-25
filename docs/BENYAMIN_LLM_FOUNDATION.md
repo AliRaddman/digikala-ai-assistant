@@ -122,6 +122,13 @@ that file through `--qrels`, attaches relevant product IDs by `query_id`, and
 uses the 0/1/2 relevance grades for nDCG. `--min-relevance` controls which
 grades count as relevant for Recall and MRR and defaults to 1.
 
+Qrels are pooled judgments, not complete catalogue labels. Every report also
+includes `judgement_coverage_at_k` and the count of queries with no judged
+returned result. When a new run retrieves products outside the original pool,
+the harness warns that treating those unjudged items as non-relevant can make
+Recall, MRR and nDCG strongly pessimistic. Add the new run to the judging pool
+before presenting those metrics as a fair system comparison.
+
 Inline gold IDs remain supported for small or standalone evaluation sets:
 
 ```json
@@ -143,3 +150,43 @@ The comment index is not implemented yet, so
 `build_retriever("comment", mode="real")` still raises `NotImplementedError`.
 
 No live API request was made while implementing or testing this checkpoint.
+
+## Real BM25 product-discovery checkpoint
+
+The first real end-to-end run was completed on 2026-08-26 with Ali's full
+product metadata and BM25 artifacts from Drive:
+
+- metadata: 948,352 rows and 10 columns
+- BM25 matrix: 948,352 x 372,199
+- vocabulary: 372,199 terms
+- row and vocabulary dimensions matched exactly
+- backend: `bm25`
+- 36 queries, `top_k=10`, rule-based filter extractor, no LLM calls
+
+Measured operational results are versioned in
+`data/eval/benyamin_discovery_bm25_real_v1.csv`:
+
+- successful queries: 36/36
+- empty-result queries: 0
+- warm mean chain latency after the first query: 8.22 ms
+- p50 chain latency: 7.33 ms
+- p95 chain latency: 18.24 ms
+- first-query cold load: 2.94 s
+- expected-subcategory match among returned products: 82.22%
+- explicit filter pass rate: 100%
+- citation integrity: 100%
+
+The complete per-query report, including answers, retrieved product IDs,
+filter plans, latency and audits, is stored at
+`data/eval/runs/benyamin_discovery_bm25_real_v1.json`.
+
+The separate depth-50 qrels covered only 20 of the 360 returned top-10 items
+(5.56%), and 20 queries had no judged returned result. Recall, MRR and nDCG
+from this run are therefore not reportable: the new full-index BM25 run must be
+added to the candidate pool and its previously unseen products judged first.
+
+This run also exposed a sampling artefact in the earlier failure analysis.
+Query `q016` (a Dostoevsky book from Nashr-e Cheshmeh) had no exact answer in
+the 50k evaluation pool, but the full index returned product `10888139`, an
+exact Dostoevsky/Cheshmeh match, at rank 1. "No answer in the pool" must not be
+presented as "no answer in the full catalogue."
