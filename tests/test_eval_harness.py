@@ -9,7 +9,7 @@ from pathlib import Path
 from src.chains.product_discovery import ProductDiscoveryChain
 from src.chains.product_filters import RuleBasedFilterExtractor
 from src.eval.grounding import LLMGroundingJudge, audit_citations
-from src.eval.harness import DiscoveryEvaluator, EvalQuery
+from src.eval.harness import DiscoveryEvaluator, EvalQuery, attach_qrels
 from src.llm.cache import SQLiteLLMCache
 from src.llm.client import CachedLLMClient, ProviderResult
 from src.llm.types import TokenUsage
@@ -92,6 +92,27 @@ def _products() -> list[Evidence]:
 
 
 class EvaluationHarnessTests(unittest.TestCase):
+    def test_ali_qrels_are_attached_by_query_id(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "qrels.csv"
+            path.write_text(
+                "query_id,product_id,relevance\n"
+                "q1,p1,2\n"
+                "q1,p2,0\n"
+                "q2,p3,1\n",
+                encoding="utf-8",
+            )
+            queries = [
+                EvalQuery(query_id="q1", query="کیف", intent="simple"),
+                EvalQuery(query_id="q2", query="کتاب", intent="simple"),
+            ]
+
+            attached = attach_qrels(queries, path)
+
+            self.assertEqual(attached[0].relevant_product_ids, ["p1"])
+            self.assertEqual(attached[0].relevance_judgements, {"p1": 2, "p2": 0})
+            self.assertEqual(attached[1].relevant_product_ids, ["p3"])
+
     def test_citation_audit_separates_unknown_ids(self) -> None:
         audit = audit_citations(
             "خوب است [product:p1] ولی شاهد دوم جعلی است [comment:missing]",

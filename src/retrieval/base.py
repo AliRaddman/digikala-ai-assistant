@@ -279,9 +279,12 @@ def build_retriever(kind: EvidenceKind = "product", mode: str | None = None) -> 
     if mode == "mock":
         return MockRetriever(kind=kind)
     if mode == "real":
-        raise NotImplementedError(
-            "real retriever is not published yet — keep RETRIEVER_MODE=mock"
-        )
+        if kind == "comment":
+            raise NotImplementedError("comment index is not built yet")
+        from src.retrieval.products import build_product_retriever
+
+        return build_product_retriever()
+    
     raise ValueError(f"unknown RETRIEVER_MODE: {mode!r}")
 
 
