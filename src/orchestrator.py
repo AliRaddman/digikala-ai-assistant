@@ -11,14 +11,25 @@ import argparse
 import json
 import re
 from dataclasses import dataclass
+from functools import lru_cache
+from pathlib import Path
 from typing import Any, Literal, Mapping, Protocol
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from src.chains.category_analytics import (
+    DEFAULT_COMMENTS_PATH,
+    DEFAULT_PRODUCTS_PATH,
+    CategoryAnalyticsChain,
+    load_products,
+    resolve_category_from_query,
+)
 from src.chains.product_discovery import ProductDiscoveryChain
 from src.chains.product_filters import RuleBasedFilterExtractor
+from src.chains.product_qa import ProductQAChain
 from src.data.normalize import normalize, to_search_text
-from src.retrieval.base import build_retriever
+from src.llm.client import CachedLLMClient, build_openai_client
+from src.retrieval.base import Retriever, build_retriever
 
 AssistantIntent = Literal[
     "product_discovery",
@@ -271,6 +282,89 @@ class ProductDiscoveryHandler:
         )
 
 
+@lru_cache(maxsize=1)
+def _default_llm_client() -> CachedLLMClient:
+    """Built lazily, on first real use, so build_default_orchestrator() never
+    requires an API key -- only an actual product_qa/category_analytics
+    request does, and every other test keeps running fully offline."""
+    return build_openai_client()
+
+
+def _optional_llm_client() -> CachedLLMClient | None:
+    """Same client, but None instead of an exception when no key is set.
+
+    Only category analytics uses this. Its numbers all come from pandas
+    aggregation and the model merely narrates them, so with no key the
+    handler still answers from the computed tables. Product QA deliberately
+    does not degrade this way: there the model *is* the answer.
+    """
+    try:
+        return _default_llm_client()
+    except Exception:
+        return None
+
+
+@dataclass(slots=True)
+class ProductQAHandler:
+    retriever: Retriever
+    max_evidence: int = 20
+    client: CachedLLMClient | None = None
+    """Overridable for tests; production code leaves this None and gets the
+    lazily-built default client, only on the first real request."""
+
+    def handle(self, request: OrchestratorRequest) -> HandlerResult:
+        chain = ProductQAChain(
+            retriever=self.retriever,
+            client=self.client or _default_llm_client(),
+            max_evidence=self.max_evidence,
+        )
+        result = chain.run(request.query, request.product_ids[0])
+        return HandlerResult(
+            answer=result.render_fa(),
+            citations=[item.citation() for item in result.evidence],
+            payload=result.as_dict(),
+        )
+
+
+_CATEGORY_NOT_RESOLVED_FA = (
+    "متوجه نشدم منظورتان کدام دسته‌ی محصول است؛ لطفاً نام دسته را در پرسش "
+    "بیاورید (مثلاً «اسباب‌بازی» یا «لباس زنانه»)."
+)
+
+
+@dataclass(slots=True)
+class CategoryAnalyticsHandler:
+    """Resolves the category itself rather than relying on RouteDecision:
+    matching free text against the real category vocabulary needs
+    products_clean_v1.parquet, and RuleBasedIntentRouter is meant to stay a
+    zero-file-I/O baseline that every routing test can call without data on
+    disk. Doing it here only costs a disk read on an actual category_analytics
+    request, exactly like the retriever/LLM client are only touched then too.
+    """
+
+    products_path: Path = DEFAULT_PRODUCTS_PATH
+    comments_path: Path = DEFAULT_COMMENTS_PATH
+    client: CachedLLMClient | None = None
+    """Overridable for tests; see ProductQAHandler.client."""
+
+    def handle(self, request: OrchestratorRequest) -> HandlerResult:
+        products = load_products(str(self.products_path))
+        scope = resolve_category_from_query(request.query, products)
+        if scope is None:
+            return HandlerResult(answer=_CATEGORY_NOT_RESOLVED_FA)
+        chain = CategoryAnalyticsChain(
+            products_path=self.products_path,
+            comments_path=self.comments_path,
+            client=self.client or _optional_llm_client(),
+        )
+        report = chain.run(scope)
+        return HandlerResult(
+            answer=report.render_fa(),
+            citations=[],
+            payload=report.as_dict(),
+        )
+
+
 _DEPENDENCIES: dict[AssistantIntent, list[str]] = {
     "product_discovery": ["product_discovery_chain"],
     "product_qa": ["product_qa_chain", "comment_retriever"],
@@ -381,9 +475,16 @@ def build_default_orchestrator(
             extractor=RuleBasedFilterExtractor(),
         )
     )
+    product_qa = ProductQAHandler(retriever=build_retriever("comment", mode=retriever_mode))
+    category_analytics = CategoryAnalyticsHandler()
+
     return ShoppingAssistantOrchestrator(
         router=RuleBasedIntentRouter(),
-        handlers={"product_discovery": discovery},
+        handlers={
+            "product_discovery": discovery,
+            "product_qa": product_qa,
+            "category_analytics": category_analytics,
+        },
     )
 
 

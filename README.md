@@ -50,6 +50,21 @@ https://huggingface.co/datasets/RadeAI/Digikala_comments_products/tree/89c3133b1
 | `indexes/products_bm25_vocab_v1.json` | `data/indexes/` | ۱۰ MB |
 | `indexes/products_e5base_ivfsq8_v1.faiss` | `data/indexes/` | ۷۴۹ MB |
 
+برای بخش ۲ (پرسش‌وپاسخ بر پایه نظرات) این‌ها هم لازم‌اند:
+
+| فایل درایو | مقصد | حجم |
+|---|---|---|
+| `processed/comments_clean_v1.parquet` | `data/processed/` | ۴۱۵ MB |
+| `indexes/comments_meta_v1.parquet` | `data/indexes/` | ۱۸۸ MB |
+| `indexes/comments_product_map_v1.json` | `data/indexes/` | ۳۴ MB |
+| `indexes/comments_bm25_v1.npz` | `data/indexes/` | ۱۴۹ MB |
+| `indexes/comments_bm25_vocab_v1.json` | `data/indexes/` | ۸ MB |
+| `indexes/comments_emb_e5base_v1.npy` | `data/indexes/` | ۱۰.۵ GB |
+
+فایل امبدینگ ۱۰.۵ گیگابایتی روی درایو نمی‌رود (آپلودش با سرعت ۴۰۰ کیلوبایت بر ثانیه حدود ۷ ساعت طول می‌کشد). به‌جایش هر کس با دستور بخش «لایه نظرات» خودش می‌سازد — با GPU حدود ۱۲ دقیقه است. بقیه‌ی فایل‌های نظرات روی درایو هستند.
+
+بخش ۴ (تحلیل دسته) فقط به `comments_clean_v1.parquet` نیاز دارد، نه به هیچ ایندکسی.
+
 اگر جای دیگری گذاشتید، `INDEX_DIR` را در `.env` تنظیم کنید.
 
 ---
@@ -63,15 +78,20 @@ src/
 ├── data/
 │   ├── normalize.py     نرمال‌ساز فارسی مشترک — قفل
 │   ├── products.py      پاک‌سازی محصولات
+│   ├── comments.py      پاک‌سازی نظرات
 │   └── sampling.py      نمونه‌گیری طبقاتی
 ├── retrieval/
 │   ├── base.py          Evidence، RetrievalFilters، Retriever، MockRetriever
 │   ├── products.py      BM25Retriever و DenseRetriever
+│   ├── comments.py      CommentRetriever — بازیابی دقیق per-product
 │   └── hybrid.py        ترکیب با RRF
 ├── eval/
 │   └── retrieval_metrics.py   Recall@k، nDCG@k، MRR@k
 ├── llm/                 کلاینت، کش، router، پرامپت‌ها
-├── chains/              بخش‌های ۱ تا ۴ سیستم
+├── chains/
+│   ├── product_discovery.py    بخش ۱: جست‌وجو و کشف محصول
+│   ├── product_qa.py           بخش ۲: پرسش‌وپاسخ مستند به comment_id
+│   └── category_analytics.py   بخش ۴: تحلیل سطح دسته (تجمیع، نه بازیابی)
 └── classifier/          پیش‌بینی recommendation_status
 
 scripts/                 اسکریپت‌های اجرایی (ساخت ایندکس، بنچمارک، ارزیابی)
@@ -120,7 +140,7 @@ for ev in evidence:
 - قیمت‌ها **ریال**اند. کاربر تومان می‌گوید، پس موقع استخراج فیلتر ضربدر ۱۰ کنید.
 - `rate` از ۱۰۰ است نه ۵، و برای محصول بدون امتیاز `null` است. پس `min_rate` گذاشتن یعنی محصولات بی‌امتیاز خودکار حذف می‌شوند.
 - فیلترها **قید سخت**اند نه امتیاز اضافه: محصول خارج از فیلتر برنمی‌گردد حتی اگر شبیه‌تر باشد.
-- ایندکس نظرات هنوز ساخته نشده. `kind="comment"` در حالت `real` خطا می‌دهد.
+- `kind="comment"` در حالت `real` به `CommentRetriever` وصل است — بازیابی همیشه به `RetrievalFilters.product_ids` محدود می‌شود؛ بدون آن کل ایندکس نظرات را جاروب می‌کند (کندتر، ولی کار می‌کند).
 
 ---
 
@@ -191,6 +211,69 @@ python -m scripts.measure_latency --queries data/eval/queries_v1.jsonl
 | BM25 تنها | ۰.۶۳۸۹ | ۰.۴۷۴۰ | ۰.۸۴۸۹ | ۱۱.۴ ms |
 
 برتری hybrid نسبت به dense تنها به آستانه معناداری نمی‌رسد (p = ۰.۰۵۸، ۲۱ کوئری بهتر و ۸ بدتر). نسبت به BM25 معنادار است (p = ۰.۰۲). cold start ایندکس dense حدود ۱۴.۵ ثانیه است و یک بار کش می‌شود.
+
+---
+
+## لایه نظرات: بخش ۲ و ۴
+
+</div>
+
+```bash
+# پاک‌سازی نظرات: ۶.۱۶ میلیون ردیف خام ← ۵.۴۱ میلیون نظر
+python -m src.data.comments \
+  --raw data/raw/comments_raw.parquet \
+  --out data/processed/comments_clean_v1.parquet
+
+# ایندکس نظرات: هر محصول حداکثر ۵۰ نظر، دقیق نه تقریبی (نه FAISS)
+# با GPU حدود ۱ ساعت طول می‌کشد — دلیل معماری در docs/DECISIONS.md
+python -m scripts.build_comment_index \
+  --clean data/processed/comments_clean_v1.parquet \
+  --out-dir data/indexes --max-per-product 50
+```
+
+<div dir="rtl">
+
+خروجی در `data/indexes/`: `comments_meta_v1.parquet`، `comments_emb_e5base_v1.npy`، `comments_product_map_v1.json`، `comments_bm25_v1.npz` (+`vocab`). این چهار فایل هم روی درایو مشترک می‌روند، مثل ایندکس محصولات.
+
+**بخش ۲ (پرسش‌وپاسخ مستند به نظرات):**
+
+</div>
+
+```bash
+python -m src.chains.product_qa "ایرادهای پرتکرار این محصول چیست؟" \
+  --product-id 3901234 --retriever-mode real
+```
+
+<div dir="rtl">
+
+پاسخ به ازای هر ادعا حداقل یک `[comment:...]` دارد؛ اگر نظری برای آن محصول نبود یا شواهد کافی نبود، جمله‌ی صریح «نظرات کافی برای پاسخ به این سؤال وجود ندارد» برمی‌گردد — این یک خروجی مجاز است، نه خطا.
+
+**بخش ۴ (تحلیل سطح دسته):** روی `comments_clean_v1.parquet` کامل کار می‌کند، نه ایندکس — پس بدون ساختن ایندکس بالا هم قابل اجراست:
+
+</div>
+
+```bash
+python -m src.chains.category_analytics --cat1 "اسباب بازی"
+# یا بدون تماس با LLM، فقط جدول‌های تجمیعی:
+python -m src.chains.category_analytics --cat1 "اسباب بازی" --no-summary
+```
+
+<div dir="rtl">
+
+هر عددی که در خلاصه‌ی فارسی می‌آید از یکی از چهار جدول تجمیع‌شده کپی شده — مدل زبانی فقط جدول را به متن تبدیل می‌کند، عدد تولید نمی‌کند؛ اگر عددی بسازد که در جدول نیست، اجرا با خطا متوقف می‌شود (`_validate_insight_values`).
+
+### تأخیر لایه نظرات
+
+روی ایندکس واقعی (۳,۴۳۴,۷۵۵ بردار)، `top_k=20`، بعد از سه فراخوانی گرم‌کننده:
+
+| حالت | mean | p50 | p95 |
+|---|---|---|---|
+| محصول پرنظر (۵۰ نظر، به سقف خورده) | ۴.۲ ms | ۴.۱ ms | ۴.۲ ms |
+| محصول کم‌نظر (۴ نظر) | ۳.۳ ms | ۳.۳ ms | ۳.۳ ms |
+| محصول بدون نظر | ۰.۶ µs | ۰.۵ µs | ۰.۶ µs |
+| بدون فیلتر محصول (fallback، اسکن کامل) | ۴۰۷ ms | — | — |
+
+cold start حدود ۱۶.۸ ثانیه است (مدل + meta + نگاشت محصول) و یک بار کش می‌شود. تجمیع بخش ۴ برای دسته اسباب‌بازی (۳۷۱ هزار نظر) ۱.۸ ثانیه طول می‌کشد.
 
 ---
 
