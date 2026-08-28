@@ -1,0 +1,22 @@
+{
+  "input_rows": 6156289,
+  "recommendation_status_before": {
+    "recommended": 4162839,
+    "__missing__": 894426,
+    "no_idea": 594121,
+    "not_recommended": 504903
+  },
+  "duplicate_comment_ids_removed": 3229,
+  "rows_removed_no_text_anywhere": 169,
+  "body_shorter_than_10_chars_kept": 741261,
+  "unexpected_recommendation_status_values": [],
+  "recommendation_status_after": {
+    "recommended": 4160672,
+    "__missing__": 894015,
+    "no_idea": 593699,
+    "not_recommended": 504505
+  },
+  "labeled_rows_for_classifier": 5258876,
+  "missing_recommendation_status_rows_kept": 894015,
+  "output_rows": 6152891
+}
