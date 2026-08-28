@@ -55,10 +55,16 @@ OUTPUT_COLUMNS: list[str] = [
 _TEXT_COLUMNS = ("title", "advantages", "disadvantages")
 MIN_BODY_LEN = 10
 
-# rate here is on a 0-5 scale (user star rating on the comment), unlike the
-# products table's rate which is 0-100. Same column name, different table,
-# different scale -- do not reuse products.py's rate logic here.
-RATE_MIN, RATE_MAX = 0, 5
+# rate here is a 1-5 star rating the user attached to their comment, unlike
+# the products table's rate which is 0-100. Same column name, different
+# table, different scale -- do not reuse products.py's rate logic here.
+#
+# The valid floor is 1, not 0: a stored 0 means "no stars given", the same
+# placeholder the products table uses (see docs/DECISIONS.md). 484,876
+# comments (9.0%) carry it, and 80% of them are recommendation_status
+# "recommended" -- a reviewer writing "کیفیتش خیلی خوبه، راضی‌ام" and
+# recommending the product did not award it zero stars.
+RATE_MIN, RATE_MAX = 1, 5
 
 _BOOL_MAP = {
     True: True,
@@ -157,13 +163,19 @@ def filter_short_body(df: pd.DataFrame) -> tuple[pd.DataFrame, int]:
 
 
 def cast_rate(df: pd.DataFrame) -> pd.DataFrame:
-    """Coerce rate to numeric and null out anything outside 0-5.
+    """Coerce rate to numeric and null out anything outside 1-5.
 
-    Comment rate is a 0-5 star rating, distinct from the products table's
-    0-100 Rate column. A stray value like 2500 seen in EDA is almost
-    certainly a products-scale value that leaked in or a data entry error;
-    either way it is not a valid star rating and becomes null rather than a
-    guess.
+    Comment rate is a 1-5 star rating, distinct from the products table's
+    0-100 Rate column. Two kinds of value become null here:
+
+    0 -- "no stars given", not "zero stars". Keeping it would drag every
+    mean rating down and, worse, hand the QA chain "امتیاز: 0 از ۵" as
+    evidence next to a review that recommends the product. This mirrors the
+    products table decision in docs/DECISIONS.md.
+
+    Out-of-range values like the 2500 seen in EDA, which are almost certainly
+    products-scale values that leaked in, or data entry errors; either way
+    not a valid star rating, so null rather than a guess.
     """
     df = df.copy()
     rate = pd.to_numeric(df["rate"], errors="coerce")
