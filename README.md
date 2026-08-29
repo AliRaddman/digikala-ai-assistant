@@ -26,7 +26,9 @@ cp .env.example .env               # کلید API داخلش
 
 <div dir="rtl">
 
-`torch` جداگانه نصب می‌شود، چون نسخه‌اش به CUDA سیستم بستگی دارد. دستور درست را از [pytorch.org](https://pytorch.org/get-started/locally/) بردارید. نسخه CPU برای همه چیز کار می‌کند جز ساخت ایندکس روی کل کاتالوگ.
+`torch` با همان `pip install -r requirements.txt` نصب می‌شود (چون `sentence-transformers` وابستگی سختی به `torch>=2.2` دارد و به‌هرحال آن را می‌کشد). نسخه‌ای که از PyPI می‌آید عمومی است؛ **اگر GPU دارید**، بعد از نصب، build مخصوص CUDA خودتان را از [pytorch.org](https://pytorch.org/get-started/locally/) دوباره نصب کنید — GPUهای جدید (Blackwell / sm_120) به build تازه‌تری از پیش‌فرض PyPI نیاز دارند. نسخه CPU برای کوئری زدن به ایندکس‌های آماده کافی است، ولی برای ساخت ایندکس روی کل کاتالوگ عملی نیست.
+
+برای اجرای تست‌ها `requirements-dev.txt` را نصب کنید (شامل `pytest`).
 
 دیتاست از نسخه ثابت زیر:
 
@@ -42,26 +44,23 @@ https://huggingface.co/datasets/RadeAI/Digikala_comments_products/tree/89c3133b1
 
 فایل‌های سنگین روی درایو مشترک‌اند و در گیت نیستند. برای اجرای سیستم بدون ساخت مجدد، این‌ها را از `DigikalaProject/` بردارید:
 
-| فایل درایو | مقصد | حجم |
-|---|---|---|
-| `processed/products_clean_v1.parquet` | `data/processed/` | ۳۶ MB |
-| `indexes/products_meta_v1.parquet` | `data/indexes/` | ۳۵ MB |
-| `indexes/products_bm25_v1.npz` | `data/indexes/` | ۶۰ MB |
-| `indexes/products_bm25_vocab_v1.json` | `data/indexes/` | ۱۰ MB |
-| `indexes/products_e5base_ivfsq8_v1.faiss` | `data/indexes/` | ۷۴۹ MB |
+حجم‌ها از فایل‌های واقعی روی دیسک خوانده شده‌اند.
 
-برای بخش ۲ (پرسش‌وپاسخ بر پایه نظرات) این‌ها هم لازم‌اند:
+| فایل درایو | مقصد | حجم | لازم برای |
+|---|---|---|---|
+| `processed/products_clean_v1.parquet` | `data/processed/` | ۳۷ MB | بخش ۱ و ۴ |
+| `indexes/products_meta_v1.parquet` | `data/indexes/` | ۲۰ MB | بخش ۱ |
+| `indexes/products_bm25_v1.npz` | `data/indexes/` | ۳۲ MB | بخش ۱ |
+| `indexes/products_bm25_vocab_v1.json` | `data/indexes/` | ۷ MB | بخش ۱ |
+| `indexes/products_e5base_ivfsq8_v1.faiss` | `data/indexes/` | ۷۴۹ MB | بخش ۱ |
+| `processed/comments_clean_v1.parquet` | `data/processed/` | ۴۱۴ MB | بخش ۲ و ۴ |
+| `indexes/comments_meta_v1.parquet` | `data/indexes/` | ۱۸۸ MB | بخش ۲ |
+| `indexes/comments_product_map_v1.json` | `data/indexes/` | ۳۴ MB | بخش ۲ |
+| `indexes/comments_bm25_v1.npz` | `data/indexes/` | ۱۴۹ MB | بخش ۲ |
+| `indexes/comments_bm25_vocab_v1.json` | `data/indexes/` | ۸ MB | بخش ۲ |
+| `indexes/comments_emb_e5base_v1.npy` | **ساخت محلی** | ۱۰.۶ GB | بخش ۲ |
 
-| فایل درایو | مقصد | حجم |
-|---|---|---|
-| `processed/comments_clean_v1.parquet` | `data/processed/` | ۴۱۵ MB |
-| `indexes/comments_meta_v1.parquet` | `data/indexes/` | ۱۸۸ MB |
-| `indexes/comments_product_map_v1.json` | `data/indexes/` | ۳۴ MB |
-| `indexes/comments_bm25_v1.npz` | `data/indexes/` | ۱۴۹ MB |
-| `indexes/comments_bm25_vocab_v1.json` | `data/indexes/` | ۸ MB |
-| `indexes/comments_emb_e5base_v1.npy` | `data/indexes/` | ۱۰.۵ GB |
-
-فایل امبدینگ ۱۰.۵ گیگابایتی روی درایو نمی‌رود (آپلودش با سرعت ۴۰۰ کیلوبایت بر ثانیه حدود ۷ ساعت طول می‌کشد). به‌جایش هر کس با دستور بخش «لایه نظرات» خودش می‌سازد — با GPU حدود ۱۲ دقیقه است. بقیه‌ی فایل‌های نظرات روی درایو هستند.
+**فایل امبدینگ نظرات (۱۰.۶ GB) روی درایو نیست** — آپلودش با سرعت ۴۰۰ کیلوبایت بر ثانیه حدود ۷ ساعت طول می‌کشد. هر کس خودش با دستور بخش «لایه نظرات» می‌سازد؛ با GPU حدود ۱۲ دقیقه است. بقیه‌ی فایل‌های نظرات روی درایو هستند.
 
 بخش ۴ (تحلیل دسته) فقط به `comments_clean_v1.parquet` نیاز دارد، نه به هیچ ایندکسی.
 
@@ -75,29 +74,37 @@ https://huggingface.co/datasets/RadeAI/Digikala_comments_products/tree/89c3133b1
 
 ```
 src/
+├── orchestrator.py      روتر intent و اتصال chainها
 ├── data/
-│   ├── normalize.py     نرمال‌ساز فارسی مشترک — قفل
-│   ├── products.py      پاک‌سازی محصولات
-│   ├── comments.py      پاک‌سازی نظرات
-│   └── sampling.py      نمونه‌گیری طبقاتی
+│   ├── normalize.py                  نرمال‌ساز فارسی مشترک — قفل
+│   ├── products.py                   پاک‌سازی محصولات
+│   ├── comments.py                   پاک‌سازی نظرات — مسیر بازیابی
+│   ├── comments_cleaning.py          پاک‌سازی نظرات — مسیر کلاسیفایر
+│   ├── build_recommendation_splits.py  split گروهی بدون نشت
+│   └── sampling.py                   نمونه‌گیری طبقاتی
 ├── retrieval/
 │   ├── base.py          Evidence، RetrievalFilters، Retriever، MockRetriever
 │   ├── products.py      BM25Retriever و DenseRetriever
 │   ├── comments.py      CommentRetriever — بازیابی دقیق per-product
 │   └── hybrid.py        ترکیب با RRF
 ├── eval/
-│   └── retrieval_metrics.py   Recall@k، nDCG@k، MRR@k
-├── llm/                 کلاینت، کش، router، پرامپت‌ها
+│   ├── retrieval_metrics.py   Recall@k، nDCG@k، MRR@k
+│   ├── grounding.py           ممیزی استناد + LLM-as-a-Judge
+│   └── harness.py             harness ارزیابی بخش ۱
+├── llm/                 کلاینت، کش، شمارش توکن و هزینه
 ├── chains/
 │   ├── product_discovery.py    بخش ۱: جست‌وجو و کشف محصول
+│   ├── product_filters.py      استخراج فیلتر از متن فارسی
 │   ├── product_qa.py           بخش ۲: پرسش‌وپاسخ مستند به comment_id
 │   └── category_analytics.py   بخش ۴: تحلیل سطح دسته (تجمیع، نه بازیابی)
-└── classifier/          پیش‌بینی recommendation_status
+└── classifier/          خالی — کد طبقه‌بند فعلاً فقط در notebooks/fatemeh/
 
 scripts/                 اسکریپت‌های اجرایی (ساخت ایندکس، بنچمارک، ارزیابی)
+tests/                   تست آفلاین — بدون تماس API
 data/eval/               مجموعه ارزیابی و نتایج — در گیت هست
+data/eval_d50/           اجرای عمق ۵۰ — در گیت هست (بدون emb_cache)
 notebooks/<نام>/         هر کس فقط پوشه خودش
-docs/                    SCHEMA.md و DECISIONS.md
+docs/                    تحلیل schema دو جدول، DECISIONS.md، FAILURES.md
 ```
 
 <div dir="rtl">
@@ -176,10 +183,12 @@ python -m scripts.build_index \
 
 # ارزیابی ترکیبی و آزمون معناداری
 python -m scripts.eval_hybrid \
-  --runs data/eval_d50/runs --qrels data/eval/qrels_d50_v2_labeled.csv
+  --runs data/eval_d50/runs --qrels data/eval/qrels_d50_v2_labeled.csv \
+  --out data/eval/hybrid_d50_v2.csv
 python -m scripts.test_significance \
   --runs data/eval_d50/runs --qrels data/eval/qrels_d50_v2_labeled.csv \
-  --rrf-k 60 --w-dense 0.7
+  --rrf-k 60 --w-dense 0.7 \
+  --out data/eval/significance_d50_v2.csv
 
 # تأخیر
 python -m scripts.measure_latency --queries data/eval/queries_v1.jsonl
@@ -245,7 +254,8 @@ python -m src.data.comments \
   --out data/processed/comments_clean_v1.parquet
 
 # ایندکس نظرات: هر محصول حداکثر ۵۰ نظر، دقیق نه تقریبی (نه FAISS)
-# با GPU حدود ۱ ساعت طول می‌کشد — دلیل معماری در docs/DECISIONS.md
+# روی GPU حدود ۱۲ دقیقه (encode واقعی: ۷۳۱ ثانیه برای ۳.۴ میلیون بردار)
+# دلیل معماری در docs/DECISIONS.md
 python -m scripts.build_comment_index \
   --clean data/processed/comments_clean_v1.parquet \
   --out-dir data/indexes --max-per-product 50
@@ -253,20 +263,50 @@ python -m scripts.build_comment_index \
 
 <div dir="rtl">
 
-خروجی در `data/indexes/`: `comments_meta_v1.parquet`، `comments_emb_e5base_v1.npy`، `comments_product_map_v1.json`، `comments_bm25_v1.npz` (+`vocab`). این چهار فایل هم روی درایو مشترک می‌روند، مثل ایندکس محصولات.
+خروجی در `data/indexes/`: `comments_meta_v1.parquet`، `comments_product_map_v1.json`، `comments_bm25_v1.npz` (+`vocab`) و `comments_emb_e5base_v1.npy`.
+
+**فایل امبدینگ ۱۰.۶ گیگابایتی روی درایو نمی‌رود** و باید محلی ساخته شود (همان دستور بالا)؛ بقیه روی درایو مشترک هستند. اجرا قابل ازسرگیری است: اگر وسط encode قطع شد، دفعه‌ی بعد از همان ردیف ادامه می‌دهد (`comments_emb_e5base_v1.progress.json`).
 
 **بخش ۲ (پرسش‌وپاسخ مستند به نظرات):**
 
 </div>
 
 ```bash
+# 4835951 = میکروفن کندانسر وسکات BM800 — یک محصول واقعی با ۵۰ نظر در ایندکس
 python -m src.chains.product_qa "ایرادهای پرتکرار این محصول چیست؟" \
-  --product-id 3901234 --retriever-mode real
+  --product-id 4835951 --retriever-mode real
+```
+
+```python
+from src.chains.product_qa import ProductQAChain
+from src.llm.client import build_openai_client
+from src.retrieval.base import build_retriever
+
+chain = ProductQAChain(
+    retriever=build_retriever("comment", mode="real"),
+    client=build_openai_client(),
+    max_evidence=20,
+)
+result = chain.run("آیا با توجه به تجربه کاربران ارزش خرید دارد؟", product_id="4835951")
+
+print(result.render_fa())          # متن فارسی با تگ [comment:...] کنار هر ادعا
+result.answer.sufficient_evidence  # bool
+result.evidence                    # list[Evidence] — شواهد خامی که مدل دید
+result.as_dict()                   # ساختار کامل برای harness
 ```
 
 <div dir="rtl">
 
-پاسخ به ازای هر ادعا حداقل یک `[comment:...]` دارد؛ اگر نظری برای آن محصول نبود یا شواهد کافی نبود، جمله‌ی صریح «نظرات کافی برای پاسخ به این سؤال وجود ندارد» برمی‌گردد — این یک خروجی مجاز است، نه خطا.
+پاسخ به ازای هر ادعا حداقل یک `[comment:...]` دارد — این الزام در خود schema است (`comment_ids` با `min_length=1`)، نه فقط در پرامپت، و بعد از دریافت پاسخ هر شناسه با شواهد واقعی مقایسه می‌شود.
+
+**دو خروجی مجاز که خطا نیستند:**
+
+- شواهد ناکافی → «نظرات کافی برای پاسخ به این سؤال وجود ندارد»
+- محصول بدون هیچ نظر → «برای این محصول نظری ثبت نشده است»
+
+حالت دوم نادر نیست: **۶۲۷,۱۹۲ محصول از ۹۴۸,۳۵۲ محصول کاتالوگ (۶۶.۱٪) هیچ نظری ندارند**، پس بخش ۲ عملاً روی حدود یک‌سوم کاتالوگ قابل استفاده است. این مسیر قبل از encode کردن کوئری برمی‌گردد، پس نه تماس API دارد نه هزینه‌ی محاسباتی (حدود یک میکروثانیه). تحلیل کامل در `docs/FAILURES.md`، شکست ۶.
+
+**در دموی نهایی این عدد را صریح بگویید** — اگر دمو فقط روی محصولات پرنظر اجرا شود، تصویری از پوشش سیستم می‌دهد که دو برابر واقعیت است.
 
 **بخش ۴ (تحلیل سطح دسته):** روی `comments_clean_v1.parquet` کامل کار می‌کند، نه ایندکس — پس بدون ساختن ایندکس بالا هم قابل اجراست:
 
@@ -278,9 +318,25 @@ python -m src.chains.category_analytics --cat1 "اسباب بازی"
 python -m src.chains.category_analytics --cat1 "اسباب بازی" --no-summary
 ```
 
+```python
+from src.chains.category_analytics import CategoryAnalyticsChain, CategoryScope
+
+chain = CategoryAnalyticsChain(client=None)      # client=None یعنی فقط تجمیع، بدون LLM
+report = chain.run(CategoryScope(cat1="کفش زنانه"))
+
+report.top_complaints                    # ۱) پرتکرارترین شکایت‌ها
+report.dissatisfied_feature_complaints   # ۲) شکایت‌ها فقط از نظرات not_recommended
+report.high_volume_low_recommend         # ۳) پرنظر ولی نرخ پیشنهاد پایین
+report.brand_feedback                    # ۴) مقایسه بازخورد برندها
+report.no_complaint_mentions             # نظراتی که صریحاً گفته‌اند ایرادی ندارد
+print(report.render_fa())
+```
+
 <div dir="rtl">
 
-هر عددی که در خلاصه‌ی فارسی می‌آید از یکی از چهار جدول تجمیع‌شده کپی شده — مدل زبانی فقط جدول را به متن تبدیل می‌کند، عدد تولید نمی‌کند؛ اگر عددی بسازد که در جدول نیست، اجرا با خطا متوقف می‌شود (`_validate_insight_values`).
+هر چهار خروجی `DataFrame`اند. هر عددی که در خلاصه‌ی فارسی می‌آید از یکی از همین چهار جدول کپی شده — مدل زبانی فقط جدول را به متن تبدیل می‌کند، عدد تولید نمی‌کند؛ اگر عددی بسازد که در جدول نیست، اجرا با خطا متوقف می‌شود (`_validate_insight_values`).
+
+بدون کلید API هم کار می‌کند: در آن حالت جدول‌ها ساخته می‌شوند و فقط خلاصه‌ی فارسی مدل حذف می‌شود. بخش ۲ عمداً این‌طور نیست — آنجا خودِ مدل پاسخ است، پس نبود کلید صریح خطا می‌دهد.
 
 ### تأخیر لایه نظرات
 
@@ -352,9 +408,9 @@ push کن، artifact را روی درایو بگذار — حتی اگر ناق�
 
 ### شنبه ۳۱ مرداد
 
-قرارداد داده (`docs/SCHEMA.md`) بر عهده مهیا است. او قبل از هر چیز داده خام را بررسی می‌کند — توزیع مقادیر، نوع ستون‌ها، مقادیر گمشده، تکراری‌ها — و بر اساس همان تحلیل نام و نوع ستون‌های خروجی هر دو جدول را تعیین و منتشر می‌کند. بقیه بدون جلسه از همان استفاده می‌کنند.
+قرارداد داده بر عهده مهیا است. او قبل از هر چیز داده خام را بررسی می‌کند — توزیع مقادیر، نوع ستون‌ها، مقادیر گمشده، تکراری‌ها — و بر اساس همان تحلیل نام و نوع ستون‌های خروجی هر دو جدول را تعیین و منتشر می‌کند. بقیه بدون جلسه از همان استفاده می‌کنند.
 
-بعد از انتشار، SCHEMA قفل است. تغییرش فقط با اعلام در گروه و ذکر دلیل در `docs/DECISIONS.md`.
+خروجی این کار در دو سند منتشر شد: [`docs/products_dataset_analysis_schema.md`](docs/products_dataset_analysis_schema.md) و [`docs/comments_dataset_analysis_schema.md`](docs/comments_dataset_analysis_schema.md). بعد از انتشار، schema قفل است؛ تغییرش فقط با اعلام در گروه و ذکر دلیل در `docs/DECISIONS.md`.
 
 | نفر | تسک |
 |---|---|
@@ -426,15 +482,17 @@ push کن، artifact را روی درایو بگذار — حتی اگر ناق�
 
 ## ارزیابی
 
-| بعد | متریک | مسئول | وضعیت |
-|---|---|---|---|
-| کیفیت پاسخ | judge ۱–۵ + برچسب انسانی | بنیامین | — |
-| Grounding | نسبت claim های دارای شاهد معتبر | بنیامین | — |
-| Retrieval | Recall@10، nDCG@10، MRR | علی | ✅ |
-| طبقه‌بندی | **Macro F1** — متریک اصلی بخش سوم | فاطمه | در جریان |
-| Latency | p50 / p95 به تفکیک سناریو | بنیامین | ✅ بازیابی |
-| Cost | تعداد فراخوانی، توکن ورودی/خروجی، دلار | بنیامین | — |
-| Failure Analysis | حداقل ۱۲ نمونه واقعی با تحلیل | همه | — |
+| بعد | متریک | مسئول | وضعیت | عدد ثبت‌شده |
+|---|---|---|---|---|
+| Retrieval | Recall@10، nDCG@10، MRR | علی | ✅ | nDCG@10 = ۰.۷۷۷۸ + آزمون معناداری — `data/eval/hybrid_d50_v2.csv` |
+| Latency | p50 / p95 به تفکیک سناریو | علی | ✅ | هفت سناریو بازیابی + چهار سناریو نظرات — `data/eval/latency_v1.csv` |
+| Failure Analysis | حداقل ۱۲ نمونه واقعی با تحلیل | همه | ✅ | شش شکست با اندازه‌گیری کمّی — `docs/FAILURES.md` |
+| طبقه‌بندی | **Macro F1** — متریک اصلی بخش سوم | فاطمه | 🟡 نصفه | baseline TF-IDF روی test = **۰.۶۸۳۳**؛ ParsBERT فقط validation = ۰.۷۱۳۱، عدد test ندارد |
+| Grounding | نسبت claim های دارای شاهد معتبر | بنیامین | 🟡 نصفه | `citation_integrity = ۱.۰` (قاعده‌محور)؛ judge معنایی اجرا نشده |
+| کیفیت پاسخ | judge ۱–۵ + برچسب انسانی | بنیامین | ❌ | `judged_queries = 0` |
+| Cost | تعداد فراخوانی، توکن ورودی/خروجی، دلار | بنیامین | ❌ | **هیچ تماس API زنده‌ای زده نشده** — `llm_usage: null` |
+
+سه بعد آخر همگی به یک چیز گره خورده‌اند: تا امروز حتی یک درخواست زنده به API زده نشده. زیرساخت شمارش هزینه و توکن (`src/llm/usage.py`) و LLM-as-a-Judge (`src/eval/grounding.py`) کامل و تست‌شده است، ولی بدون یک اجرای واقعی هر سه صفر می‌مانند.
 
 **بودجه:** سقف ۵ دلار برای کل گروه شامل توسعه و تست. کش دیسکی از روز اول فعال باشد — بیشتر هزینه در فاز دیباگ می‌سوزد نه در اجرای نهایی. embedding و مدل‌های محلی از بودجه کم نمی‌کنند.
 

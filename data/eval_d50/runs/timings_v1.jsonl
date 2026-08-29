@@ -1,0 +1,4 @@
+{"system": "bm25", "index_seconds": 0.17}
+{"system": "e5-base", "index_seconds": 0.0}
+{"system": "bge-m3", "index_seconds": 0.0}
+{"system": "e5-large", "index_seconds": 0.0}
