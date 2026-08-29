@@ -15,7 +15,16 @@ rank-bm25>=0.2.2
 openai>=1.109.0,<3
 pydantic>=2.8,<3
 
-# The exact torch wheel depends on the machine's CUDA version. Recent GPUs
-# (Blackwell / sm_120) may need a newer build than PyPI's default. CPU-only is
-# enough to query existing indexes but not practical for encoding the catalogue.
+# Recommendation-status classifier (section 3). scikit-learn is imported by
+# src/data/build_recommendation_splits.py; transformers is used by the ParsBERT
+# notebook in notebooks/fatemeh/.
+scikit-learn>=1.5,<2
+transformers>=4.44,<6
+
+# Installed automatically anyway, because sentence-transformers requires
+# torch>=2.2 -- listed explicitly so the version floor is visible. This pulls
+# the generic PyPI wheel; on a GPU machine reinstall the CUDA-specific build
+# from pytorch.org afterwards (recent GPUs such as Blackwell / sm_120 need a
+# newer build than PyPI's default). CPU-only is enough to query existing
+# indexes but not practical for encoding the catalogue.
 torch>=2.4
