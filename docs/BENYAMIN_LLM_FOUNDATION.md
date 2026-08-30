@@ -175,6 +175,15 @@ run reported grounding 4.30/5 and relevance 5.00/5. These are model-judge
 scores and must remain separate from the pending independent human agreement
 measurement described above.
 
+That Product QA report is also the historical v3 citation baseline: 5 of 123
+generated comment IDs were absent from evidence (4.1%), affecting 3 of 10
+answers. Product QA now uses the
+`product-qa-v4-evidence-bound-citations` schema, whose per-request enum permits
+only IDs supplied in that request's evidence. The existing quarantine remains
+as defence in depth. Offline schema and regression tests verify that fabricated
+IDs cannot cross the structured-output boundary; a new live v4 run is still
+required before reporting a new raw model hallucination rate.
+
 ## Real BM25 product-discovery checkpoint
 
 The first real end-to-end run was completed on 2026-08-26 with Ali's full
