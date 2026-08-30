@@ -125,17 +125,20 @@ src/
 ├── eval/
 │   ├── retrieval_metrics.py   Recall@k، nDCG@k، MRR@k
 │   ├── grounding.py           ممیزی استناد + LLM-as-a-Judge
-│   └── harness.py             harness ارزیابی بخش ۱
+│   ├── harness.py             harness ارزیابی بخش ۱
+│   └── product_comparison.py  ارزیابی ساختار، استناد و grounding مقایسه
 ├── llm/                 کلاینت، کش، شمارش توکن و هزینه
 ├── chains/
 │   ├── product_discovery.py    بخش ۱: جست‌وجو و کشف محصول
 │   ├── product_filters.py      استخراج فیلتر از متن فارسی
 │   ├── product_qa.py           بخش ۲: پرسش‌وپاسخ مستند به comment_id
+│   ├── product_comparison.py   مقایسه facts / evidence / inference
 │   └── category_analytics.py   بخش ۴: تحلیل سطح دسته (تجمیع، نه بازیابی)
 └── classifier/          خالی — کد طبقه‌بند فعلاً فقط در notebooks/fatemeh/
 
 scripts/                 اسکریپت‌های اجرایی (ساخت ایندکس، بنچمارک، ارزیابی)
 │   ├── run_product_qa_eval.py        بخش ۲ روی مدل واقعی + داور + نرخ توهم استناد
+│   ├── eval_product_comparison.py    بخش مقایسه؛ retrieval-only یا LLM+judge
 │   ├── build_human_labeling_set.py   برگه برچسب‌گذاری انسانی (نمرات داور جدا نگه داشته می‌شود)
 │   └── compare_human_vs_judge.py     کاپای کوهن، همبستگی، موارد اختلاف
 data/eval/human/         اعتبارسنجی انسانی: برگه، rubric، نمرات داور — در گیت هست
@@ -533,9 +536,17 @@ push کن، artifact را روی درایو بگذار — حتی اگر ناق�
 | Failure Analysis | نمونه‌های واقعی شکست، علت و تلاش برای بهبود | همه | ✅ | **دوازده شکست** با اندازه‌گیری کمّی — `docs/FAILURES.md` |
 | Grounding | نسبت claim های دارای شاهد معتبر | بنیامین / علی | ✅ | `citation_integrity = ۱.۰`؛ **نرخ توهم شناسه ۴.۱٪، نرخ توهم پاسخ ۳۰٪** |
 | کیفیت پاسخ | judge ۱–۵ | بنیامین / علی | ✅ | بخش ۱: grounding ۴.۳۱ / relevance ۴.۷۸ روی ۳۶ کوئری · بخش ۲: **۴.۳۰ / ۵.۰۰** روی ۱۰ سوال |
+| مقایسه محصول | completeness + citation integrity + judge اختیاری | فاطمه / بنیامین | 🟡 زیرساخت کامل | اجرای تاریخی ۲۴/۲۴ فقط ساختار retrieval را سنجیده؛ `inference = 0/24` و کیفیت متن هنوز عدد ندارد |
 | Cost | تعداد فراخوانی، توکن ورودی/خروجی، دلار | بنیامین / علی | ✅ | ۱۶۹ درخواست، ۹۳ تماس، **$0.041497** — جدول پایین |
 | برچسب انسانی | کاپای کوهن در برابر judge | علی | 🟡 در جریان | ۲۵ مورد آماده‌ی برچسب‌گذاری — `data/eval/human/labels_v1.csv` |
 | طبقه‌بندی | **Macro F1** — متریک اصلی بخش سوم | فاطمه | 🟡 نصفه | baseline TF-IDF روی test = **۰.۶۸۳۳**؛ ParsBERT فقط validation = ۰.۷۱۳۱، عدد test ندارد |
+
+خلاصه‌ی قابل‌ردیابی اجرای تاریخی مقایسه در
+`data/eval/runs/product_comparison_retrieval_historical_v1.json` ثبت شده است.
+این اجرا با `llm_client=None` انجام شده؛ بنابراین ۲۴/۲۴ فقط یعنی دو محصول و
+reviewهای scoped آن‌ها بازیابی شده‌اند. Harness جدید latency مورد اول را جدا از
+حالت گرم گزارش می‌کند و کیفیت معنایی را فقط وقتی inference و judge واقعاً حاضر
+باشند اندازه‌گیری‌شده می‌نامد.
 
 زیرساخت `src/llm` و `src/eval` کار بنیامین است؛ اجرای زنده، رفع باگ‌های
 اعتبارسنجی و اعداد این جدول کار علی در روز آخر.
@@ -659,6 +670,15 @@ python -m src.eval.harness --input data/eval/queries_v1.jsonl \
 # بخش ۲ روی ۱۰ سوال و ۵ محصول واقعی، با داور و schema جدید Citation
 python scripts/run_product_qa_eval.py --judge \
   --output data/eval/runs/product_qa_real_v2_citation_enum.json
+
+# مقایسه محصول روی ۲۴ case واقعی؛ بدون تماس LLM و بدون هزینه API
+python -m scripts.eval_product_comparison --retriever-mode real \
+  --output data/eval/runs/product_comparison_retrieval_v1.json
+
+# فقط با تأیید هزینه: تولید inference و داوری grounding
+python -m scripts.eval_product_comparison --retriever-mode real \
+  --with-llm --judge-grounding \
+  --output data/eval/runs/product_comparison_llm_judged_v1.json
 
 # ساخت برگه‌ی برچسب‌گذاری انسانی (بدون تماس API)
 python scripts/build_human_labeling_set.py
