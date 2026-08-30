@@ -285,5 +285,43 @@ class CitationQuarantineTests(unittest.TestCase):
         self.assertNotIn("هشدار", result.render_fa())
 
 
+class InlineCitationRenderingTests(unittest.TestCase):
+    """A claim must carry its citation once, not twice.
+
+    Ali, 2026-08-30, from the demo run for product 340807.
+    """
+
+    def _render(self, text: str) -> str:
+        with tempfile.TemporaryDirectory() as directory:
+            provider = FakeProvider(
+                response={
+                    "answer_fa": "خلاصه‌ی نظرات کاربران.",
+                    "sufficient_evidence": True,
+                    "claims": [{"text": text, "comment_ids": ["51230044"]}],
+                }
+            )
+            chain = ProductQAChain(
+                retriever=MockRetriever("comment"),
+                client=_build_client(provider, Path(directory)),
+            )
+            return chain.run("ایرادها چیست؟", product_id="3901234").render_fa()
+
+    def test_a_citation_written_into_the_prose_is_not_repeated(self) -> None:
+        rendered = self._render("کیفیت پایین است. (comment:51230044)")
+
+        self.assertEqual(rendered.count("51230044"), 1)
+        self.assertIn("کیفیت پایین است. [comment:51230044]", rendered)
+
+    def test_a_bracketed_inline_citation_is_also_collapsed(self) -> None:
+        rendered = self._render("کیفیت پایین است. [comment:51230044]")
+
+        self.assertEqual(rendered.count("51230044"), 1)
+
+    def test_ordinary_parentheses_survive(self) -> None:
+        rendered = self._render("کیفیت پایین است (به‌ویژه لبه‌ها).")
+
+        self.assertIn("(به‌ویژه لبه‌ها)", rendered)
+
+
 if __name__ == "__main__":
     unittest.main()

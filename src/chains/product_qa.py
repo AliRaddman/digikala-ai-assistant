@@ -17,6 +17,7 @@ harness for this chain can call those two functions unmodified with
 from __future__ import annotations
 
 import argparse
+import re
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -192,16 +193,37 @@ class ProductQAResult:
     def render_fa(self) -> str:
         warning = self.hallucination_warning_fa()
         if not self.answer.claims:
-            body = self.answer.answer_fa
+            body = _strip_inline_citations(self.answer.answer_fa)
             return f"{warning}\n\n{body}" if warning else body
         lines = []
         if warning:
             lines += [warning, ""]
-        lines += [self.answer.answer_fa, ""]
+        lines += [_strip_inline_citations(self.answer.answer_fa), ""]
         for claim in self.answer.claims:
             tags = " ".join(f"[comment:{cid}]" for cid in claim.comment_ids)
-            lines.append(f"- {claim.text} {tags}")
+            lines.append(f"- {_strip_inline_citations(claim.text)} {tags}")
         return "\n".join(lines)
+
+
+_INLINE_CITATION_RE = re.compile(r"[\(\[]\s*comment\s*:\s*[^\)\]\s]+\s*[\)\]]")
+
+
+def _strip_inline_citations(text: str) -> str:
+    """Drop citation references the model wrote into the prose itself.
+
+    Ali, 2026-08-30, seen in the demo run for product 340807: the model put
+    the id inside claim.text as well as in comment_ids, so render_fa's own tag
+    landed next to it and every bullet read
+
+        ... باعث زخم شدن گوش می‌شود. (comment:1871310) [comment:1871310]
+
+    The tags appended by render_fa are the canonical ones -- they are built
+    from comment_ids, which _quarantine_invented_ids has already checked
+    against the evidence -- so the copy embedded in the prose is redundant at
+    best and unverified at worst. Only that shape is removed; ordinary
+    parentheses in Persian text are untouched.
+    """
+    return " ".join(_INLINE_CITATION_RE.sub(" ", text).split())
 
 
 _STATUS_FA = {
