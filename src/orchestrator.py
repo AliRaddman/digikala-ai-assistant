@@ -24,6 +24,7 @@ from src.chains.category_analytics import (
     load_products,
     resolve_category_from_query,
 )
+from src.chains.product_comparison import ProductComparisonChain
 from src.chains.product_discovery import ProductDiscoveryChain
 from src.chains.product_filters import RuleBasedFilterExtractor
 from src.chains.product_qa import ProductQAChain
@@ -293,10 +294,11 @@ def _default_llm_client() -> CachedLLMClient:
 def _optional_llm_client() -> CachedLLMClient | None:
     """Same client, but None instead of an exception when no key is set.
 
-    Only category analytics uses this. Its numbers all come from pandas
-    aggregation and the model merely narrates them, so with no key the
-    handler still answers from the computed tables. Product QA deliberately
-    does not degrade this way: there the model *is* the answer.
+    Used by category analytics and product comparison. Both compute their
+    substance without a model -- analytics from pandas aggregation, comparison
+    from retrieved product facts and review evidence -- and the model only
+    narrates or infers on top, so with no key both still answer. Product QA
+    deliberately does not degrade this way: there the model *is* the answer.
     """
     try:
         return _default_llm_client()
@@ -322,6 +324,44 @@ class ProductQAHandler:
         return HandlerResult(
             answer=result.render_fa(),
             citations=[item.citation() for item in result.evidence],
+            payload=result.as_dict(),
+        )
+
+
+@dataclass(slots=True)
+class ProductComparisonHandler:
+    """Adapter for Fatemeh's ProductComparisonChain.
+
+    Two retrievers rather than one: the chain resolves each selected product
+    through the product index and then pulls product-scoped review evidence
+    through the comment index. Fatemeh's notebook left the review side empty
+    because the comment index did not exist yet; it does now, so this wires
+    both and the evidence section of the answer is populated.
+
+    The LLM client is optional on purpose. ProductComparisonChain renders
+    facts and review evidence with no model at all and only skips the
+    inference section, so the comparison path stays usable without an API key
+    -- same degradation as category analytics, and the reason this uses
+    _optional_llm_client rather than _default_llm_client.
+    """
+
+    product_retriever: Retriever
+    comment_retriever: Retriever
+    comment_top_k: int = 5
+    client: CachedLLMClient | None = None
+    """Overridable for tests; see ProductQAHandler.client."""
+
+    def handle(self, request: OrchestratorRequest) -> HandlerResult:
+        chain = ProductComparisonChain(
+            product_retriever=self.product_retriever,
+            comment_retriever=self.comment_retriever,
+            llm_client=self.client or _optional_llm_client(),
+            comment_top_k=self.comment_top_k,
+        )
+        result = chain.run(request.query, product_ids=request.product_ids)
+        return HandlerResult(
+            answer=result.render_fa(),
+            citations=result.citations(),
             payload=result.as_dict(),
         )
 
@@ -469,13 +509,25 @@ def build_default_orchestrator(
 ) -> ShoppingAssistantOrchestrator:
     """Build today's runnable system; teammate handlers can be added later."""
 
+    discovery_retriever = build_retriever("product", mode=retriever_mode)
     discovery = ProductDiscoveryHandler(
         ProductDiscoveryChain(
-            retriever=build_retriever("product", mode=retriever_mode),
+            retriever=discovery_retriever,
             extractor=RuleBasedFilterExtractor(),
         )
     )
-    product_qa = ProductQAHandler(retriever=build_retriever("comment", mode=retriever_mode))
+    # Built once and shared by the QA and comparison handlers rather than once
+    # per handler: in real mode each build loads the comment index and its
+    # 10.6 GB memmap, and two of those would double the startup cost for no
+    # benefit -- retrievers hold no per-request state.
+    product_retriever = discovery_retriever
+    comment_retriever = build_retriever("comment", mode=retriever_mode)
+
+    product_qa = ProductQAHandler(retriever=comment_retriever)
+    product_comparison = ProductComparisonHandler(
+        product_retriever=product_retriever,
+        comment_retriever=comment_retriever,
+    )
     category_analytics = CategoryAnalyticsHandler()
 
     return ShoppingAssistantOrchestrator(
@@ -483,6 +535,7 @@ def build_default_orchestrator(
         handlers={
             "product_discovery": discovery,
             "product_qa": product_qa,
+            "product_comparison": product_comparison,
             "category_analytics": category_analytics,
         },
     )

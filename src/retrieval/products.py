@@ -74,6 +74,60 @@ def load_encoder(model_id: str = MODEL_ID):
     return model
 
 
+def exact_product_evidence(
+    meta: pd.DataFrame,
+    filters: RetrievalFilters,
+    top_k: int,
+) -> list[Evidence]:
+    """Address specific products by id, rather than searching for them.
+
+    Ali, 2026-08-30, found while wiring Fatemeh's ProductComparisonChain into
+    the orchestrator. `product_ids` is documented in base.py as a hard filter,
+    but on the product side both backends could only honour it by luck:
+
+    * DenseRetriever post-filters an over-fetched FAISS candidate list, so a
+      filter matching 1 row out of 948,352 returns nothing unless that row
+      happens to already be in the top `top_k * step` for the query. For
+      "این دو محصول را مقایسه کن" it never is.
+    * BM25Retriever masks correctly, but returns [] when every query term is a
+      stopword -- which a comparison query mostly is.
+
+    Both silently returned an empty list, so the comparison chain reported
+    "شناسه‌های محصول پیدا نشد" for two products that are both in the index.
+
+    An id filter is not a narrowing of a search, it is a lookup: the caller
+    already knows which rows it wants. So it is answered from the metadata
+    table directly, with every other filter in `filters` still applied through
+    the shared filter_mask, and results ordered the way the caller listed the
+    ids rather than by any score.
+
+    `score` is 0.0 on this path and means "not ranked", not "no similarity".
+    Nothing was compared against the query, so any other number would be a
+    claim this function cannot support.
+    """
+    mask = filter_mask(meta, filters)
+    if mask is None:
+        return []
+    allowed = meta.loc[mask, "product_id"]
+    position_by_id = {
+        product_id: position
+        for position, product_id in zip(allowed.index, allowed)
+    }
+    positions = [
+        position_by_id[product_id]
+        for product_id in filters.product_ids
+        if product_id in position_by_id
+    ][:top_k]
+    if not positions:
+        return []
+    row_numbers = meta.index.get_indexer(positions)
+    return to_evidence(
+        meta,
+        np.asarray(row_numbers, dtype=int),
+        np.zeros(len(row_numbers), dtype=float),
+    )
+
+
 def filter_mask(meta: pd.DataFrame, filters: RetrievalFilters | None) -> np.ndarray | None:
     """Boolean mask over the index rows.
 
@@ -165,6 +219,9 @@ class BM25Retriever(Retriever):
     def retrieve(
         self, query: str, top_k: int = 10, filters: RetrievalFilters | None = None
     ) -> list[Evidence]:
+        if filters is not None and filters.product_ids:
+            return exact_product_evidence(load_meta(self.index_dir), filters, top_k)
+
         matrix, vocab = load_bm25(self.index_dir)
         meta = load_meta(self.index_dir)
 
@@ -202,6 +259,9 @@ class DenseRetriever(Retriever):
     def retrieve(
         self, query: str, top_k: int = 10, filters: RetrievalFilters | None = None
     ) -> list[Evidence]:
+        if filters is not None and filters.product_ids:
+            return exact_product_evidence(load_meta(self.index_dir), filters, top_k)
+
         index = load_faiss(self.index_type, self.index_dir)
         meta = load_meta(self.index_dir)
         mask = filter_mask(meta, filters)

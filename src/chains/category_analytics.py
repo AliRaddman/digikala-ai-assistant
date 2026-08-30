@@ -284,8 +284,18 @@ def brand_feedback_comparison(
     table = pd.DataFrame(
         {
             "review_count": review_count,
-            "recommended_rate": grouped["recommendation_status"].apply(
-                lambda s: (s == "recommended").mean()
+            # .apply over a str/arrow-backed column returns an object column
+            # even though nearly every element is a float. That is invisible
+            # here but not in _numeric_pool, which selected by dtype -- see
+            # the comment there. to_numeric rather than astype("float64"):
+            # a brand whose reviews all lack a recommendation_status yields
+            # pd.NA, which astype cannot convert, and NaN is the honest value
+            # for a rate that is undefined rather than zero.
+            "recommended_rate": pd.to_numeric(
+                grouped["recommendation_status"].apply(
+                    lambda s: (s == "recommended").mean()
+                ),
+                errors="coerce",
             ),
             "mean_rate": grouped["rate"].mean(),
         }
@@ -297,10 +307,29 @@ def brand_feedback_comparison(
 
 
 def _numeric_pool(*tables: pd.DataFrame) -> list[float]:
+    """Every number the model is allowed to cite, in both admissible forms.
+
+    Ali, 2026-08-30. This used to select columns by dtype. brand_feedback's
+    recommended_rate was an object column of plain floats, so none of its
+    values reached the pool and _validate_insight_values rejected an insight
+    that was copied correctly out of the table it was given:
+
+        narrative cites values absent from the aggregated tables:
+        brand_feedback_di_ve_joochi_recommended_rate=95.569
+
+    0.955696 is in the table, and SUMMARY_SYSTEM_PROMPT explicitly allows the
+    x100 percentage form. The prompt promised something the validator did not
+    honour -- the same shape as the rubric/validator contradiction in
+    src/eval/grounding.py, and again only a live call could show it.
+
+    The dtype is now fixed at the source too, but coercing here rather than
+    trusting dtype means the next such column cannot re-open this hole. Text
+    columns coerce to NaN and drop out, so nothing extra is admitted.
+    """
     pool: list[float] = []
     for table in tables:
-        for column in table.select_dtypes(include="number").columns:
-            for value in table[column].dropna():
+        for column in table.columns:
+            for value in pd.to_numeric(table[column], errors="coerce").dropna():
                 value = float(value)
                 pool.append(value)
                 pool.append(round(value * 100, 1))
