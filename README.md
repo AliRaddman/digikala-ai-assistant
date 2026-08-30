@@ -43,6 +43,24 @@ unset ALL_PROXY all_proxy          # پروکسی socks باعث کرش httpx م
 متیس آن‌جا `401` می‌گیرد. مقدار درست:
 `LLM_BASE_URL=https://api.metisai.ir/openai/v1`
 
+Semantic Cache اختیاری و در حالت پیش‌فرض خاموش است. برای فعال‌کردنش:
+
+</div>
+
+```bash
+export LLM_SEMANTIC_CACHE_ENABLED=true
+export LLM_SEMANTIC_CACHE_MODEL=intfloat/multilingual-e5-base
+export LLM_SEMANTIC_CACHE_THRESHOLD=0.96
+```
+
+<div dir="rtl">
+
+مدل embedding در اولین درخواست واجد شرایط به‌صورت lazy لود می‌شود. Cache فقط
+وقتی پاسخ معنایی را reuse می‌کند که نسخه‌ی prompt، مدل، JSON schema و Context
+حفاظتی (Evidence/جدول/محصول) دقیقاً یکسان باشند؛ شباهت سؤال به‌تنهایی کافی
+نیست. Ledger از این پس `exact_cache_hits` و `semantic_cache_hits` را جدا ثبت
+می‌کند.
+
 `torch` با همان `pip install -r requirements.txt` نصب می‌شود (چون `sentence-transformers` وابستگی سختی به `torch>=2.2` دارد و به‌هرحال آن را می‌کشد). نسخه‌ای که از PyPI می‌آید عمومی است؛ **اگر GPU دارید**، بعد از نصب، build مخصوص CUDA خودتان را از [pytorch.org](https://pytorch.org/get-started/locally/) دوباره نصب کنید — GPUهای جدید (Blackwell / sm_120) به build تازه‌تری از پیش‌فرض PyPI نیاز دارند. نسخه CPU برای کوئری زدن به ایندکس‌های آماده کافی است، ولی برای ساخت ایندکس روی کل کاتالوگ عملی نیست.
 
 برای اجرای تست‌ها `requirements-dev.txt` را نصب کنید (شامل `pytest`).
@@ -580,6 +598,47 @@ gateway متیس رفته‌اند و نرخ واقعی متیس در دست م�
 **بودجه:** سقف ۵ دلار برای کل گروه شامل توسعه و تست. embedding و مدل‌های محلی
 از بودجه کم نمی‌کنند — و همین یک تصمیم، بین $2.05 و $3.08 صرفه‌جویی کرد
 (`docs/DECISIONS.md`).
+
+### Semantic Cache
+
+Semantic Cache در مسیرهای Product QA، Comparison و داور Grounding وصل شده،
+اما opt-in است. برای QA و Comparison، Evidence و مشخصات
+محصول داخل guard دقیق قرار دارند؛ پس سؤال مشابه درباره‌ی Context متفاوت cache
+hit نمی‌شود. Exact cache همیشه قبل از encode بررسی می‌شود و سریع‌ترین مسیر
+باقی می‌ماند.
+
+مسیر استخراج فیلتر عمداً semantic نمی‌شود: دو کوئری «زیر ۵۰۰ هزار» و «زیر
+۶۰۰ هزار» ممکن است embedding بسیار نزدیک داشته باشند، اما reuse کردن خروجی
+اول برای دومی قید عددی غلط می‌سازد. این مسیر فقط Exact Cache دارد.
+
+Benchmark آفلاین ثبت‌شده در
+`data/eval/semantic_cache_offline_benchmark_v1.json` روی ۸ درخواست یکتا و ۴
+جفت paraphrase این نتیجه را داد:
+
+| حالت | API call | semantic hit | هزینه‌ی تخمینی | wall latency |
+|---|---:|---:|---:|---:|
+| فقط Exact Cache | ۸ | ۰ | $0.001680 | 414.6 ms |
+| Semantic Cache | ۴ | ۴ | $0.000840 | 218.4 ms |
+
+در این workload با hit rate پنجاه‌درصدی، هزینه **۵۰٪** و wall latency
+**۴۷.۳٪** کم شد؛ latency خود semantic hit نسبت به میانگین baseline **۹۷.۹٪**
+کمتر بود. Provider دارای delay ثابت ۵۰ms و encoder بردارهای deterministic دارد
+تا تست بدون API و دانلود مدل بازتولید شود؛ بنابراین این اعداد کیفیت hit مدل
+واقعی را ثابت نمی‌کنند.
+
+بر پایه‌ی دو عدد واقعی قبلی پروژه — p50 تماس Product QA برابر ۳,۱۱۳ms و p50
+encode محلی کوئری برابر ۱۸.۹ms — کاهش latency هر hit در حالت گرم حدود **۹۹.۴٪**
+برآورد می‌شود. این ترکیب دو اندازه‌گیری قبلی است، نه A/B زنده؛ پیش از ادعای
+production باید با مدل تنظیم‌شده و ترافیک واقعی دوباره سنجیده شود.
+
+</div>
+
+```bash
+python -m scripts.benchmark_semantic_cache \
+  --output data/eval/semantic_cache_offline_benchmark_v1.json
+```
+
+<div dir="rtl">
 
 </div>
 

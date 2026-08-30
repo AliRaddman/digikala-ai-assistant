@@ -528,6 +528,53 @@ RRF فقط به رتبه نگاه می‌کند نه امتیاز. دلیلش ا
 
 **ساخت کلاینت LLM تنبل (lazy) در orchestrator.** `build_default_orchestrator()` دیگر بدون کلید API هم کرش نمی‌کند: کلاینت واقعی OpenAI فقط در اولین درخواست واقعی به بخش ۲ یا ۴ ساخته می‌شود (`_default_llm_client`, با `lru_cache`)، نه در زمان ساخت orchestrator. اگر این‌طور نبود، حتی تست‌های product_discovery هم بدون `LLM_API_KEY` شکست می‌خوردند.
 
+### Semantic Cache فقط با Context guard دقیق
+
+Exact cache فقط تکرار بایت‌به‌بایت prompt را می‌گیرد. دو سؤال هم‌معنا با متن
+متفاوت، با وجود امکان reuse امن، دو API call می‌ساختند. Semantic Cache به
+`CachedLLMClient` اضافه شد، اما opt-in و در حالت پیش‌فرض خاموش است تا اجرای
+عادی مدل embedding را دانلود یا load نکند.
+
+**مرز ایمنی:** فقط متن مشخص‌شده‌ی کاربر اجازه دارد معنایی مقایسه شود. این
+موارد باید دقیقاً برابر باشند و در guard هش‌شده می‌آیند:
+
+- model، prompt namespace و JSON schema در خود Client؛
+- Product QA: `product_id` و تمام Evidence؛
+- Comparison: facts و review evidence؛
+- Grounding judge: answer و evidence؛
+
+استخراج فیلتر عمداً وارد Semantic Cache نشد. «زیر ۵۰۰ هزار» و «زیر ۶۰۰
+هزار» ممکن است بردارهای بسیار نزدیک داشته باشند ولی پاسخ ساخت‌یافته‌ی متفاوتی
+می‌خواهند. اشتباه semantic hit در این مسیر یک قید عددی نادرست و نامرئی
+می‌سازد؛ صرفه‌جویی آن ارزش این ریسک را ندارد و Exact Cache کافی است.
+
+پس «ایراد این محصول چیست؟» و «کاربرها چه مشکلی گفته‌اند؟» فقط برای همان
+Evidence می‌توانند hit شوند؛ سؤال مشابه برای محصول یا snapshot دیگر، حتی با
+cosine برابر ۱، miss است. آستانه پیش‌فرض ۰.۹۶ است. Exact cache اول بررسی
+می‌شود تا درخواست کاملاً تکراری هزینه‌ی encode هم نداشته باشد. Ledger نوع hit
+(`exact`/`semantic`) و similarity را جدا نگه می‌دارد.
+
+**اندازه‌گیری آفلاین بازتولیدپذیر:** ۸ prompt یکتا شامل ۴ جفت paraphrase،
+Provider با delay ثابت ۵۰ms و encoder deterministic. Exact cache هیچ hitی
+نداشت؛ Semantic Cache چهار hit ساخت:
+
+| | Exact-only | Semantic |
+|---|---:|---:|
+| API call | ۸ | ۴ |
+| هزینه‌ی تخمینی | $0.001680 | $0.000840 |
+| wall latency | 414.6ms | 218.4ms |
+
+کاهش هزینه ۵۰٪، wall latency برابر ۴۷.۳٪ و کاهش latency هر hit نسبت به میانگین
+baseline برابر ۹۷.۹٪ بود. گزارش کامل در
+`data/eval/semantic_cache_offline_benchmark_v1.json` و دستور بازتولید در
+`python -m scripts.benchmark_semantic_cache` است.
+
+**محدودیت صریح:** encoder این benchmark واقعی نیست و فقط plumbing، guard،
+SQLite و accounting را می‌سنجد. از p50 واقعی Product QA (۳,۱۱۳ms) و encode
+محلی query (۱۸.۹ms)، کاهش گرم هر hit حدود ۹۹.۴٪ برآورد می‌شود، ولی hit rate و
+false-hit واقعی فقط با اجرای زنده‌ی multilingual-e5-base روی paraphraseهای
+برچسب‌خورده قابل گزارش است.
+
 </div>
 <div dir="rtl">
 

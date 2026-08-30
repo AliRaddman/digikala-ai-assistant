@@ -85,10 +85,28 @@ class SQLiteUsageLedger:
                     output_tokens INTEGER NOT NULL,
                     latency_ms REAL NOT NULL,
                     cost_usd REAL NOT NULL,
-                    saved_cost_usd REAL NOT NULL
+                    saved_cost_usd REAL NOT NULL,
+                    cache_type TEXT NOT NULL DEFAULT 'none',
+                    cache_similarity REAL
                 )
                 """
             )
+            columns = {
+                row["name"]
+                for row in connection.execute("PRAGMA table_info(llm_usage)")
+            }
+            if "cache_type" not in columns:
+                connection.execute(
+                    "ALTER TABLE llm_usage "
+                    "ADD COLUMN cache_type TEXT NOT NULL DEFAULT 'none'"
+                )
+                connection.execute(
+                    "UPDATE llm_usage SET cache_type = 'exact' WHERE cache_hit = 1"
+                )
+            if "cache_similarity" not in columns:
+                connection.execute(
+                    "ALTER TABLE llm_usage ADD COLUMN cache_similarity REAL"
+                )
 
     def record(
         self,
@@ -101,15 +119,23 @@ class SQLiteUsageLedger:
         latency_ms: float,
         cost_usd: float,
         saved_cost_usd: float = 0.0,
+        cache_type: str | None = None,
+        cache_similarity: float | None = None,
     ) -> None:
+        resolved_cache_type = cache_type or ("exact" if cache_hit else "none")
+        if resolved_cache_type not in {"none", "exact", "semantic"}:
+            raise ValueError(f"invalid cache_type: {resolved_cache_type!r}")
+        if cache_hit != (resolved_cache_type != "none"):
+            raise ValueError("cache_hit and cache_type disagree")
         with self._connect() as connection:
             connection.execute(
                 """
                 INSERT INTO llm_usage (
                     created_at, operation, model, request_id, cache_hit,
                     input_tokens, cached_input_tokens, output_tokens,
-                    latency_ms, cost_usd, saved_cost_usd
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    latency_ms, cost_usd, saved_cost_usd, cache_type,
+                    cache_similarity
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     datetime.now(UTC).isoformat(),
@@ -123,6 +149,8 @@ class SQLiteUsageLedger:
                     latency_ms,
                     cost_usd,
                     saved_cost_usd,
+                    resolved_cache_type,
+                    cache_similarity,
                 ),
             )
 
@@ -163,12 +191,19 @@ class SQLiteUsageLedger:
                            AS api_calls,
                        COALESCE(SUM(CASE WHEN cache_hit = 1 THEN 1 ELSE 0 END), 0)
                            AS cache_hits,
+                       COALESCE(SUM(CASE WHEN cache_type = 'exact' THEN 1 ELSE 0 END), 0)
+                           AS exact_cache_hits,
+                       COALESCE(SUM(CASE WHEN cache_type = 'semantic' THEN 1 ELSE 0 END), 0)
+                           AS semantic_cache_hits,
                        COALESCE(SUM(input_tokens), 0) AS input_tokens,
                        COALESCE(SUM(cached_input_tokens), 0) AS cached_input_tokens,
                        COALESCE(SUM(output_tokens), 0) AS output_tokens,
                        COALESCE(SUM(cost_usd), 0.0) AS cost_usd,
                        COALESCE(SUM(saved_cost_usd), 0.0) AS saved_cost_usd,
-                       COALESCE(AVG(latency_ms), 0.0) AS mean_latency_ms
+                       COALESCE(AVG(latency_ms), 0.0) AS mean_latency_ms,
+                       AVG(CASE WHEN cache_type = 'semantic'
+                                THEN cache_similarity END)
+                           AS mean_semantic_similarity
                 FROM llm_usage
                 WHERE {where_sql}
                 """,

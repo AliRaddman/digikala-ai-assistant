@@ -42,6 +42,7 @@ from typing import Literal, Protocol
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from src.llm.client import CachedLLMClient
+from src.llm.semantic_cache import SemanticCacheRequest
 from src.llm.types import StructuredResult
 from src.retrieval.base import Evidence
 
@@ -203,6 +204,14 @@ class LLMGroundingJudge:
             ],
             response_model=GroundingJudgment,
             cache_namespace=PROMPT_VERSION,
+            semantic_cache=SemanticCacheRequest(
+                text=question,
+                guard={
+                    "system_prompt": SYSTEM_PROMPT,
+                    "answer": answer,
+                    "evidence": payload["evidence"],
+                },
+            ),
         )
         judgment = GroundingJudgment.model_validate(result.data)
         self._validate_evidence_ids(judgment, evidence)

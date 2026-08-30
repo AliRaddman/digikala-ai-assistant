@@ -23,6 +23,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from src.data.normalize import normalize
 from src.llm.client import CachedLLMClient
+from src.llm.semantic_cache import SemanticCacheRequest
 from src.retrieval.base import Evidence, RetrievalFilters, Retriever
 
 
@@ -555,6 +556,14 @@ class ProductComparisonChain:
             ],
             response_model=ComparisonInference,
             cache_namespace=PROMPT_VERSION,
+            semantic_cache=SemanticCacheRequest(
+                text=query,
+                guard={
+                    "system_prompt": SYSTEM_PROMPT,
+                    "facts": prompt_payload["facts"],
+                    "review_evidence": prompt_payload["review_evidence"],
+                },
+            ),
         )
 
         raw = dict(result.data)
