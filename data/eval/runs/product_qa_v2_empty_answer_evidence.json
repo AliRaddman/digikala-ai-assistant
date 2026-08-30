@@ -1,0 +1,408 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-30T15:01:58+0330",
+  "configuration": {
+    "prompt_version": "product-qa-v2",
+    "model": "gpt-4o-mini",
+    "base_url": "https://api.metisai.ir/openai/v1",
+    "top_k": 20,
+    "retriever_mode": "real",
+    "judge": false
+  },
+  "summary": {
+    "cases": 1,
+    "errored": 0,
+    "insufficient_evidence": 1,
+    "citation_integrity_rate": null,
+    "claims_total": 0,
+    "judged": 0,
+    "judge_errors": 0,
+    "mean_grounding_score": null,
+    "mean_relevance_score": null
+  },
+  "no_review_control": {
+    "product_id": "7096768",
+    "evidence_count": 0,
+    "answer_fa": "برای این محصول نظری ثبت نشده است.",
+    "requests_recorded": 0,
+    "api_calls": 0,
+    "cost_usd": 0.0
+  },
+  "llm_usage": {
+    "logical_requests": 1,
+    "api_calls": 1,
+    "cache_hits": 0,
+    "input_tokens": 2213,
+    "cached_input_tokens": 0,
+    "output_tokens": 28,
+    "cost_usd": 0.00034875,
+    "saved_cost_usd": 0.0,
+    "mean_latency_ms": 2299.4618140000966,
+    "cache_hit_rate": 0.0,
+    "p50_latency_ms": 2299.4618140000966,
+    "p95_latency_ms": 2299.4618140000966
+  },
+  "items": [
+    {
+      "case_id": "qa01",
+      "product_id": "262958",
+      "product": "کرم ضد جوش نوروا Actipur Light Tinted (مراقبت پوست)",
+      "question": "ایرادهای پرتکرار این محصول چیست؟",
+      "evidence_count": 20,
+      "answer_fa": "نظرات کافی برای پاسخ به این سوال وجود ندارد.",
+      "sufficient_evidence": false,
+      "claims": [],
+      "rendered_fa": "نظرات کافی برای پاسخ به این سوال وجود ندارد.",
+      "citation_audit": {
+        "found": [],
+        "valid": [],
+        "invalid": [],
+        "integrity_score": null
+      },
+      "latency_ms": 16803.467698999157,
+      "evidence": [
+        {
+          "id": "25136650",
+          "kind": "comment",
+          "text": "کاملا ایرانی چون قیمت اصل این کرم بالای 100 تومن و اصلا دیگه تولید نمیشه من سالهاست از این کرم استفاده کردم من به اجبار از این کرم گرفتم پوشانندگی خوب ولی بعد از چند ساعت میماسه",
+          "score": 0.8129212260246277,
+          "product_id": "262958",
+          "title": null,
+          "meta": {
+            "rate": 2.5,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "35048606",
+          "kind": "comment",
+          "text": "به هیچ وجه نخرید... من برای تست گرفتم که افتضاح دراومد... 5 سال برای خانمم میخردمش, دیگه وارد نمیشه... اینائی که توو بازار هست همش تقلبیه وو به هیچ وجه نمیشه ازشون استفاده کنید... مستقیم انداختیمش توو سطل آشغال... کرم لافارر 02 تولید ایرانه اما عالیه...",
+          "score": 0.8051184415817261,
+          "product_id": "262958",
+          "title": "نظر اجمالی",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": null,
+            "is_buyer": true,
+            "likes": 5,
+            "advantages": null,
+            "disadvantages": "تقلبی بودن محصول, تیره بودن, داشتن بوی بد, داشتن حس سنگینی و خشکی بعد از استفاده",
+            "title": "نظر اجمالی"
+          }
+        },
+        {
+          "id": "27380298",
+          "kind": "comment",
+          "text": "محصول شماره بهداشتی نامعتبر داشت و من بابت این مسئله که اصالت کالا نداشت استفاده نکردم",
+          "score": 0.8024733662605286,
+          "product_id": "262958",
+          "title": "نظرم کاملا منفی هست",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 3,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "نظرم کاملا منفی هست"
+          }
+        },
+        {
+          "id": "27612747",
+          "kind": "comment",
+          "text": "این کرم اصل نیست و متاسفم برای دیجی کالا که ذکر نکرده کالا اصل نیست.بوی بدی داره و روی پوست پخش نمیشه.اکتی پور اصل حرف نداره ولی متاسفانه چندوقتی پیدا نمیشه",
+          "score": 0.8013494610786438,
+          "product_id": "262958",
+          "title": "غیراصل",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "غیراصل"
+          }
+        },
+        {
+          "id": "24912775",
+          "kind": "comment",
+          "text": "تقلبی بود,بوی خیلی بد داره,اصلا آسمون تا زمین با اکتی پور اصلی مغایرت داره,چرا با سلامتی مردم بازی میکنین?واقعا براتون متاسفم,لیبلشم تقلبی بود.من درخواست مرجوع دادم ولی خود دیجی کالا درخواست منو لغو کرد,متاسفانه 3 عدد از این کرم خریدم و پولم انداختم تو سطل آشغال",
+          "score": 0.7988547086715698,
+          "product_id": "262958",
+          "title": "تقلبی و به درد نخور",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "تقلبی و به درد نخور"
+          }
+        },
+        {
+          "id": "24044532",
+          "kind": "comment",
+          "text": "این کرم قیمتش کم شده. میخاستم سفارش بدم ولی عجیبه تو ایران چیزی قیماش انقد کاهش پیدا کنه‌. واقعا مشکوکه.",
+          "score": 0.7985721826553345,
+          "product_id": "262958",
+          "title": null,
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 8,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "38809453",
+          "kind": "comment",
+          "text": "من سالها از این کرم استفاده کردم کرم ارسالی کاملا بی کیفیت با بوی کاملا شیمیایی هست بافت خوبی نداره و رنگ کرم با رنگ درج شده روی تیوب و جعبه متفاوت هست. پلمب اصلی در کرم باز شده بود و مشخصا مرجوعی بوده که دوباره ارسالش کردن",
+          "score": 0.7974256873130798,
+          "product_id": "262958",
+          "title": "فیک و تقلبی",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "فیک و تقلبی"
+          }
+        },
+        {
+          "id": "32541440",
+          "kind": "comment",
+          "text": "تقلبیه بردم داروخانه گفت الان این کرم زیر 500 هزارتونمن نیست وقتی به دستم رسید پلمپ نداشت مرجوع کردم",
+          "score": 0.7970858812332153,
+          "product_id": "262958",
+          "title": "تقلبی و پلمپ نشده",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "تقلبی و پلمپ نشده"
+          }
+        },
+        {
+          "id": "28063963",
+          "kind": "comment",
+          "text": "من رنگ روشن سفارش دادم رنگ تیره ارسال کردین و فیک هست. ساخت فرانسه نیست",
+          "score": 0.7966146469116211,
+          "product_id": "262958",
+          "title": "افتضاح",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "افتضاح"
+          }
+        },
+        {
+          "id": "38509599",
+          "kind": "comment",
+          "text": "من همیشه از آنلاین شاپ خریدم این کرم را . کاملا متفاوته از لحاظ بو و کاور و رنگ و این محصول فیک هست حیف ک چون پلمب باز شده نمیشه مرجوع کرد",
+          "score": 0.7956476807594299,
+          "product_id": "262958",
+          "title": "تقلبی",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "تقلبی"
+          }
+        },
+        {
+          "id": "27495124",
+          "kind": "comment",
+          "text": "کرم تقلبی و پلمپ باز شده و بعد از خرید قبول نکردن کارشناس دیجی کالا",
+          "score": 0.7955383658409119,
+          "product_id": "262958",
+          "title": "کرم پودر اکتی پودر",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": "تقلبی بودن محصول",
+            "disadvantages": "غیر اصلی",
+            "title": "کرم پودر اکتی پودر"
+          }
+        },
+        {
+          "id": "24168401",
+          "kind": "comment",
+          "text": "بسیار متاسف شدم که نه وجدان نه وضعیت درآمد امروز مد نظر نبوده , این کالا در ظاهر در سایت رنگ روشن بود اما چیزی که تحویل گرفتم تیوپ رنگ تیره اکتی پور بود با بدنه کثیف چون پلمپ باز شده و ظاهرا با مواد دیگه پر شده, ما چون داروخونه داریم کاملا این محصول و اصالت را می شناسم , تعجب کردم ارزون هست , امروز در بازار محصول اکتی پور موجود نیست بجز رنگ تیره , و چون سودجوها قصدشان فروش رنگ های تیره این محصول هست این اقدام زشت را آنجا دادند, من محصول را در صورت جبران نکردن این خسارت به آزمایشگاه خواهم برد و از تمام درخواست ها اسکرین شات گرفتم و با نتیجه آزمایشات به بخش پیگیری این گونه مشکلات خواهم برد.",
+          "score": 0.7947077751159668,
+          "product_id": "262958",
+          "title": "تاسف",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 9,
+            "advantages": "سلب اعتماد",
+            "disadvantages": null,
+            "title": "تاسف"
+          }
+        },
+        {
+          "id": "30693638",
+          "kind": "comment",
+          "text": "با این قیمت مشخصه اصل نیست اصلا نخرید. انقدر فیکش زیاد شده که فقط باید از جای مطمئن و حضوری این کرم رو خرید.",
+          "score": 0.7946203947067261,
+          "product_id": "262958",
+          "title": "فیک",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "فیک"
+          }
+        },
+        {
+          "id": "24732242",
+          "kind": "comment",
+          "text": "این کرم رو قبلا دکتر پوست برای من تجویز کرده بود که استفاده میکردم و راضی بودم اینبار از دیجی کالا تهیه کردم با وجودیکه تاریخ داره اما بوی بسیار بدی میده و فکر نمیکنم اصل باشه",
+          "score": 0.7938414812088013,
+          "product_id": "262958",
+          "title": "بوی نامطبوع",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": "بوی بسیار نامطبوعی دارد",
+            "title": "بوی نامطبوع"
+          }
+        },
+        {
+          "id": "24873181",
+          "kind": "comment",
+          "text": "این بدترین خرید من از دیجی کالا بود. سالهاست کرم اکتیپور استفاده میکنم ولی این محصول پلمپ نبود و انگار با یک ماده دیگه پر شده. روی صورتم ماسید و صورتم جوش زد. اصلا امتحان نکنید.",
+          "score": 0.7925252914428711,
+          "product_id": "262958",
+          "title": "افتضاح",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 3,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "افتضاح"
+          }
+        },
+        {
+          "id": "28443138",
+          "kind": "comment",
+          "text": "فیک هست و کیفیت خیلی بدی داره و آسیب زننده به پوست هست",
+          "score": 0.7906129360198975,
+          "product_id": "262958",
+          "title": "کرم اکتی پور",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "کرم اکتی پور"
+          }
+        },
+        {
+          "id": "24543302",
+          "kind": "comment",
+          "text": "لایت سفارش دادم گلد فرستادن در ضمن اصل هم نبود با اینکه در هنگام خرید اعلام نکرده بود ولی چون زمانش گذشته بود مرجوع نکردم",
+          "score": 0.7861717343330383,
+          "product_id": "262958",
+          "title": "نامناسب",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "نامناسب"
+          }
+        },
+        {
+          "id": "23656277",
+          "kind": "comment",
+          "text": "دوستان اصلا نخرید الان به هیچ‌وجه کرم اکتی پور با کیفیت قبل اصلا تو بازار نیس.هرکی بخره پولشو ریخته دور.انگار از اون پماد زینک اکسید هست.رنگش عین گچ دیوار .فوق العاده چرب.انگار یه شیره چسبیده به صورت.بوی بدی داره چهار سال بیشتر من اکتی پور استفاده میکردم واقعا عالی بود.از پارسال دیگه کیفیتش خراب شد در ضمن این کرم پلمپ نبود.مرجوع هم نکردن",
+          "score": 0.7857140898704529,
+          "product_id": "262958",
+          "title": "اکتی پور قلابی",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "اکتی پور قلابی"
+          }
+        },
+        {
+          "id": "26086672",
+          "kind": "comment",
+          "text": "من اعتنا نکردم به بقیه که گفته بودن فیکه خریدم پشیمون شدم شما گول نخورید .. اصلا میزنید انگار یه لایه اضافه روصورتتونه و پوستتونو افتضاح نشون میده ..",
+          "score": 0.7844371795654297,
+          "product_id": "262958",
+          "title": "کرم ضد جوش رنگی نوروا",
+          "meta": {
+            "rate": 5.0,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "کرم ضد جوش رنگی نوروا"
+          }
+        },
+        {
+          "id": "25039792",
+          "kind": "comment",
+          "text": "خیلی خیلی با اکتی پور اصلی فرق داره و اصلا یه چیز دیگس.چربه و واقعا شستنش سخته و رنگش برای پوست گندمی مناسبه.منم تعجب کردم چرا قیمتش پایینه و در کل اصلا توصیه نمیکنم",
+          "score": 0.7841991186141968,
+          "product_id": "262958",
+          "title": null,
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 8,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        }
+      ]
+    }
+  ],
+  "_note": "Kept deliberately. Single live call with PROMPT_VERSION product-qa-v2, whose JSON schema left `claims` out of `required` and generated answer_fa before it. gpt-4o-mini answered 'not enough reviews' in 28 output tokens over 20 reviews about the product being counterfeit. No validator fired. The before half of the before/after pair in docs/FAILURES.md."
+}

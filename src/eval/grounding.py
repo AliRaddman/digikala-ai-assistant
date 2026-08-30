@@ -2,6 +2,34 @@
 
 Owner: Benyamin. Evidence is treated as untrusted data and every semantic
 judgment is restricted to the evidence explicitly supplied by the chain.
+
+Two bugs were found on 2026-08-30 by Ali during the first live judge run
+(36 queries, gpt-4o-mini via Metis). Both discarded perfectly good, already
+paid-for judgments; all 36 calls failed and produced zero scores. Neither was
+reachable offline: the fake providers in tests/test_eval_harness.py return
+exactly the shape the validators expect, so only a real model exposed them.
+Both fixes below are deliberately confined to validation. SYSTEM_PROMPT,
+PROMPT_VERSION and the field declarations of GroundingJudgment are untouched
+on purpose, because CachedLLMClient.make_key hashes the prompt, the namespace
+and response_model.model_json_schema() -- editing any of them would invalidate
+the whole cache and force a second round of paid calls.
+
+1. Bracket mismatch (34 of 36 failures). The model answers with bare ids
+   (`product:12390123`) while Evidence.citation() emits bracketed ones
+   (`[product:12390123]`), so _validate_evidence_ids' set difference flagged
+   correct citations as unknown. It now compares ids with the surrounding
+   brackets stripped from both sides -- and nothing else, so an id that is
+   genuinely absent from the evidence still raises.
+
+2. Rubric/validator contradiction (the other 2). SYSTEM_PROMPT describes 4 as
+   "supported overall, with only a minor unsupported detail"; the model read
+   that and returned grounding_score=4 with verdict "partially_grounded",
+   which the old verdict_matches_score validator rejected outright. verdict
+   carries no information that grounding_score does not already carry, so
+   asking the model for it only created a second way to fail. The field stays
+   in the schema (the cache and src/eval/harness.py's verdict_counts both
+   depend on it) but whatever the model sends is now overwritten by the value
+   derived from grounding_score.
 """
 
 from __future__ import annotations
@@ -102,19 +130,17 @@ class GroundingJudgment(BaseModel):
     rationale: str = Field(min_length=1)
 
     @model_validator(mode="after")
-    def verdict_matches_score(self) -> "GroundingJudgment":
-        expected = (
+    def verdict_follows_score(self) -> "GroundingJudgment":
+        # Was verdict_matches_score, which raised on disagreement (bug 2 in the
+        # module docstring). The model's own verdict is now discarded rather
+        # than trusted, so the two fields can no longer contradict each other.
+        self.verdict = (
             "grounded"
             if self.grounding_score >= 4
             else "partially_grounded"
             if self.grounding_score == 3
             else "ungrounded"
         )
-        if self.verdict != expected:
-            raise ValueError(
-                f"verdict {self.verdict!r} is inconsistent with "
-                f"grounding_score={self.grounding_score}"
-            )
         return self
 
 
@@ -187,18 +213,29 @@ class LLMGroundingJudge:
         judgment: GroundingJudgment,
         evidence: list[Evidence],
     ) -> None:
-        known = {item.citation() for item in evidence}
+        known = {_bare_citation(item.citation()) for item in evidence}
         cited = {
             citation
             for claim in judgment.claims
             for citation in claim.evidence_ids
         }
-        unknown = sorted(cited - known)
+        unknown = sorted(c for c in cited if _bare_citation(c) not in known)
         if unknown:
             raise ValueError(
                 "grounding judge referenced unknown evidence ids: "
                 + ", ".join(unknown)
             )
+
+
+def _bare_citation(citation: str) -> str:
+    """A citation tag without its surrounding brackets, and nothing else.
+
+    Bug 1 in the module docstring: the model writes `product:123` where
+    Evidence.citation() writes `[product:123]`. Only that cosmetic difference
+    is forgiven -- the id itself is compared verbatim, so an id that names
+    evidence the chain never supplied is still rejected.
+    """
+    return citation.strip().removeprefix("[").removesuffix("]")
 
 
 def _evidence_payload(item: Evidence) -> dict[str, object]:

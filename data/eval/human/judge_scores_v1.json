@@ -1,0 +1,156 @@
+{
+  "seed": 20260830,
+  "note": "Not to be opened before labels_v1.csv is filled in.",
+  "scores": {
+    "qa08": {
+      "source": "product_qa",
+      "grounding": 4,
+      "relevance": 5,
+      "rationale": "The answer accurately reflects a balance of satisfaction with the design and dissatisfaction with quality and thickness, supported by user comments."
+    },
+    "qa09": {
+      "source": "product_qa",
+      "grounding": 4,
+      "relevance": 5,
+      "rationale": "اکثریت نظرات شامل تجارب منفی و شکایات از بی‌کیفیتی و عدم کارایی محصول است، در حالی که نظرات مثبت نادرتر هستند."
+    },
+    "qa01": {
+      "source": "product_qa",
+      "grounding": 5,
+      "relevance": 5,
+      "rationale": "تمام ادعاها به‌طور مستقیم و معناداری با شواهد موجود پشتیبانی می‌شوند و هیچ‌کدام از ادعاهایدر این متن به طور مد نظر قسمت ناشناخته یا اشتباه به حساب نمی‌آیند."
+    },
+    "q026": {
+      "source": "discovery",
+      "grounding": 5,
+      "relevance": 5,
+      "rationale": "The majority of the claims about men's perfumes under one million Toman are fully supported by the evidence with correct pricing, sizes, and ratings."
+    },
+    "q015": {
+      "source": "discovery",
+      "grounding": 1,
+      "relevance": 1,
+      "rationale": "The answer contains mostly inaccurate pricing and fails to provide relevant products for the specified need."
+    },
+    "qa07": {
+      "source": "product_qa",
+      "grounding": 5,
+      "relevance": 5,
+      "rationale": "تمام ادعاهای مطرح شده به وضوح با ارائه نظرات مختلف خریداران تایید می‌شوند."
+    },
+    "qa02": {
+      "source": "product_qa",
+      "grounding": 5,
+      "relevance": 5,
+      "rationale": "تمامی ادعاهای مطرح شده در متن با داده‌های موجود در نظرات کاربران به طور کامل پشتیبانی می‌شود."
+    },
+    "q033": {
+      "source": "discovery",
+      "grounding": 5,
+      "relevance": 5,
+      "rationale": "Every claim about the products and their prices is supported by the provided evidence."
+    },
+    "qa04": {
+      "source": "product_qa",
+      "grounding": 5,
+      "relevance": 5,
+      "rationale": "All claims are explicitly supported by evidence from the comments, demonstrating consistent dissatisfaction regarding quality and value."
+    },
+    "q018": {
+      "source": "discovery",
+      "grounding": 5,
+      "relevance": 5,
+      "rationale": "اطلاعات به‌طور کامل از طریق شواهد ارائه‌شده پشتیبانی می‌شود و به پرسش به‌طور مؤثر پاسخ می‌دهد."
+    },
+    "q003": {
+      "source": "discovery",
+      "grounding": 4,
+      "relevance": 5,
+      "rationale": "Most claims about specific products and prices are supported. The incorrect statement about the 'کیف اداری' price and contradiction for 'مانتو زنانه مدل روزمره' bring the score down."
+    },
+    "q007": {
+      "source": "discovery",
+      "grounding": 5,
+      "relevance": 5,
+      "rationale": "All product details and prices are accurately represented by the evidence provided."
+    },
+    "qa03": {
+      "source": "product_qa",
+      "grounding": 3,
+      "relevance": 5,
+      "rationale": "The claims are partially substantiated by the user comments, showing mixed feedback about both the price and performance improvement with modifications."
+    },
+    "q030": {
+      "source": "discovery",
+      "grounding": 5,
+      "relevance": 5,
+      "rationale": "همه ادعاهای موجود در پاسخ به‌خوبی با مستندات ارائه‌شده پشتیبانی می‌شود."
+    },
+    "q031": {
+      "source": "discovery",
+      "grounding": 5,
+      "relevance": 5,
+      "rationale": "All listed products are accurately represented with their prices and weights as per the provided evidence."
+    },
+    "qa05": {
+      "source": "product_qa",
+      "grounding": 4,
+      "relevance": 5,
+      "rationale": "The claims about dry ink, poor quality, and users receiving incorrect items are well-supported by multiple comments, while the statement about overall product quality leans on some reports without universal consensus."
+    },
+    "qa10": {
+      "source": "product_qa",
+      "grounding": 5,
+      "relevance": 5,
+      "rationale": "All claims are substantiated by various comments discussing specific negative experiences with the product, thus confirming the issues presented."
+    },
+    "qa06": {
+      "source": "product_qa",
+      "grounding": 3,
+      "relevance": 5,
+      "rationale": "پاسخ با داده‌های موجود از تجربیات کاربران ارزیابی شده و در برخی موارد حمایت می‌شود، اما در برخی جزئیات کلیت قابل استناد یا حتی متناقض است."
+    },
+    "q016": {
+      "source": "discovery",
+      "grounding": 5,
+      "relevance": 5,
+      "rationale": "All claims about the suggested books are directly supported by the given evidence."
+    },
+    "q001": {
+      "source": "discovery",
+      "grounding": 5,
+      "relevance": 5,
+      "rationale": "تمام ادعاهای مرتبط با محصولات و قیمت آن‌ها با شواهد معتبر موجود در متن تأیید شده است."
+    },
+    "q004": {
+      "source": "discovery",
+      "grounding": 4,
+      "relevance": 5,
+      "rationale": "Most product suggestions and prices have some support, but a few details are inconsistent."
+    },
+    "q027": {
+      "source": "discovery",
+      "grounding": 5,
+      "relevance": 5,
+      "rationale": "All claims about the toys and their details are fully supported by the provided evidence."
+    },
+    "q011": {
+      "source": "discovery",
+      "grounding": 5,
+      "relevance": 5,
+      "rationale": "All product claims are directly supported by the provided evidence."
+    },
+    "q019": {
+      "source": "discovery",
+      "grounding": 2,
+      "relevance": 3,
+      "rationale": "All product prices listed in the answer are incorrect when compared to the corresponding evidence, resulting in a significant grounding issue."
+    },
+    "q010": {
+      "source": "discovery",
+      "grounding": 2,
+      "relevance": 5,
+      "rationale": "اکثر قیمت‌های ذکر شده به طور قابل توجهی با قیمت‌های واقعی محصولات تفاوت دارند و ادعاها به طور کلی نادرست هستند."
+    }
+  }
+}
