@@ -65,6 +65,32 @@ def _optional_int(value: Any) -> int | None:
         return None
 
 
+def _canonical_citation(value: Any) -> str | None:
+    """`comment:456` and `[comment:456]` both become `[comment:456]`.
+
+    Fixed by Ali, 2026-08-30, with Fatemeh unavailable. _sanitize_inference
+    compared the model's citations against Evidence.citation() by exact string
+    match. SYSTEM_PROMPT above asks for bracketed tags, but the identically
+    worded instruction in src/eval/grounding.py produced bare `product:123`
+    from the same model on the first live run, and there the mismatch threw
+    away 34 paid-for judgments (failure 9 in docs/FAILURES.md).
+
+    Here it would not have raised: the filter drops what it does not
+    recognise, so a comparison would have rendered with every citation
+    silently removed and still looked healthy -- the worst shape for a chain
+    whose whole value is being grounded in cited evidence.
+
+    Only the brackets are forgiven. The id itself is still matched verbatim
+    against the supplied evidence, so an invented citation is dropped exactly
+    as before, and the value kept is the canonical bracketed form so that
+    render_fa and grounding.audit_citations see one consistent spelling.
+    """
+    if not isinstance(value, str):
+        return None
+    bare = value.strip().removeprefix("[").removesuffix("]").strip()
+    return f"[{bare}]" if bare else None
+
+
 @dataclass(frozen=True, slots=True)
 class ProductFacts:
     product_id: str
@@ -588,9 +614,10 @@ class ProductComparisonChain:
 
             if key == "citations" and isinstance(item, list):
                 cleaned[key] = [
-                    citation
+                    canonical
                     for citation in item
-                    if citation in allowed_citations
+                    for canonical in [_canonical_citation(citation)]
+                    if canonical in allowed_citations
                 ]
                 continue
 

@@ -19,6 +19,7 @@ from src.orchestrator import (
     CategoryAnalyticsHandler,
     HandlerResult,
     OrchestratorRequest,
+    ProductComparisonHandler,
     ProductQAHandler,
     RuleBasedIntentRouter,
     ShoppingAssistantOrchestrator,
@@ -71,6 +72,196 @@ class RecordingHandler:
 class FailingHandler:
     def handle(self, request: OrchestratorRequest) -> HandlerResult:
         raise RuntimeError("boom")
+
+
+class FakeComparisonProvider:
+    """Stands in for the OpenAI provider on the comparison path."""
+
+    def __init__(self) -> None:
+        self.calls = 0
+        # a real model ignores the bracket convention often enough that both
+        # spellings have to be exercised; see _canonical_citation
+        self.bare_citations = False
+        self.extra_citation: str | None = None
+
+    def _tag(self, citation: str) -> str:
+        return citation.strip("[]") if self.bare_citations else citation
+
+    def generate_structured(self, *, model, messages, response_model):
+        self.calls += 1
+        return ProviderResult(
+            data={
+                "product_assessments": [
+                    {
+                        "product_id": "3901234",
+                        "strengths": ["قیمت مناسب"],
+                        "weaknesses": ["زیپ ضعیف"],
+                        "citations": [self._tag("[comment:51230044]")],
+                    }
+                ],
+                "criteria": [
+                    {
+                        "criterion": "کیفیت ساخت",
+                        "better_product_id": "6604311",
+                        "explanation": "نظرات این محصول از دوام بیشتری می‌گویند.",
+                        "citations": [self._tag("[comment:60020155]")],
+                    }
+                ],
+                "overall_winner_product_id": "6604311",
+                "overall_recommendation": "با توجه به نظرات، محصول دوم انتخاب بهتری است.",
+                "caveats": ["تعداد نظرات کم است."],
+                "citations": [
+                    self._tag("[product:3901234]"),
+                    self._tag("[product:6604311]"),
+                    *([self.extra_citation] if self.extra_citation else []),
+                ],
+            },
+            model=model,
+            request_id="resp_comparison_test",
+            usage=TokenUsage(input_tokens=400, output_tokens=90),
+        )
+
+
+class ProductComparisonRouteTests(unittest.TestCase):
+    """The comparison path answers, rather than merely being registered.
+
+    Ali, 2026-08-30. Fatemeh's chain existed but was never added to
+    build_default_orchestrator, so every comparison request came back as
+    dependency_unavailable ['product_comparison_chain'].
+    """
+
+    @staticmethod
+    def _orchestrator(client: CachedLLMClient | None) -> ShoppingAssistantOrchestrator:
+        return ShoppingAssistantOrchestrator(
+            router=RuleBasedIntentRouter(),
+            handlers={
+                "product_comparison": ProductComparisonHandler(
+                    product_retriever=MockRetriever("product"),
+                    comment_retriever=MockRetriever("comment"),
+                    client=client,
+                )
+            },
+        )
+
+    def test_comparison_answers_end_to_end_with_a_fake_llm(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            provider = FakeComparisonProvider()
+            client = CachedLLMClient(
+                provider=provider,
+                model="gpt-4o-mini",
+                cache=SQLiteLLMCache(root / "cache.sqlite3"),
+                ledger=SQLiteUsageLedger(root / "usage.sqlite3"),
+            )
+            result = self._orchestrator(client).run(
+                "این دو محصول را مقایسه کن",
+                product_ids=["3901234", "6604311"],
+            )
+
+        self.assertEqual(result.status, "success")
+        self.assertEqual(result.route.intent, "product_comparison")
+        self.assertEqual(provider.calls, 1)
+        # both products resolved, so neither is reported missing
+        self.assertEqual(result.payload["missing_products"], [])
+        self.assertIn("[product:3901234]", result.answer)
+        self.assertIn("[product:6604311]", result.answer)
+        self.assertIn("جمع‌بندی استنباطی", result.answer)
+
+    def test_comparison_fills_the_review_evidence_layer(self) -> None:
+        """Fatemeh's notebook left this empty; the comment index exists now."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            client = CachedLLMClient(
+                provider=FakeComparisonProvider(),
+                model="gpt-4o-mini",
+                cache=SQLiteLLMCache(root / "cache.sqlite3"),
+                ledger=SQLiteUsageLedger(root / "usage.sqlite3"),
+            )
+            result = self._orchestrator(client).run(
+                "این دو محصول را مقایسه کن",
+                product_ids=["3901234", "6604311"],
+            )
+
+        evidence = result.payload["evidence"]
+        self.assertTrue(evidence["available"])
+        by_product = {group["product_id"]: group for group in evidence["items"]}
+        self.assertTrue(by_product["3901234"]["items"])
+        self.assertTrue(by_product["6604311"]["items"])
+        # every retrieved comment belongs to the product it was gathered for
+        for product_id, group in by_product.items():
+            for comment in group["items"]:
+                self.assertEqual(comment["product_id"], product_id)
+        self.assertTrue(any(c.startswith("[comment:") for c in result.citations))
+
+    def test_comparison_still_answers_without_an_llm_key(self) -> None:
+        """Facts and evidence need no model; only the inference block is lost."""
+        with mock.patch.dict(os.environ, {"LLM_API_KEY": ""}, clear=False):
+            result = self._orchestrator(None).run(
+                "این دو محصول را مقایسه کن",
+                product_ids=["3901234", "6604311"],
+            )
+
+        self.assertEqual(result.status, "success")
+        self.assertIsNone(result.payload["inference"])
+        self.assertIn("[product:3901234]", result.answer)
+        self.assertIn("استنباط LLM غیرفعال است", result.answer)
+
+    def test_a_citation_without_brackets_is_kept_not_silently_dropped(self) -> None:
+        """The live-model format that destroyed 34 judgments in the judge."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            provider = FakeComparisonProvider()
+            # what gpt-4o-mini actually emits from a bracketed instruction
+            provider.bare_citations = True
+            client = CachedLLMClient(
+                provider=provider,
+                model="gpt-4o-mini",
+                cache=SQLiteLLMCache(root / "cache.sqlite3"),
+                ledger=SQLiteUsageLedger(root / "usage.sqlite3"),
+            )
+            result = self._orchestrator(client).run(
+                "این دو محصول را مقایسه کن",
+                product_ids=["3901234", "6604311"],
+            )
+
+        inference = result.payload["inference"]
+        self.assertEqual(
+            inference["citations"], ["[product:3901234]", "[product:6604311]"]
+        )
+        self.assertEqual(
+            inference["product_assessments"][0]["citations"], ["[comment:51230044]"]
+        )
+
+    def test_an_invented_citation_is_still_dropped_without_brackets(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            provider = FakeComparisonProvider()
+            provider.bare_citations = True
+            provider.extra_citation = "comment:00000000"
+            client = CachedLLMClient(
+                provider=provider,
+                model="gpt-4o-mini",
+                cache=SQLiteLLMCache(root / "cache.sqlite3"),
+                ledger=SQLiteUsageLedger(root / "usage.sqlite3"),
+            )
+            result = self._orchestrator(client).run(
+                "این دو محصول را مقایسه کن",
+                product_ids=["3901234", "6604311"],
+            )
+
+        citations = result.payload["inference"]["citations"]
+        self.assertNotIn("[comment:00000000]", citations)
+        self.assertIn("[product:3901234]", citations)
+
+    def test_default_orchestrator_registers_the_comparison_handler(self) -> None:
+        orchestrator = build_default_orchestrator()
+
+        self.assertIn("product_comparison", orchestrator.handlers)
+        result = orchestrator.run(
+            "این دو محصول را مقایسه کن",
+            product_ids=["3901234", "6604311"],
+        )
+        self.assertNotEqual(result.status, "dependency_unavailable")
 
 
 class OrchestratorTests(unittest.TestCase):

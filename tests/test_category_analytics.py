@@ -190,6 +190,53 @@ class ValidateInsightValuesTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             _validate_insight_values(narrative, pool)
 
+    def test_an_object_column_of_floats_still_reaches_the_pool(self) -> None:
+        """The exact shape that made a correct insight look fabricated.
+
+        Ali, 2026-08-30. brand_feedback.recommended_rate came out of a groupby
+        .apply as an object column, so the old dtype-based selection skipped
+        it and the live run rejected 95.569 -- which is 0.955696 x 100, copied
+        straight from the table. Every other test here builds a float64 frame,
+        which is why none of them saw it.
+        """
+        table = pd.DataFrame({"recommended_rate": [0.955696]}).astype(object)
+        self.assertEqual(table["recommended_rate"].dtype, object)
+
+        pool = _numeric_pool(table)
+        narrative = CategoryAnalyticsNarrative(
+            summary_fa="خلاصه",
+            insights=[
+                CategoryInsight(
+                    metric="brand_feedback_recommended_rate", value=95.569, text_fa="متن"
+                )
+            ],
+        )
+        _validate_insight_values(narrative, pool)  # must not raise
+
+    def test_text_columns_admit_nothing_to_the_pool(self) -> None:
+        """Coercing every column must not smuggle in numbers from prose."""
+        pool = _numeric_pool(pd.DataFrame({"complaint": ["قیمت بالا", "کیفیت پایین"]}))
+
+        self.assertEqual(pool, [])
+
+    def test_brand_feedback_recommended_rate_is_a_float_column(self) -> None:
+        comments = pd.DataFrame(
+            {
+                "product_id": ["1"] * 3 + ["2"] * 3,
+                "recommendation_status": [
+                    "recommended", "recommended", "not_recommended",
+                    "recommended", "not_recommended", "not_recommended",
+                ],
+                "rate": [5.0, 4.0, 2.0, 5.0, 1.0, 2.0],
+            }
+        )
+        products = pd.DataFrame({"product_id": ["1", "2"], "brand": ["الف", "ب"]})
+
+        table = brand_feedback_comparison(comments, products, min_reviews=1)
+
+        self.assertEqual(table["recommended_rate"].dtype, "float64")
+        self.assertIn("recommended_rate", table.select_dtypes(include="number").columns)
+
 
 if __name__ == "__main__":
     unittest.main()
