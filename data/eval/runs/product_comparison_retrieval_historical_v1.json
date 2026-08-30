@@ -1,0 +1,41 @@
+{
+  "schema_version": "product-comparison-historical-summary-v1",
+  "source": {
+    "branch": "fatemeh-product-comparison",
+    "commit": "0e432cccbae1ece99ec3737d156b4d71c64b2d0c",
+    "path": "outputs/product_comparison/comparison_eval_results.jsonl",
+    "run_date": "2026-08-29",
+    "configuration_note": "The source used a 30-product comparison-only comment index and llm_client=None."
+  },
+  "scope": {
+    "cases": 24,
+    "unique_pairs": 6,
+    "queries_per_pair": 4,
+    "requested_products_per_case": 2,
+    "retrieved_comments": 240
+  },
+  "results": {
+    "historical_passed": 24,
+    "historical_failed": 0,
+    "facts_complete_cases": 24,
+    "missing_product_cases": 0,
+    "review_groups_with_evidence": 48,
+    "review_groups_total": 48,
+    "inference_available_cases": 0,
+    "citation_quality_measured_cases": 0,
+    "grounding_judged_cases": 0
+  },
+  "latency_seconds": {
+    "first_case": 18.960525500006042,
+    "remaining_cases_mean": 0.1421928217421974,
+    "remaining_cases_p50": 0.13642739999340847,
+    "remaining_cases_p95": 0.168772359972354,
+    "remaining_cases_min": 0.13031879998743534,
+    "remaining_cases_max": 0.17100510001182556
+  },
+  "interpretation": {
+    "valid_claim": "All 24 historical cases passed the source script's retrieval-structure checks.",
+    "invalid_claim": "The run does not show that generated comparisons were accurate, grounded, or useful because no LLM inference was generated.",
+    "next_step": "Re-run scripts/eval_product_comparison.py with the shared full indexes; use --with-llm and --judge-grounding only when live-call cost is approved."
+  }
+}
