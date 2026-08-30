@@ -20,6 +20,14 @@ venv/
 !/data/eval/runs/*.json
 /data/eval/emb_cache/
 
+# Human-validation round: the sheet, the rubric it was labelled against, the
+# judge scores that were withheld from it, and the agreement report. Small,
+# and the kappa numbers in the README cannot be reproduced without them.
+!/data/eval/human/
+!/data/eval/human/*.csv
+!/data/eval/human/*.json
+!/data/eval/human/*.md
+
 # Depth-50 evaluation round: same rule as data/eval. The run files are what
 # scripts.eval_hybrid and scripts.test_significance read, so without them the
 # reproduction commands in the README fail on a fresh clone (1.7 MB total).

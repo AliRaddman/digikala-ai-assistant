@@ -34,14 +34,18 @@ class StaticGroundingProvider:
     def __init__(self, evidence_id: str = "[product:p1]") -> None:
         self.evidence_id = evidence_id
         self.calls = 0
+        # Overridable so a test can reproduce the score/verdict pair that the
+        # live model sent and the old validator rejected.
+        self.grounding_score = 5
+        self.verdict = "grounded"
 
     def generate_structured(self, *, model, messages, response_model):
         self.calls += 1
         return ProviderResult(
             data={
                 "relevance_score": 5,
-                "grounding_score": 5,
-                "verdict": "grounded",
+                "grounding_score": self.grounding_score,
+                "verdict": self.verdict,
                 "claims": [
                     {
                         "claim": "قیمت محصول ۵۰ هزار تومان است.",
@@ -280,6 +284,67 @@ class EvaluationHarnessTests(unittest.TestCase):
             self.assertEqual(summary["cache_hits"], 1)
             self.assertEqual(summary["p50_latency_ms"], 20)
             self.assertAlmostEqual(summary["p95_latency_ms"], 92)
+
+
+class GroundingJudgeLiveRegressionTests(unittest.TestCase):
+    """Regressions for the two judge bugs the first live run exposed.
+
+    Added by Ali on 2026-08-30. StaticGroundingProvider above returns exactly
+    what the validators wanted, which is why the offline suite stayed green
+    while all 36 real calls failed. These fakes reproduce what gpt-4o-mini
+    actually sent instead. See the docstring of src/eval/grounding.py.
+    """
+
+    @staticmethod
+    def _judge(provider: object, root: Path) -> LLMGroundingJudge:
+        return LLMGroundingJudge(
+            CachedLLMClient(
+                provider=provider,
+                model="gpt-4o-mini",
+                cache=SQLiteLLMCache(root / "cache.sqlite3"),
+                ledger=SQLiteUsageLedger(root / "usage.sqlite3"),
+            )
+        )
+
+    def test_judge_accepts_a_valid_evidence_id_written_without_brackets(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            run = self._judge(
+                StaticGroundingProvider("product:p1"), Path(directory)
+            ).evaluate(
+                question="قیمت چقدر است؟",
+                answer="قیمت ۵۰ هزار تومان است [product:p1]",
+                evidence=[_products()[0]],
+            )
+
+            self.assertEqual(run.judgment.claims[0].evidence_ids, ["product:p1"])
+
+    def test_judge_still_rejects_an_unknown_id_written_without_brackets(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            judge = self._judge(
+                StaticGroundingProvider("product:missing"), Path(directory)
+            )
+
+            with self.assertRaisesRegex(ValueError, "unknown evidence ids"):
+                judge.evaluate(
+                    question="قیمت چقدر است؟",
+                    answer="پاسخ [product:p1]",
+                    evidence=[_products()[0]],
+                )
+
+    def test_judge_derives_the_verdict_instead_of_rejecting_the_model(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            provider = StaticGroundingProvider("[product:p1]")
+            provider.grounding_score = 4
+            provider.verdict = "partially_grounded"
+
+            run = self._judge(provider, Path(directory)).evaluate(
+                question="قیمت چقدر است؟",
+                answer="قیمت ۵۰ هزار تومان است [product:p1]",
+                evidence=[_products()[0]],
+            )
+
+            self.assertEqual(run.judgment.grounding_score, 4)
+            self.assertEqual(run.judgment.verdict, "grounded")
 
 
 if __name__ == "__main__":

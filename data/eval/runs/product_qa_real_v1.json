@@ -1,0 +1,4802 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-30T15:15:48+0330",
+  "configuration": {
+    "prompt_version": "product-qa-v3",
+    "model": "gpt-4o-mini",
+    "base_url": "https://api.metisai.ir/openai/v1",
+    "top_k": 20,
+    "retriever_mode": "real",
+    "judge": true
+  },
+  "summary": {
+    "cases": 10,
+    "errored": 0,
+    "insufficient_evidence": 0,
+    "citation_integrity_rate": 1.0,
+    "claims_total": 35,
+    "generated_comment_ids": 123,
+    "invented_comment_ids": 5,
+    "invented_id_rate": 0.04065040650406504,
+    "answers_with_any_invented_id": 3,
+    "answer_hallucination_rate": 0.3,
+    "claims_dropped_unsupported": 1,
+    "judged": 10,
+    "judge_errors": 0,
+    "mean_grounding_score": 4.3,
+    "mean_relevance_score": 5.0
+  },
+  "no_review_control": {
+    "product_id": "7096768",
+    "evidence_count": 0,
+    "answer_fa": "برای این محصول نظری ثبت نشده است.",
+    "requests_recorded": 0,
+    "api_calls": 0,
+    "cost_usd": 0.0
+  },
+  "llm_usage": {
+    "logical_requests": 20,
+    "api_calls": 19,
+    "cache_hits": 1,
+    "input_tokens": 58731,
+    "cached_input_tokens": 0,
+    "output_tokens": 5645,
+    "cost_usd": 0.01219665,
+    "saved_cost_usd": 0.0005565,
+    "mean_latency_ms": 3493.0297681496086,
+    "cache_hit_rate": 0.05,
+    "p50_latency_ms": 3410.691556498932,
+    "p95_latency_ms": 5091.879137300748
+  },
+  "items": [
+    {
+      "case_id": "qa01",
+      "product_id": "262958",
+      "product": "کرم ضد جوش نوروا Actipur Light Tinted (مراقبت پوست)",
+      "question": "ایرادهای پرتکرار این محصول چیست؟",
+      "evidence_count": 20,
+      "answer_fa": "ایرادهای پرتکرار این محصول شامل تقلبی بودن، بوی نامطبوع، پلمپ نبودن و کیفیت پایین آن است.",
+      "sufficient_evidence": true,
+      "claims": [
+        {
+          "text": "محصول به شدت تقلبی است و کیفیت بسیار پایینی دارد، بوی بدی می‌دهد و اصلاً با کالای اصل مطابقت ندارد.",
+          "comment_ids": [
+            "35048606",
+            "27612747",
+            "24912775",
+            "38809453",
+            "32541440",
+            "28063963",
+            "38509599",
+            "28443138",
+            "23656277"
+          ]
+        },
+        {
+          "text": "محصول پلمپ نبوده و در حالت ظاهری تغییراتی دارد برخی از کاربران اشاره کردند که به نظر می‌رسد با مواد نامرغوب پر شده باشد.",
+          "comment_ids": [
+            "24732242",
+            "24873181",
+            "24543302"
+          ]
+        },
+        {
+          "text": "کرم به شدت با کیفیت پایین و غیر قابل استفاده وصف شده است، که موجب بروز مشکلات پوستی برای بعضی کاربران شده است.",
+          "comment_ids": [
+            "28063963"
+          ]
+        }
+      ],
+      "rendered_fa": "⚠ هشدار استناد: 3 از 16 شناسه‌ی استنادشده در شواهد وجود نداشت و حذف شد (19% از استنادها). 1 ادعا هیچ استناد معتبری نداشت و کنار گذاشته شد.\n\nایرادهای پرتکرار این محصول شامل تقلبی بودن، بوی نامطبوع، پلمپ نبودن و کیفیت پایین آن است.\n\n- محصول به شدت تقلبی است و کیفیت بسیار پایینی دارد، بوی بدی می‌دهد و اصلاً با کالای اصل مطابقت ندارد. [comment:35048606] [comment:27612747] [comment:24912775] [comment:38809453] [comment:32541440] [comment:28063963] [comment:38509599] [comment:28443138] [comment:23656277]\n- محصول پلمپ نبوده و در حالت ظاهری تغییراتی دارد برخی از کاربران اشاره کردند که به نظر می‌رسد با مواد نامرغوب پر شده باشد. [comment:24732242] [comment:24873181] [comment:24543302]\n- کرم به شدت با کیفیت پایین و غیر قابل استفاده وصف شده است، که موجب بروز مشکلات پوستی برای بعضی کاربران شده است. [comment:28063963]",
+      "citation_audit": {
+        "found": [
+          "[comment:35048606]",
+          "[comment:27612747]",
+          "[comment:24912775]",
+          "[comment:38809453]",
+          "[comment:32541440]",
+          "[comment:28063963]",
+          "[comment:38509599]",
+          "[comment:28443138]",
+          "[comment:23656277]",
+          "[comment:24732242]",
+          "[comment:24873181]",
+          "[comment:24543302]"
+        ],
+        "valid": [
+          "[comment:35048606]",
+          "[comment:27612747]",
+          "[comment:24912775]",
+          "[comment:38809453]",
+          "[comment:32541440]",
+          "[comment:28063963]",
+          "[comment:38509599]",
+          "[comment:28443138]",
+          "[comment:23656277]",
+          "[comment:24732242]",
+          "[comment:24873181]",
+          "[comment:24543302]"
+        ],
+        "invalid": [],
+        "integrity_score": 1.0
+      },
+      "citation_hallucination": {
+        "generated_ids": 16,
+        "invented_ids": [
+          "28819423",
+          "3612075",
+          "3662052"
+        ],
+        "dropped_claims": [
+          {
+            "text": "برخی کاربران به نبود اصالت کالا و تولیدات مشکوک دیگر اشاره کردند و پلمپ نبودن و کیفیت پایین را اذعان کردند.",
+            "comment_ids": [
+              "3662052",
+              "3612075"
+            ]
+          }
+        ]
+      },
+      "hallucination_warning_fa": "⚠ هشدار استناد: 3 از 16 شناسه‌ی استنادشده در شواهد وجود نداشت و حذف شد (19% از استنادها). 1 ادعا هیچ استناد معتبری نداشت و کنار گذاشته شد.",
+      "latency_ms": 14171.865833999618,
+      "evidence": [
+        {
+          "id": "25136650",
+          "kind": "comment",
+          "text": "کاملا ایرانی چون قیمت اصل این کرم بالای 100 تومن و اصلا دیگه تولید نمیشه من سالهاست از این کرم استفاده کردم من به اجبار از این کرم گرفتم پوشانندگی خوب ولی بعد از چند ساعت میماسه",
+          "score": 0.8129212260246277,
+          "product_id": "262958",
+          "title": null,
+          "meta": {
+            "rate": 2.5,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "35048606",
+          "kind": "comment",
+          "text": "به هیچ وجه نخرید... من برای تست گرفتم که افتضاح دراومد... 5 سال برای خانمم میخردمش, دیگه وارد نمیشه... اینائی که توو بازار هست همش تقلبیه وو به هیچ وجه نمیشه ازشون استفاده کنید... مستقیم انداختیمش توو سطل آشغال... کرم لافارر 02 تولید ایرانه اما عالیه...",
+          "score": 0.8051184415817261,
+          "product_id": "262958",
+          "title": "نظر اجمالی",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": null,
+            "is_buyer": true,
+            "likes": 5,
+            "advantages": null,
+            "disadvantages": "تقلبی بودن محصول, تیره بودن, داشتن بوی بد, داشتن حس سنگینی و خشکی بعد از استفاده",
+            "title": "نظر اجمالی"
+          }
+        },
+        {
+          "id": "27380298",
+          "kind": "comment",
+          "text": "محصول شماره بهداشتی نامعتبر داشت و من بابت این مسئله که اصالت کالا نداشت استفاده نکردم",
+          "score": 0.8024733662605286,
+          "product_id": "262958",
+          "title": "نظرم کاملا منفی هست",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 3,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "نظرم کاملا منفی هست"
+          }
+        },
+        {
+          "id": "27612747",
+          "kind": "comment",
+          "text": "این کرم اصل نیست و متاسفم برای دیجی کالا که ذکر نکرده کالا اصل نیست.بوی بدی داره و روی پوست پخش نمیشه.اکتی پور اصل حرف نداره ولی متاسفانه چندوقتی پیدا نمیشه",
+          "score": 0.8013494610786438,
+          "product_id": "262958",
+          "title": "غیراصل",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "غیراصل"
+          }
+        },
+        {
+          "id": "24912775",
+          "kind": "comment",
+          "text": "تقلبی بود,بوی خیلی بد داره,اصلا آسمون تا زمین با اکتی پور اصلی مغایرت داره,چرا با سلامتی مردم بازی میکنین?واقعا براتون متاسفم,لیبلشم تقلبی بود.من درخواست مرجوع دادم ولی خود دیجی کالا درخواست منو لغو کرد,متاسفانه 3 عدد از این کرم خریدم و پولم انداختم تو سطل آشغال",
+          "score": 0.7988547086715698,
+          "product_id": "262958",
+          "title": "تقلبی و به درد نخور",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "تقلبی و به درد نخور"
+          }
+        },
+        {
+          "id": "24044532",
+          "kind": "comment",
+          "text": "این کرم قیمتش کم شده. میخاستم سفارش بدم ولی عجیبه تو ایران چیزی قیماش انقد کاهش پیدا کنه‌. واقعا مشکوکه.",
+          "score": 0.7985721826553345,
+          "product_id": "262958",
+          "title": null,
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 8,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "38809453",
+          "kind": "comment",
+          "text": "من سالها از این کرم استفاده کردم کرم ارسالی کاملا بی کیفیت با بوی کاملا شیمیایی هست بافت خوبی نداره و رنگ کرم با رنگ درج شده روی تیوب و جعبه متفاوت هست. پلمب اصلی در کرم باز شده بود و مشخصا مرجوعی بوده که دوباره ارسالش کردن",
+          "score": 0.7974256873130798,
+          "product_id": "262958",
+          "title": "فیک و تقلبی",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "فیک و تقلبی"
+          }
+        },
+        {
+          "id": "32541440",
+          "kind": "comment",
+          "text": "تقلبیه بردم داروخانه گفت الان این کرم زیر 500 هزارتونمن نیست وقتی به دستم رسید پلمپ نداشت مرجوع کردم",
+          "score": 0.7970858812332153,
+          "product_id": "262958",
+          "title": "تقلبی و پلمپ نشده",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "تقلبی و پلمپ نشده"
+          }
+        },
+        {
+          "id": "28063963",
+          "kind": "comment",
+          "text": "من رنگ روشن سفارش دادم رنگ تیره ارسال کردین و فیک هست. ساخت فرانسه نیست",
+          "score": 0.7966146469116211,
+          "product_id": "262958",
+          "title": "افتضاح",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "افتضاح"
+          }
+        },
+        {
+          "id": "38509599",
+          "kind": "comment",
+          "text": "من همیشه از آنلاین شاپ خریدم این کرم را . کاملا متفاوته از لحاظ بو و کاور و رنگ و این محصول فیک هست حیف ک چون پلمب باز شده نمیشه مرجوع کرد",
+          "score": 0.7956476807594299,
+          "product_id": "262958",
+          "title": "تقلبی",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "تقلبی"
+          }
+        },
+        {
+          "id": "27495124",
+          "kind": "comment",
+          "text": "کرم تقلبی و پلمپ باز شده و بعد از خرید قبول نکردن کارشناس دیجی کالا",
+          "score": 0.7955383658409119,
+          "product_id": "262958",
+          "title": "کرم پودر اکتی پودر",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": "تقلبی بودن محصول",
+            "disadvantages": "غیر اصلی",
+            "title": "کرم پودر اکتی پودر"
+          }
+        },
+        {
+          "id": "24168401",
+          "kind": "comment",
+          "text": "بسیار متاسف شدم که نه وجدان نه وضعیت درآمد امروز مد نظر نبوده , این کالا در ظاهر در سایت رنگ روشن بود اما چیزی که تحویل گرفتم تیوپ رنگ تیره اکتی پور بود با بدنه کثیف چون پلمپ باز شده و ظاهرا با مواد دیگه پر شده, ما چون داروخونه داریم کاملا این محصول و اصالت را می شناسم , تعجب کردم ارزون هست , امروز در بازار محصول اکتی پور موجود نیست بجز رنگ تیره , و چون سودجوها قصدشان فروش رنگ های تیره این محصول هست این اقدام زشت را آنجا دادند, من محصول را در صورت جبران نکردن این خسارت به آزمایشگاه خواهم برد و از تمام درخواست ها اسکرین شات گرفتم و با نتیجه آزمایشات به بخش پیگیری این گونه مشکلات خواهم برد.",
+          "score": 0.7947077751159668,
+          "product_id": "262958",
+          "title": "تاسف",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 9,
+            "advantages": "سلب اعتماد",
+            "disadvantages": null,
+            "title": "تاسف"
+          }
+        },
+        {
+          "id": "30693638",
+          "kind": "comment",
+          "text": "با این قیمت مشخصه اصل نیست اصلا نخرید. انقدر فیکش زیاد شده که فقط باید از جای مطمئن و حضوری این کرم رو خرید.",
+          "score": 0.7946203947067261,
+          "product_id": "262958",
+          "title": "فیک",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "فیک"
+          }
+        },
+        {
+          "id": "24732242",
+          "kind": "comment",
+          "text": "این کرم رو قبلا دکتر پوست برای من تجویز کرده بود که استفاده میکردم و راضی بودم اینبار از دیجی کالا تهیه کردم با وجودیکه تاریخ داره اما بوی بسیار بدی میده و فکر نمیکنم اصل باشه",
+          "score": 0.7938414812088013,
+          "product_id": "262958",
+          "title": "بوی نامطبوع",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": "بوی بسیار نامطبوعی دارد",
+            "title": "بوی نامطبوع"
+          }
+        },
+        {
+          "id": "24873181",
+          "kind": "comment",
+          "text": "این بدترین خرید من از دیجی کالا بود. سالهاست کرم اکتیپور استفاده میکنم ولی این محصول پلمپ نبود و انگار با یک ماده دیگه پر شده. روی صورتم ماسید و صورتم جوش زد. اصلا امتحان نکنید.",
+          "score": 0.7925252914428711,
+          "product_id": "262958",
+          "title": "افتضاح",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 3,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "افتضاح"
+          }
+        },
+        {
+          "id": "28443138",
+          "kind": "comment",
+          "text": "فیک هست و کیفیت خیلی بدی داره و آسیب زننده به پوست هست",
+          "score": 0.7906129360198975,
+          "product_id": "262958",
+          "title": "کرم اکتی پور",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "کرم اکتی پور"
+          }
+        },
+        {
+          "id": "24543302",
+          "kind": "comment",
+          "text": "لایت سفارش دادم گلد فرستادن در ضمن اصل هم نبود با اینکه در هنگام خرید اعلام نکرده بود ولی چون زمانش گذشته بود مرجوع نکردم",
+          "score": 0.7861717343330383,
+          "product_id": "262958",
+          "title": "نامناسب",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "نامناسب"
+          }
+        },
+        {
+          "id": "23656277",
+          "kind": "comment",
+          "text": "دوستان اصلا نخرید الان به هیچ‌وجه کرم اکتی پور با کیفیت قبل اصلا تو بازار نیس.هرکی بخره پولشو ریخته دور.انگار از اون پماد زینک اکسید هست.رنگش عین گچ دیوار .فوق العاده چرب.انگار یه شیره چسبیده به صورت.بوی بدی داره چهار سال بیشتر من اکتی پور استفاده میکردم واقعا عالی بود.از پارسال دیگه کیفیتش خراب شد در ضمن این کرم پلمپ نبود.مرجوع هم نکردن",
+          "score": 0.7857140898704529,
+          "product_id": "262958",
+          "title": "اکتی پور قلابی",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "اکتی پور قلابی"
+          }
+        },
+        {
+          "id": "26086672",
+          "kind": "comment",
+          "text": "من اعتنا نکردم به بقیه که گفته بودن فیکه خریدم پشیمون شدم شما گول نخورید .. اصلا میزنید انگار یه لایه اضافه روصورتتونه و پوستتونو افتضاح نشون میده ..",
+          "score": 0.7844371795654297,
+          "product_id": "262958",
+          "title": "کرم ضد جوش رنگی نوروا",
+          "meta": {
+            "rate": 5.0,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "کرم ضد جوش رنگی نوروا"
+          }
+        },
+        {
+          "id": "25039792",
+          "kind": "comment",
+          "text": "خیلی خیلی با اکتی پور اصلی فرق داره و اصلا یه چیز دیگس.چربه و واقعا شستنش سخته و رنگش برای پوست گندمی مناسبه.منم تعجب کردم چرا قیمتش پایینه و در کل اصلا توصیه نمیکنم",
+          "score": 0.7841991186141968,
+          "product_id": "262958",
+          "title": null,
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 8,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        }
+      ],
+      "judgment": {
+        "judgment": {
+          "relevance_score": 5,
+          "grounding_score": 5,
+          "verdict": "grounded",
+          "claims": [
+            {
+              "claim": "محصول به شدت تقلبی است و کیفیت بسیار پایینی دارد، بوی بدی می‌دهد و اصلاً با کالای اصل مطابقت ندارد.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:35048606",
+                "comment:27612747",
+                "comment:24912775",
+                "comment:38809453",
+                "comment:32541440",
+                "comment:28063963",
+                "comment:38509599",
+                "comment:28443138",
+                "comment:23656277"
+              ],
+              "rationale": "این ادعا به وضوح توسط چندین نظر خریداران تایید شده است که به تقلبی بودن و کیفیت پایین محصول اشاره می‌کنند."
+            },
+            {
+              "claim": "محصول پلمپ نبوده و در حالت ظاهری تغییراتی دارد برخی از کاربران اشاره کردند که به نظر می‌رسد با مواد نامرغوب پر شده باشد.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:24732242",
+                "comment:24873181",
+                "comment:24543302"
+              ],
+              "rationale": "شواهد موجود نشان می‌دهد که بسیاری از خریداران به عدم پلمپ و تغییر ظاهر محصول اشاره کرده‌اند."
+            },
+            {
+              "claim": "کرم به شدت با کیفیت پایین و غیر قابل استفاده وصف شده است، که موجب بروز مشکلات پوستی برای بعضی کاربران شده است.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:28063963"
+              ],
+              "rationale": "مشخصات منتقدان شامل توصیف مشکلاتی مانند بروز مشکلات پوستی به وضوح توسط شواهد تحمیل شده است."
+            }
+          ],
+          "rationale": "تمام ادعاها به‌طور مستقیم و معناداری با شواهد موجود پشتیبانی می‌شوند و هیچ‌کدام از ادعاهایدر این متن به طور مد نظر قسمت ناشناخته یا اشتباه به حساب نمی‌آیند."
+        },
+        "model": "gpt-4o-mini-2024-07-18",
+        "cache_hit": false,
+        "latency_ms": 5070.025016000727
+      }
+    },
+    {
+      "case_id": "qa02",
+      "product_id": "262958",
+      "product": "کرم ضد جوش نوروا Actipur Light Tinted (مراقبت پوست)",
+      "question": "آیا با توجه به تجربه‌ی کاربران ارزش خرید دارد؟",
+      "evidence_count": 20,
+      "answer_fa": "با توجه به نظرات کاربران، این محصول به دلیل تقلبی بودن و کیفیت پایین، پیشنهاد نمی‌شود.",
+      "sufficient_evidence": true,
+      "claims": [
+        {
+          "text": "بسیاری از کاربران عنوان کرده‌اند که این محصول تقلبی بوده و کیفیت آن بسیار پایین است و به پوست آسیب می‌زند.",
+          "comment_ids": [
+            "35048606",
+            "38809453",
+            "28443138"
+          ]
+        },
+        {
+          "text": "کاربران از بوی نامطبوع و عدم تطابق محصول با مرسوم خوب و با کیفیت موجود در بازار شکایت دارند.",
+          "comment_ids": [
+            "24732242",
+            "25039792",
+            "31224278"
+          ]
+        },
+        {
+          "text": "تعداد زیادی از خریداران بیان کرده‌اند که محصول پلمپ نداشته و در نتیجه، عدم اعتماد به اصالت آن وجود دارد.",
+          "comment_ids": [
+            "24732242",
+            "32541440",
+            "24344389"
+          ]
+        },
+        {
+          "text": "برخی کاربران به این نکته اشاره کرده‌اند که قیمت آن بسیار پایین‌تر از حد معمول بوده و این موضوع مشکوک است.",
+          "comment_ids": [
+            "24044532",
+            "25136650"
+          ]
+        }
+      ],
+      "rendered_fa": "با توجه به نظرات کاربران، این محصول به دلیل تقلبی بودن و کیفیت پایین، پیشنهاد نمی‌شود.\n\n- بسیاری از کاربران عنوان کرده‌اند که این محصول تقلبی بوده و کیفیت آن بسیار پایین است و به پوست آسیب می‌زند. [comment:35048606] [comment:38809453] [comment:28443138]\n- کاربران از بوی نامطبوع و عدم تطابق محصول با مرسوم خوب و با کیفیت موجود در بازار شکایت دارند. [comment:24732242] [comment:25039792] [comment:31224278]\n- تعداد زیادی از خریداران بیان کرده‌اند که محصول پلمپ نداشته و در نتیجه، عدم اعتماد به اصالت آن وجود دارد. [comment:24732242] [comment:32541440] [comment:24344389]\n- برخی کاربران به این نکته اشاره کرده‌اند که قیمت آن بسیار پایین‌تر از حد معمول بوده و این موضوع مشکوک است. [comment:24044532] [comment:25136650]",
+      "citation_audit": {
+        "found": [
+          "[comment:35048606]",
+          "[comment:38809453]",
+          "[comment:28443138]",
+          "[comment:24732242]",
+          "[comment:25039792]",
+          "[comment:31224278]",
+          "[comment:32541440]",
+          "[comment:24344389]",
+          "[comment:24044532]",
+          "[comment:25136650]"
+        ],
+        "valid": [
+          "[comment:35048606]",
+          "[comment:38809453]",
+          "[comment:28443138]",
+          "[comment:24732242]",
+          "[comment:25039792]",
+          "[comment:31224278]",
+          "[comment:32541440]",
+          "[comment:24344389]",
+          "[comment:24044532]",
+          "[comment:25136650]"
+        ],
+        "invalid": [],
+        "integrity_score": 1.0
+      },
+      "citation_hallucination": {
+        "generated_ids": 11,
+        "invented_ids": [],
+        "dropped_claims": []
+      },
+      "hallucination_warning_fa": null,
+      "latency_ms": 3152.615965998848,
+      "evidence": [
+        {
+          "id": "27380298",
+          "kind": "comment",
+          "text": "محصول شماره بهداشتی نامعتبر داشت و من بابت این مسئله که اصالت کالا نداشت استفاده نکردم",
+          "score": 0.805968165397644,
+          "product_id": "262958",
+          "title": "نظرم کاملا منفی هست",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 3,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "نظرم کاملا منفی هست"
+          }
+        },
+        {
+          "id": "35048606",
+          "kind": "comment",
+          "text": "به هیچ وجه نخرید... من برای تست گرفتم که افتضاح دراومد... 5 سال برای خانمم میخردمش, دیگه وارد نمیشه... اینائی که توو بازار هست همش تقلبیه وو به هیچ وجه نمیشه ازشون استفاده کنید... مستقیم انداختیمش توو سطل آشغال... کرم لافارر 02 تولید ایرانه اما عالیه...",
+          "score": 0.8031763434410095,
+          "product_id": "262958",
+          "title": "نظر اجمالی",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": null,
+            "is_buyer": true,
+            "likes": 5,
+            "advantages": null,
+            "disadvantages": "تقلبی بودن محصول, تیره بودن, داشتن بوی بد, داشتن حس سنگینی و خشکی بعد از استفاده",
+            "title": "نظر اجمالی"
+          }
+        },
+        {
+          "id": "25039792",
+          "kind": "comment",
+          "text": "خیلی خیلی با اکتی پور اصلی فرق داره و اصلا یه چیز دیگس.چربه و واقعا شستنش سخته و رنگش برای پوست گندمی مناسبه.منم تعجب کردم چرا قیمتش پایینه و در کل اصلا توصیه نمیکنم",
+          "score": 0.8001801371574402,
+          "product_id": "262958",
+          "title": null,
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 8,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "30693638",
+          "kind": "comment",
+          "text": "با این قیمت مشخصه اصل نیست اصلا نخرید. انقدر فیکش زیاد شده که فقط باید از جای مطمئن و حضوری این کرم رو خرید.",
+          "score": 0.7968193888664246,
+          "product_id": "262958",
+          "title": "فیک",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "فیک"
+          }
+        },
+        {
+          "id": "24732242",
+          "kind": "comment",
+          "text": "این کرم رو قبلا دکتر پوست برای من تجویز کرده بود که استفاده میکردم و راضی بودم اینبار از دیجی کالا تهیه کردم با وجودیکه تاریخ داره اما بوی بسیار بدی میده و فکر نمیکنم اصل باشه",
+          "score": 0.793669581413269,
+          "product_id": "262958",
+          "title": "بوی نامطبوع",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": "بوی بسیار نامطبوعی دارد",
+            "title": "بوی نامطبوع"
+          }
+        },
+        {
+          "id": "24044532",
+          "kind": "comment",
+          "text": "این کرم قیمتش کم شده. میخاستم سفارش بدم ولی عجیبه تو ایران چیزی قیماش انقد کاهش پیدا کنه‌. واقعا مشکوکه.",
+          "score": 0.7936264872550964,
+          "product_id": "262958",
+          "title": null,
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 8,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "25136650",
+          "kind": "comment",
+          "text": "کاملا ایرانی چون قیمت اصل این کرم بالای 100 تومن و اصلا دیگه تولید نمیشه من سالهاست از این کرم استفاده کردم من به اجبار از این کرم گرفتم پوشانندگی خوب ولی بعد از چند ساعت میماسه",
+          "score": 0.7930560111999512,
+          "product_id": "262958",
+          "title": null,
+          "meta": {
+            "rate": 2.5,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "38809453",
+          "kind": "comment",
+          "text": "من سالها از این کرم استفاده کردم کرم ارسالی کاملا بی کیفیت با بوی کاملا شیمیایی هست بافت خوبی نداره و رنگ کرم با رنگ درج شده روی تیوب و جعبه متفاوت هست. پلمب اصلی در کرم باز شده بود و مشخصا مرجوعی بوده که دوباره ارسالش کردن",
+          "score": 0.7911921739578247,
+          "product_id": "262958",
+          "title": "فیک و تقلبی",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "فیک و تقلبی"
+          }
+        },
+        {
+          "id": "24912775",
+          "kind": "comment",
+          "text": "تقلبی بود,بوی خیلی بد داره,اصلا آسمون تا زمین با اکتی پور اصلی مغایرت داره,چرا با سلامتی مردم بازی میکنین?واقعا براتون متاسفم,لیبلشم تقلبی بود.من درخواست مرجوع دادم ولی خود دیجی کالا درخواست منو لغو کرد,متاسفانه 3 عدد از این کرم خریدم و پولم انداختم تو سطل آشغال",
+          "score": 0.7911056280136108,
+          "product_id": "262958",
+          "title": "تقلبی و به درد نخور",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "تقلبی و به درد نخور"
+          }
+        },
+        {
+          "id": "23656277",
+          "kind": "comment",
+          "text": "دوستان اصلا نخرید الان به هیچ‌وجه کرم اکتی پور با کیفیت قبل اصلا تو بازار نیس.هرکی بخره پولشو ریخته دور.انگار از اون پماد زینک اکسید هست.رنگش عین گچ دیوار .فوق العاده چرب.انگار یه شیره چسبیده به صورت.بوی بدی داره چهار سال بیشتر من اکتی پور استفاده میکردم واقعا عالی بود.از پارسال دیگه کیفیتش خراب شد در ضمن این کرم پلمپ نبود.مرجوع هم نکردن",
+          "score": 0.7897392511367798,
+          "product_id": "262958",
+          "title": "اکتی پور قلابی",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "اکتی پور قلابی"
+          }
+        },
+        {
+          "id": "24543302",
+          "kind": "comment",
+          "text": "لایت سفارش دادم گلد فرستادن در ضمن اصل هم نبود با اینکه در هنگام خرید اعلام نکرده بود ولی چون زمانش گذشته بود مرجوع نکردم",
+          "score": 0.7890852689743042,
+          "product_id": "262958",
+          "title": "نامناسب",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "نامناسب"
+          }
+        },
+        {
+          "id": "38509599",
+          "kind": "comment",
+          "text": "من همیشه از آنلاین شاپ خریدم این کرم را . کاملا متفاوته از لحاظ بو و کاور و رنگ و این محصول فیک هست حیف ک چون پلمب باز شده نمیشه مرجوع کرد",
+          "score": 0.7880723476409912,
+          "product_id": "262958",
+          "title": "تقلبی",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "تقلبی"
+          }
+        },
+        {
+          "id": "27728965",
+          "kind": "comment",
+          "text": "بچه ها من یکی دوبار قبلا این کرم رو سفارش دادم عالی بود ولی آخرین بار ک برای من فرستادن کاملا فیک بود.... بوی خیلی بدی میداد و اصلا. و پوست نمیخوابید اصلا توصیه نمیکنم اصلا",
+          "score": 0.7875599265098572,
+          "product_id": "262958",
+          "title": "دیگه اصل نیست",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 3,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "دیگه اصل نیست"
+          }
+        },
+        {
+          "id": "29460040",
+          "kind": "comment",
+          "text": "اصل نیست. بو و جنسش فرق میکنه با اصلش. خیلی هم چربیش کمتره",
+          "score": 0.7868187427520752,
+          "product_id": "262958",
+          "title": null,
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "24873181",
+          "kind": "comment",
+          "text": "این بدترین خرید من از دیجی کالا بود. سالهاست کرم اکتیپور استفاده میکنم ولی این محصول پلمپ نبود و انگار با یک ماده دیگه پر شده. روی صورتم ماسید و صورتم جوش زد. اصلا امتحان نکنید.",
+          "score": 0.7862460613250732,
+          "product_id": "262958",
+          "title": "افتضاح",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 3,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "افتضاح"
+          }
+        },
+        {
+          "id": "28443138",
+          "kind": "comment",
+          "text": "فیک هست و کیفیت خیلی بدی داره و آسیب زننده به پوست هست",
+          "score": 0.7860790491104126,
+          "product_id": "262958",
+          "title": "کرم اکتی پور",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "کرم اکتی پور"
+          }
+        },
+        {
+          "id": "32541440",
+          "kind": "comment",
+          "text": "تقلبیه بردم داروخانه گفت الان این کرم زیر 500 هزارتونمن نیست وقتی به دستم رسید پلمپ نداشت مرجوع کردم",
+          "score": 0.7849295139312744,
+          "product_id": "262958",
+          "title": "تقلبی و پلمپ نشده",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "تقلبی و پلمپ نشده"
+          }
+        },
+        {
+          "id": "27495012",
+          "kind": "comment",
+          "text": "اصل نیست حجم تیوبها خیلی کم و کیفیت کرم هم با قبلی هامتفاوت و ضعیف است",
+          "score": 0.7845476865768433,
+          "product_id": "262958",
+          "title": "اکتیپور نوروا",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "اکتیپور نوروا"
+          }
+        },
+        {
+          "id": "31224278",
+          "kind": "comment",
+          "text": "کالا با تاریخ انقضای گذشته ارسال شد و مرجوعی رو قبول نکردن و 70 هزارتومن پولم دود شد رفت هوا",
+          "score": 0.783772349357605,
+          "product_id": "262958",
+          "title": null,
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "24344389",
+          "kind": "comment",
+          "text": "اکتیپور رو از دیجی کالا نخرید من سال هاست به خاطر پوست حساسم استفاده میکنم وقتی با تیوپ قبلی مقایسه میکنم کاملا اصل و فیک بودن مشخصه میتونم تک تک فرق هاشو براتون با عکس بذارم ببینید",
+          "score": 0.783053457736969,
+          "product_id": "262958",
+          "title": "اکتیپور فیک",
+          "meta": {
+            "rate": 2.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 6,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "اکتیپور فیک"
+          }
+        }
+      ],
+      "judgment": {
+        "judgment": {
+          "relevance_score": 5,
+          "grounding_score": 5,
+          "verdict": "grounded",
+          "claims": [
+            {
+              "claim": "این محصول به دلیل تقلبی بودن و کیفیت پایین، پیشنهاد نمی‌شود.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:35048606",
+                "comment:38809453",
+                "comment:28443138"
+              ],
+              "rationale": "کاربران به طور مکرر از تقلبی بودن و کیفیت پایین این محصول شکایت کرده‌اند."
+            },
+            {
+              "claim": "بسیاری از کاربران عنوان کرده‌اند که این محصول تقلبی بوده و کیفیت آن بسیار پایین است و به پوست آسیب می‌زند.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:35048606",
+                "comment:28443138",
+                "comment:24732242"
+              ],
+              "rationale": "نظرات متعدد به آسیب‌زننده بودن و تقلبی بودن محصول اشاره دارند."
+            },
+            {
+              "claim": "کاربران از بوی نامطبوع و عدم تطابق محصول با مرسوم خوب و با کیفیت موجود در بازار شکایت دارند.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:24732242",
+                "comment:25039792",
+                "comment:38809453"
+              ],
+              "rationale": "شکایات درباره بوی نامطبوع و عدم تطابق کیفیت با انتظارات رایج وجود دارد."
+            },
+            {
+              "claim": "تعداد زیادی از خریداران بیان کرده‌اند که محصول پلمپ نداشته و در نتیجه، عدم اعتماد به اصالت آن وجود دارد.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:32541440",
+                "comment:35048606",
+                "comment:24044532"
+              ],
+              "rationale": "نظرات متعدد به عدم پلمپ بودن و مشکوک بودن کیفیت محصول اشاره دارند."
+            },
+            {
+              "claim": "برخی کاربران به این نکته اشاره کرده‌اند که قیمت آن بسیار پایین‌تر از حد معمول بوده و این موضوع مشکوک است.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:24044532",
+                "comment:25136650",
+                "comment:35048606"
+              ],
+              "rationale": "کاربران به قیمت پایین محصول و ارتباط آن با کیفیت مشکوک بوده‌اند."
+            }
+          ],
+          "rationale": "تمامی ادعاهای مطرح شده در متن با داده‌های موجود در نظرات کاربران به طور کامل پشتیبانی می‌شود."
+        },
+        "model": "gpt-4o-mini-2024-07-18",
+        "cache_hit": false,
+        "latency_ms": 4892.598673999601
+      }
+    },
+    {
+      "case_id": "qa03",
+      "product_id": "2526859",
+      "product": "مکعب روبیک مدل AL23 (اسباب بازی)",
+      "question": "مردم بیشتر از چه چیزی در این محصول راضی بودند؟",
+      "evidence_count": 20,
+      "answer_fa": "مردم بیشتر از قیمت مناسب و البته امکان بهبود عملکرد با نرم کردن آن راضی بودند.",
+      "sufficient_evidence": true,
+      "claims": [
+        {
+          "text": "برخی کاربران از قیمت مناسب این محصول راضی بودند و آن را برای شروع کار مفید دانستند.",
+          "comment_ids": [
+            "33354146",
+            "41637996",
+            "41737394",
+            "28112214"
+          ]
+        },
+        {
+          "text": "چند نفر نیز بیان کردند که با نرم کردن و روغن زدن محصول، عملکرد بهتری پیدا کرده است.",
+          "comment_ids": [
+            "24630029",
+            "41737394"
+          ]
+        }
+      ],
+      "rendered_fa": "مردم بیشتر از قیمت مناسب و البته امکان بهبود عملکرد با نرم کردن آن راضی بودند.\n\n- برخی کاربران از قیمت مناسب این محصول راضی بودند و آن را برای شروع کار مفید دانستند. [comment:33354146] [comment:41637996] [comment:41737394] [comment:28112214]\n- چند نفر نیز بیان کردند که با نرم کردن و روغن زدن محصول، عملکرد بهتری پیدا کرده است. [comment:24630029] [comment:41737394]",
+      "citation_audit": {
+        "found": [
+          "[comment:33354146]",
+          "[comment:41637996]",
+          "[comment:41737394]",
+          "[comment:28112214]",
+          "[comment:24630029]"
+        ],
+        "valid": [
+          "[comment:33354146]",
+          "[comment:41637996]",
+          "[comment:41737394]",
+          "[comment:28112214]",
+          "[comment:24630029]"
+        ],
+        "invalid": [],
+        "integrity_score": 1.0
+      },
+      "citation_hallucination": {
+        "generated_ids": 6,
+        "invented_ids": [],
+        "dropped_claims": []
+      },
+      "hallucination_warning_fa": null,
+      "latency_ms": 1851.6309650003677,
+      "evidence": [
+        {
+          "id": "33354146",
+          "kind": "comment",
+          "text": "خیلی سخت حرکت میکنه. نهایتا هم شکست. ولی برای شروع کار نسبت به قیمتش بد نیست",
+          "score": 0.777570366859436,
+          "product_id": "2526859",
+          "title": "عدم رضایت",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "عدم رضایت"
+          }
+        },
+        {
+          "id": "24407939",
+          "kind": "comment",
+          "text": "این کالا اصلا حتی یک بار مصرف هم نیست و شاید بهتر باشد که دیجی کالا حداقل استاندارد های مصرفی یک کالا را برای کالاهایی که ارایه میدهد اجباری کند چرا که امثال این کالا اعتبار و حیثیت دیجی کالا را نزد مشتری خدشه دار میکند . امیدوارم که خریداران بعدی به کامنت ها و نظرات خریداران قبلی توجه کنند . و ای کاش من هم همین کار را کرده بودم .",
+          "score": 0.7769696712493896,
+          "product_id": "2526859",
+          "title": "بینهایت بد و بدرد نخور و کاملا خراب",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": "کاملا خراب, یک بار مصرف هم نیست",
+            "title": "بینهایت بد و بدرد نخور و کاملا خراب"
+          }
+        },
+        {
+          "id": "27212069",
+          "kind": "comment",
+          "text": "سلام دوستان این مکعب عالیه روان بدون گیر من خیلی وقته دارمش قیمتشم مناسبه جنسشم عالیه من خرابش کردم معاسفانه",
+          "score": 0.7726397514343262,
+          "product_id": "2526859",
+          "title": "عالی بود",
+          "meta": {
+            "rate": 5.0,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": "روان, نرم",
+            "disadvantages": "هیچ",
+            "title": "عالی بود"
+          }
+        },
+        {
+          "id": "29333275",
+          "kind": "comment",
+          "text": "روان نیست. نسبت به قیمتش هم البته نباید انتظار زیادی داشت ازش",
+          "score": 0.7719202041625977,
+          "product_id": "2526859",
+          "title": "متوسط",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "متوسط"
+          }
+        },
+        {
+          "id": "25160048",
+          "kind": "comment",
+          "text": "درسته که قیمتش پایین بود اما خب وقتی اصلا کار نمیده چه فایده,برچسبهاش که توی پلاستیکش ریخته بود, چرخشش هم که انگار داری در قوطی رب باز میکنی, یکمم فشار بدی از هم میپاشه و میشکنه, کلا شانسی بود, چون من چند تا عکس دیدم که دوستان خوش شانس بودن, و یه روبیک خوب براشون ارسال شده بود, کلا فروشنده ها هر کاری دوست دارند میکنند, نظارتم که هیچی...",
+          "score": 0.7718352675437927,
+          "product_id": "2526859",
+          "title": "روبیک نیست که آسیاب سنگیه",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "روبیک نیست که آسیاب سنگیه"
+          }
+        },
+        {
+          "id": "24630029",
+          "kind": "comment",
+          "text": "سلام خوبید هرکی خریده این رو اولش سفت هست اروم بچرخونید نرم میشه بعدش کمی روغن بزنید من از صبح دارم باهاش کار میکنم خراب نشده و خیلی روون هم شده به روغن عین حرفه ای ها شده",
+          "score": 0.7711599469184875,
+          "product_id": "2526859",
+          "title": "علی",
+          "meta": {
+            "rate": 3.45,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "علی"
+          }
+        },
+        {
+          "id": "53287806",
+          "kind": "comment",
+          "text": "خیلی سفت وخشک بود اصلا بدرد نمی‌خورد درسته ارزون بود ولی اصلا ارزش نداشت حتی برای انتخابش وقت بذاری.در ضمن توی توضیحات نوشته همراه با جعبه و راهنمای فارسی ,که نه جعبه داشت نه راهنما",
+          "score": 0.7701879143714905,
+          "product_id": "2526859",
+          "title": "روبیک",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "روبیک"
+          }
+        },
+        {
+          "id": "47647372",
+          "kind": "comment",
+          "text": "جنس و کیفیت افتضاح درسته قیمت پایین بود ولی نباید جنس آنقدر بی کیفیت باشه",
+          "score": 0.7677064538002014,
+          "product_id": "2526859",
+          "title": "مناسب نبود",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "مناسب نبود"
+          }
+        },
+        {
+          "id": "27647586",
+          "kind": "comment",
+          "text": "اصلا شبیه عکس نیست و خیلی سفت هست اما نسبت به قیمت ارزش داره",
+          "score": 0.7601503133773804,
+          "product_id": "2526859",
+          "title": "مکعب روبیک",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "مکعب روبیک"
+          }
+        },
+        {
+          "id": "28863135",
+          "kind": "comment",
+          "text": "جنس بدرد نخور اصا نمیشد باهاش کار کرد به نظر من یکم دیگه پول بزارید و یه چیز بهتر بخرید یه روزه خراب میشه",
+          "score": 0.7591606378555298,
+          "product_id": "2526859",
+          "title": "مکعب روبیک",
+          "meta": {
+            "rate": 1.25,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": "نداره",
+            "disadvantages": "بدون کاربرد",
+            "title": "مکعب روبیک"
+          }
+        },
+        {
+          "id": "26568989",
+          "kind": "comment",
+          "text": "اصلا کیفیت نداشت و به درد نمی خورد اصلاروند نبود بعد دوروزه هم شکست",
+          "score": 0.7572914958000183,
+          "product_id": "2526859",
+          "title": "مکعب گند",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": "ندارد",
+            "disadvantages": "همه چی",
+            "title": "مکعب گند"
+          }
+        },
+        {
+          "id": "24317000",
+          "kind": "comment",
+          "text": "تا از بسته بندی در آوردم بینش حلقه شکسته داشت و برگرداندم.",
+          "score": 0.7568432688713074,
+          "product_id": "2526859",
+          "title": "فیزیک کالا",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "فیزیک کالا"
+          }
+        },
+        {
+          "id": "41637996",
+          "kind": "comment",
+          "text": "از قیمتش مشخصه دیگه..انتظاری نداشته باشید..ضعیفه...و زود از هم باز میشه...من برا شروع یادگیری گرفتمش..ب دردم خورد.راضی‌ام",
+          "score": 0.7542520761489868,
+          "product_id": "2526859",
+          "title": "روبیک",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "روبیک"
+          }
+        },
+        {
+          "id": "41737394",
+          "kind": "comment",
+          "text": "قیمتش خوبه ولی باید اروم بچرخونی تا از هم نپوکه روان نمیچرخه ولی خیلی وقته گرفتم هنوز سالمه همش هم بازی میکنم یبار هم یکی از خونه هاش جدا شد اما باز انداختم جاش",
+          "score": 0.7541778683662415,
+          "product_id": "2526859",
+          "title": "مکعب روبیک",
+          "meta": {
+            "rate": 4.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "مکعب روبیک"
+          }
+        },
+        {
+          "id": "24270717",
+          "kind": "comment",
+          "text": "به محض بیرون آوردن از بسته پستی با دو بار حرکت,قطعاتش جدا شدن,کلا همه قطعاتش جدا شدند.",
+          "score": 0.7537421584129333,
+          "product_id": "2526859",
+          "title": "کیفیت",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": "کیفیت افتضاح محصول",
+            "title": "کیفیت"
+          }
+        },
+        {
+          "id": "31803914",
+          "kind": "comment",
+          "text": "فوق العاده سفته. اصلا خوب نیست. هر لحظه انتظار داری بشکنه",
+          "score": 0.7521603107452393,
+          "product_id": "2526859",
+          "title": "مکعب روبیک",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "مکعب روبیک"
+          }
+        },
+        {
+          "id": "28112214",
+          "kind": "comment",
+          "text": "من برای دوقلوهام گروفتم عالیه خیلی خوششون میاد حتما شما هم بخرید",
+          "score": 0.7520582675933838,
+          "product_id": "2526859",
+          "title": "بخرید",
+          "meta": {
+            "rate": 5.0,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "بخرید"
+          }
+        },
+        {
+          "id": "28949210",
+          "kind": "comment",
+          "text": "این مدل روبیک بشدت بی کیفیت می باشد. ارزش خرید نداره بهتره بجای این مدل 20 هزارتومان بیشتر هزینه کنید و جنس خیلی بهتر بگیرید",
+          "score": 0.7512816190719604,
+          "product_id": "2526859",
+          "title": "مکعب روبیک مدل AL23",
+          "meta": {
+            "rate": 1.6,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": "هیچی , فقط یک مکعب 6 رنگ هست",
+            "disadvantages": "کیفیت بشدت پایین, خانه های روبیک بسادگی کنده میشه, قبلیت چرخش بشدت پایین",
+            "title": "مکعب روبیک مدل AL23"
+          }
+        },
+        {
+          "id": "25997670",
+          "kind": "comment",
+          "text": "با سلام. در همان استفاده اول بدلیل کیفیت بد از هم پاشید. برچسب‌های رنگی به آسانی کنده میشوند.",
+          "score": 0.7458058595657349,
+          "product_id": "2526859",
+          "title": "بی کیفیت",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": "برچسب‌های رنگی ول, پلاستیک سفت و خشک, بی کیفیت",
+            "title": "بی کیفیت"
+          }
+        },
+        {
+          "id": "24842864",
+          "kind": "comment",
+          "text": "جنسش زیاد جالب نبود مخصوصا برای بچه ها",
+          "score": 0.7456475496292114,
+          "product_id": "2526859",
+          "title": "مکعب روبیک",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "مکعب روبیک"
+          }
+        }
+      ],
+      "judgment": {
+        "judgment": {
+          "relevance_score": 5,
+          "grounding_score": 3,
+          "verdict": "partially_grounded",
+          "claims": [
+            {
+              "claim": "برخی کاربران از قیمت مناسب این محصول راضی بودند و آن را برای شروع کار مفید دانستند.",
+              "verdict": "partially_supported",
+              "evidence_ids": [
+                "comment:33354146",
+                "comment:41637996",
+                "comment:41737394",
+                "comment:28112214"
+              ],
+              "rationale": "Some comments mention satisfaction with the price and indicate it can be useful for beginners, while others express dissatisfaction."
+            },
+            {
+              "claim": "چند نفر نیز بیان کردند که با نرم کردن و روغن زدن محصول، عملکرد بهتری پیدا کرده است.",
+              "verdict": "partially_supported",
+              "evidence_ids": [
+                "comment:24630029",
+                "comment:41737394"
+              ],
+              "rationale": "Comments suggest that softening and oiling improves performance, but some users still experienced issues."
+            }
+          ],
+          "rationale": "The claims are partially substantiated by the user comments, showing mixed feedback about both the price and performance improvement with modifications."
+        },
+        "model": "gpt-4o-mini-2024-07-18",
+        "cache_hit": false,
+        "latency_ms": 3080.948267997883
+      }
+    },
+    {
+      "case_id": "qa04",
+      "product_id": "2526859",
+      "product": "مکعب روبیک مدل AL23 (اسباب بازی)",
+      "question": "خریداران درباره‌ی کیفیت این محصول چه گفته‌اند؟",
+      "evidence_count": 20,
+      "answer_fa": "کیفیت این محصول بسیار پایین است و بیشتر خریداران از خراب شدن آن و ارزش نداشتن آن نسبت به قیمت انتقاد کرده‌اند.",
+      "sufficient_evidence": true,
+      "claims": [
+        {
+          "text": "کیفیت این محصول بسیار پایین است و خریداران از آن ناراضی بوده‌اند. بیشتر نظرات به خراب شدن آن در استفاده‌های اولیه اشاره دارند.",
+          "comment_ids": [
+            "24407939",
+            "47647372",
+            "25997670",
+            "28863135",
+            "29715141"
+          ]
+        },
+        {
+          "text": "بسیاری از خریداران معتقدند که نسبت به قیمت، این محصول ارزش خرید ندارد و به شدت به کیفیتش انتقاد کرده‌اند.",
+          "comment_ids": [
+            "28949210",
+            "53287806",
+            "33354146",
+            "30388489"
+          ]
+        },
+        {
+          "text": "برخی از کاربران اشاره کرده‌اند که با توجه به مشکل‌دار بودن این مکعب، بهتر است هزینه بیشتری برای خرید محصولی با کیفیت بیشتری صرف شود.",
+          "comment_ids": [
+            "24630029",
+            "41737394"
+          ]
+        }
+      ],
+      "rendered_fa": "کیفیت این محصول بسیار پایین است و بیشتر خریداران از خراب شدن آن و ارزش نداشتن آن نسبت به قیمت انتقاد کرده‌اند.\n\n- کیفیت این محصول بسیار پایین است و خریداران از آن ناراضی بوده‌اند. بیشتر نظرات به خراب شدن آن در استفاده‌های اولیه اشاره دارند. [comment:24407939] [comment:47647372] [comment:25997670] [comment:28863135] [comment:29715141]\n- بسیاری از خریداران معتقدند که نسبت به قیمت، این محصول ارزش خرید ندارد و به شدت به کیفیتش انتقاد کرده‌اند. [comment:28949210] [comment:53287806] [comment:33354146] [comment:30388489]\n- برخی از کاربران اشاره کرده‌اند که با توجه به مشکل‌دار بودن این مکعب، بهتر است هزینه بیشتری برای خرید محصولی با کیفیت بیشتری صرف شود. [comment:24630029] [comment:41737394]",
+      "citation_audit": {
+        "found": [
+          "[comment:24407939]",
+          "[comment:47647372]",
+          "[comment:25997670]",
+          "[comment:28863135]",
+          "[comment:29715141]",
+          "[comment:28949210]",
+          "[comment:53287806]",
+          "[comment:33354146]",
+          "[comment:30388489]",
+          "[comment:24630029]",
+          "[comment:41737394]"
+        ],
+        "valid": [
+          "[comment:24407939]",
+          "[comment:47647372]",
+          "[comment:25997670]",
+          "[comment:28863135]",
+          "[comment:29715141]",
+          "[comment:28949210]",
+          "[comment:53287806]",
+          "[comment:33354146]",
+          "[comment:30388489]",
+          "[comment:24630029]",
+          "[comment:41737394]"
+        ],
+        "invalid": [],
+        "integrity_score": 1.0
+      },
+      "citation_hallucination": {
+        "generated_ids": 11,
+        "invented_ids": [],
+        "dropped_claims": []
+      },
+      "hallucination_warning_fa": null,
+      "latency_ms": 2487.969035999413,
+      "evidence": [
+        {
+          "id": "24407939",
+          "kind": "comment",
+          "text": "این کالا اصلا حتی یک بار مصرف هم نیست و شاید بهتر باشد که دیجی کالا حداقل استاندارد های مصرفی یک کالا را برای کالاهایی که ارایه میدهد اجباری کند چرا که امثال این کالا اعتبار و حیثیت دیجی کالا را نزد مشتری خدشه دار میکند . امیدوارم که خریداران بعدی به کامنت ها و نظرات خریداران قبلی توجه کنند . و ای کاش من هم همین کار را کرده بودم .",
+          "score": 0.8342061638832092,
+          "product_id": "2526859",
+          "title": "بینهایت بد و بدرد نخور و کاملا خراب",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": "کاملا خراب, یک بار مصرف هم نیست",
+            "title": "بینهایت بد و بدرد نخور و کاملا خراب"
+          }
+        },
+        {
+          "id": "47647372",
+          "kind": "comment",
+          "text": "جنس و کیفیت افتضاح درسته قیمت پایین بود ولی نباید جنس آنقدر بی کیفیت باشه",
+          "score": 0.8327574133872986,
+          "product_id": "2526859",
+          "title": "مناسب نبود",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "مناسب نبود"
+          }
+        },
+        {
+          "id": "29333275",
+          "kind": "comment",
+          "text": "روان نیست. نسبت به قیمتش هم البته نباید انتظار زیادی داشت ازش",
+          "score": 0.8282619714736938,
+          "product_id": "2526859",
+          "title": "متوسط",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "متوسط"
+          }
+        },
+        {
+          "id": "24630029",
+          "kind": "comment",
+          "text": "سلام خوبید هرکی خریده این رو اولش سفت هست اروم بچرخونید نرم میشه بعدش کمی روغن بزنید من از صبح دارم باهاش کار میکنم خراب نشده و خیلی روون هم شده به روغن عین حرفه ای ها شده",
+          "score": 0.8194822072982788,
+          "product_id": "2526859",
+          "title": "علی",
+          "meta": {
+            "rate": 3.45,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "علی"
+          }
+        },
+        {
+          "id": "33354146",
+          "kind": "comment",
+          "text": "خیلی سخت حرکت میکنه. نهایتا هم شکست. ولی برای شروع کار نسبت به قیمتش بد نیست",
+          "score": 0.8161450028419495,
+          "product_id": "2526859",
+          "title": "عدم رضایت",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "عدم رضایت"
+          }
+        },
+        {
+          "id": "25997670",
+          "kind": "comment",
+          "text": "با سلام. در همان استفاده اول بدلیل کیفیت بد از هم پاشید. برچسب‌های رنگی به آسانی کنده میشوند.",
+          "score": 0.8160125613212585,
+          "product_id": "2526859",
+          "title": "بی کیفیت",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": "برچسب‌های رنگی ول, پلاستیک سفت و خشک, بی کیفیت",
+            "title": "بی کیفیت"
+          }
+        },
+        {
+          "id": "27212069",
+          "kind": "comment",
+          "text": "سلام دوستان این مکعب عالیه روان بدون گیر من خیلی وقته دارمش قیمتشم مناسبه جنسشم عالیه من خرابش کردم معاسفانه",
+          "score": 0.8140630125999451,
+          "product_id": "2526859",
+          "title": "عالی بود",
+          "meta": {
+            "rate": 5.0,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": "روان, نرم",
+            "disadvantages": "هیچ",
+            "title": "عالی بود"
+          }
+        },
+        {
+          "id": "24317000",
+          "kind": "comment",
+          "text": "تا از بسته بندی در آوردم بینش حلقه شکسته داشت و برگرداندم.",
+          "score": 0.8127505779266357,
+          "product_id": "2526859",
+          "title": "فیزیک کالا",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "فیزیک کالا"
+          }
+        },
+        {
+          "id": "28949210",
+          "kind": "comment",
+          "text": "این مدل روبیک بشدت بی کیفیت می باشد. ارزش خرید نداره بهتره بجای این مدل 20 هزارتومان بیشتر هزینه کنید و جنس خیلی بهتر بگیرید",
+          "score": 0.8112281560897827,
+          "product_id": "2526859",
+          "title": "مکعب روبیک مدل AL23",
+          "meta": {
+            "rate": 1.6,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": "هیچی , فقط یک مکعب 6 رنگ هست",
+            "disadvantages": "کیفیت بشدت پایین, خانه های روبیک بسادگی کنده میشه, قبلیت چرخش بشدت پایین",
+            "title": "مکعب روبیک مدل AL23"
+          }
+        },
+        {
+          "id": "53287806",
+          "kind": "comment",
+          "text": "خیلی سفت وخشک بود اصلا بدرد نمی‌خورد درسته ارزون بود ولی اصلا ارزش نداشت حتی برای انتخابش وقت بذاری.در ضمن توی توضیحات نوشته همراه با جعبه و راهنمای فارسی ,که نه جعبه داشت نه راهنما",
+          "score": 0.8095278143882751,
+          "product_id": "2526859",
+          "title": "روبیک",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "روبیک"
+          }
+        },
+        {
+          "id": "24270717",
+          "kind": "comment",
+          "text": "به محض بیرون آوردن از بسته پستی با دو بار حرکت,قطعاتش جدا شدن,کلا همه قطعاتش جدا شدند.",
+          "score": 0.8095017671585083,
+          "product_id": "2526859",
+          "title": "کیفیت",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": "کیفیت افتضاح محصول",
+            "title": "کیفیت"
+          }
+        },
+        {
+          "id": "25160048",
+          "kind": "comment",
+          "text": "درسته که قیمتش پایین بود اما خب وقتی اصلا کار نمیده چه فایده,برچسبهاش که توی پلاستیکش ریخته بود, چرخشش هم که انگار داری در قوطی رب باز میکنی, یکمم فشار بدی از هم میپاشه و میشکنه, کلا شانسی بود, چون من چند تا عکس دیدم که دوستان خوش شانس بودن, و یه روبیک خوب براشون ارسال شده بود, کلا فروشنده ها هر کاری دوست دارند میکنند, نظارتم که هیچی...",
+          "score": 0.8079431056976318,
+          "product_id": "2526859",
+          "title": "روبیک نیست که آسیاب سنگیه",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "روبیک نیست که آسیاب سنگیه"
+          }
+        },
+        {
+          "id": "31803914",
+          "kind": "comment",
+          "text": "فوق العاده سفته. اصلا خوب نیست. هر لحظه انتظار داری بشکنه",
+          "score": 0.806686520576477,
+          "product_id": "2526859",
+          "title": "مکعب روبیک",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "مکعب روبیک"
+          }
+        },
+        {
+          "id": "26568989",
+          "kind": "comment",
+          "text": "اصلا کیفیت نداشت و به درد نمی خورد اصلاروند نبود بعد دوروزه هم شکست",
+          "score": 0.8007041215896606,
+          "product_id": "2526859",
+          "title": "مکعب گند",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": "ندارد",
+            "disadvantages": "همه چی",
+            "title": "مکعب گند"
+          }
+        },
+        {
+          "id": "28863135",
+          "kind": "comment",
+          "text": "جنس بدرد نخور اصا نمیشد باهاش کار کرد به نظر من یکم دیگه پول بزارید و یه چیز بهتر بخرید یه روزه خراب میشه",
+          "score": 0.8005158305168152,
+          "product_id": "2526859",
+          "title": "مکعب روبیک",
+          "meta": {
+            "rate": 1.25,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": "نداره",
+            "disadvantages": "بدون کاربرد",
+            "title": "مکعب روبیک"
+          }
+        },
+        {
+          "id": "41737394",
+          "kind": "comment",
+          "text": "قیمتش خوبه ولی باید اروم بچرخونی تا از هم نپوکه روان نمیچرخه ولی خیلی وقته گرفتم هنوز سالمه همش هم بازی میکنم یبار هم یکی از خونه هاش جدا شد اما باز انداختم جاش",
+          "score": 0.7980960607528687,
+          "product_id": "2526859",
+          "title": "مکعب روبیک",
+          "meta": {
+            "rate": 4.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "مکعب روبیک"
+          }
+        },
+        {
+          "id": "27647586",
+          "kind": "comment",
+          "text": "اصلا شبیه عکس نیست و خیلی سفت هست اما نسبت به قیمت ارزش داره",
+          "score": 0.797958493232727,
+          "product_id": "2526859",
+          "title": "مکعب روبیک",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "مکعب روبیک"
+          }
+        },
+        {
+          "id": "30388489",
+          "kind": "comment",
+          "text": "کیفیت ساخت پایینی داشت برچسب های رنگیش و مربع هاش کنده میشه",
+          "score": 0.797539234161377,
+          "product_id": "2526859",
+          "title": "روبیک بی کیفیت",
+          "meta": {
+            "rate": 2.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "روبیک بی کیفیت"
+          }
+        },
+        {
+          "id": "41637996",
+          "kind": "comment",
+          "text": "از قیمتش مشخصه دیگه..انتظاری نداشته باشید..ضعیفه...و زود از هم باز میشه...من برا شروع یادگیری گرفتمش..ب دردم خورد.راضی‌ام",
+          "score": 0.797446608543396,
+          "product_id": "2526859",
+          "title": "روبیک",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "روبیک"
+          }
+        },
+        {
+          "id": "29715141",
+          "kind": "comment",
+          "text": "بی کیفیته و زود خراب شد",
+          "score": 0.7962453365325928,
+          "product_id": "2526859",
+          "title": "کیفیت ندارد",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": "جنس کاملا بنجل",
+            "title": "کیفیت ندارد"
+          }
+        }
+      ],
+      "judgment": {
+        "judgment": {
+          "relevance_score": 5,
+          "grounding_score": 5,
+          "verdict": "grounded",
+          "claims": [
+            {
+              "claim": "کیفیت این محصول بسیار پایین است و خریداران از آن ناراضی بوده‌اند.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:24407939",
+                "comment:47647372",
+                "comment:25997670",
+                "comment:28863135",
+                "comment:29715141"
+              ],
+              "rationale": "Multiple comments support the claim about poor quality and customer dissatisfaction."
+            },
+            {
+              "claim": "بیشتر نظرات به خراب شدن آن در استفاده‌های اولیه اشاره دارند.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:24407939",
+                "comment:25997670",
+                "comment:24270717",
+                "comment:28863135"
+              ],
+              "rationale": "Several comments detail issues of breakage and poor performance upon initial use."
+            },
+            {
+              "claim": "بسیاری از خریداران معتقدند که نسبت به قیمت، این محصول ارزش خرید ندارد.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:28949210",
+                "comment:53287806",
+                "comment:33354146"
+              ],
+              "rationale": "Comments consistently express that the product is not worth its price."
+            },
+            {
+              "claim": "برخی از کاربران اشاره کرده‌اند که با توجه به مشکل‌دار بودن این مکعب، بهتر است هزینه بیشتری برای خرید محصولی با کیفیت بیشتری صرف شود.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:28949210",
+                "comment:24630029"
+              ],
+              "rationale": "Recommendations in comments suggest spending more on better quality products, aligning with customer experiences."
+            }
+          ],
+          "rationale": "All claims are explicitly supported by evidence from the comments, demonstrating consistent dissatisfaction regarding quality and value."
+        },
+        "model": "gpt-4o-mini-2024-07-18",
+        "cache_hit": false,
+        "latency_ms": 3582.5174290002906
+      }
+    },
+    {
+      "case_id": "qa05",
+      "product_id": "151716",
+      "product": "روان نویس یونی-بال Eye UB-157 (نوشت افزار)",
+      "question": "ایرادهای پرتکرار این محصول چیست؟",
+      "evidence_count": 20,
+      "answer_fa": "ایرادهای پرتکرار این محصول شامل جوهر خشک، کیفیت پایین، تقلبی بودن و ارسال محصول اشتباه است.",
+      "sufficient_evidence": true,
+      "claims": [
+        {
+          "text": "این محصول دارای جوهر خشک شده و کیفیت پایین است و برخی کاربران از تقلبی بودن آن شکایت دارند.",
+          "comment_ids": [
+            "22413488",
+            "18930530",
+            "22120850",
+            "21630455",
+            "49751370"
+          ]
+        },
+        {
+          "text": "بعضی کاربران تجربه بدی از این محصول داشته‌اند و اظهار می‌کنند که کالای ارسال شده با آنچه که سفارش داده بودند متفاوت بوده است.",
+          "comment_ids": [
+            "21802229",
+            "22744454",
+            "20850700"
+          ]
+        },
+        {
+          "text": "کاربران گزارش کردند که بعضی از روان‌نویس‌ها اصلاً جوهر ندارند و غیرقابل استفاده‌اند.",
+          "comment_ids": [
+            "22520194",
+            "20831168",
+            "29467219"
+          ]
+        },
+        {
+          "text": "تعداد زیادی از خریداران به این مسئله اشاره کرده‌اند که این محصول درکیفیت خوبی ندارد و به نظر می‌رسد تقلبی است.",
+          "comment_ids": [
+            "49751370",
+            "22514455"
+          ]
+        }
+      ],
+      "rendered_fa": "ایرادهای پرتکرار این محصول شامل جوهر خشک، کیفیت پایین، تقلبی بودن و ارسال محصول اشتباه است.\n\n- این محصول دارای جوهر خشک شده و کیفیت پایین است و برخی کاربران از تقلبی بودن آن شکایت دارند. [comment:22413488] [comment:18930530] [comment:22120850] [comment:21630455] [comment:49751370]\n- بعضی کاربران تجربه بدی از این محصول داشته‌اند و اظهار می‌کنند که کالای ارسال شده با آنچه که سفارش داده بودند متفاوت بوده است. [comment:21802229] [comment:22744454] [comment:20850700]\n- کاربران گزارش کردند که بعضی از روان‌نویس‌ها اصلاً جوهر ندارند و غیرقابل استفاده‌اند. [comment:22520194] [comment:20831168] [comment:29467219]\n- تعداد زیادی از خریداران به این مسئله اشاره کرده‌اند که این محصول درکیفیت خوبی ندارد و به نظر می‌رسد تقلبی است. [comment:49751370] [comment:22514455]",
+      "citation_audit": {
+        "found": [
+          "[comment:22413488]",
+          "[comment:18930530]",
+          "[comment:22120850]",
+          "[comment:21630455]",
+          "[comment:49751370]",
+          "[comment:21802229]",
+          "[comment:22744454]",
+          "[comment:20850700]",
+          "[comment:22520194]",
+          "[comment:20831168]",
+          "[comment:29467219]",
+          "[comment:22514455]"
+        ],
+        "valid": [
+          "[comment:22413488]",
+          "[comment:18930530]",
+          "[comment:22120850]",
+          "[comment:21630455]",
+          "[comment:49751370]",
+          "[comment:21802229]",
+          "[comment:22744454]",
+          "[comment:20850700]",
+          "[comment:22520194]",
+          "[comment:20831168]",
+          "[comment:29467219]",
+          "[comment:22514455]"
+        ],
+        "invalid": [],
+        "integrity_score": 1.0
+      },
+      "citation_hallucination": {
+        "generated_ids": 13,
+        "invented_ids": [],
+        "dropped_claims": []
+      },
+      "hallucination_warning_fa": null,
+      "latency_ms": 2930.4796569995233,
+      "evidence": [
+        {
+          "id": "22413488",
+          "kind": "comment",
+          "text": "بنده این روان نویس را از فروشگاه آیهان سنتر سفارش دادم که وقتی بدستم رسید متوجه شدم هم تقلبی هست هم جوهرش خشک شده بوده. فکر میکنم دیجی کالا باید قبل از ارسال خودش اقلام سفارشی رو چک کنه بعد ارسال کند.",
+          "score": 0.803823709487915,
+          "product_id": "151716",
+          "title": "زهره",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 5,
+            "advantages": "ندارد",
+            "disadvantages": "تقلبی بود و بجای uni ball روی روان نویس yoni-ball نوشته شده.در ضمن جوهرش هم خشک بود",
+            "title": "زهره"
+          }
+        },
+        {
+          "id": "23404619",
+          "kind": "comment",
+          "text": "یک تجربه خرید بنده برای امتحان نقاط قوت و تمامی موارد باعث گشت که تعداد(10 تایی) از این محصول را سفارش دهم, در نظر گرفتن تخفیف از سوی شما بزرگترین کمک به اینجانب و امثال بنده است.(دکتر امین بزی)",
+          "score": 0.8009478449821472,
+          "product_id": "151716",
+          "title": "خرید مجدد_تخفیف",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": "هیچ نقطه ضعفی نبود و مشاهده نشد و دیجی کالا به صورت شایسته پروسه سفارش تا تحویل را انجام داد.",
+            "title": "خرید مجدد_تخفیف"
+          }
+        },
+        {
+          "id": "18930530",
+          "kind": "comment",
+          "text": "من این محصول را از تامین کننده ایران کالا نو خریدم بی کیفیت و غیر قابل استفاده بود حتی نتونستم یک جمله کامل با این روان نویس بنویسم. به نظر من شما پولتون را دور نریزید , یه تامین کننده معتبر انتخاب کنید.",
+          "score": 0.7994043231010437,
+          "product_id": "151716",
+          "title": "مربوط به تامیین کننده",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "مربوط به تامیین کننده"
+          }
+        },
+        {
+          "id": "29899708",
+          "kind": "comment",
+          "text": "اکثر دوستان گفته بودن فیکه و من حسابی پشیمون شدده بودم از سفارشی که داده بودم اما بسته من امروز رسید و در کمال تعجب سه رنگ سبز و قرمز و ابیی که سفارش داده بودم هر سه اصل بود عکساش رو هم میذارم. و البته دوباره که چک کردم مثه اینکه دوستانی که گفته بودن فیکه همه از یه فروشگاه خاص بوده. من از سه تا فروشگاه مختلف خریدم سه رنگ رو. اسم فروشگاها:تندیس ... ایران,دیکاتل,تحریرام. راستی جوهرشم پره.",
+          "score": 0.7985628843307495,
+          "product_id": "151716",
+          "title": "برا من اصل فرستادن",
+          "meta": {
+            "rate": 5.0,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "برا من اصل فرستادن"
+          }
+        },
+        {
+          "id": "22120850",
+          "kind": "comment",
+          "text": "کاش آیهان سنتر به جای ارزان فروشی گران تر میفروخت ولی کالای با کیفیت دست مشتری میرسید. یانی بال هست, تقلبی و خالی از جوهر",
+          "score": 0.7977559566497803,
+          "product_id": "151716",
+          "title": "کالای تقلبی",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 5,
+            "advantages": null,
+            "disadvantages": "کالای تقلبی, , جوهر خالی, همه چی",
+            "title": "کالای تقلبی"
+          }
+        },
+        {
+          "id": "22520194",
+          "kind": "comment",
+          "text": "خشک و افتضاح پول درو ریختن است - بدون جوهر! مرسی ار دیجی کالا بابت انتخاب افتضاح فروشنده ها و عدم رسیدگی و نظارت بر فروش",
+          "score": 0.7944493293762207,
+          "product_id": "151716",
+          "title": null,
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "50286857",
+          "kind": "comment",
+          "text": "روان‌نویس روانی هستش ولی متاسفانه موقعی که نوکش روی کاغذ قرار میدم جوهر خیلی زیادی میاد بیرون و این اصلا خوب نیست. پیشنهاد نمیکنم این محصول بخرید",
+          "score": 0.7942240238189697,
+          "product_id": "151716",
+          "title": "روان‌نویس یونیبال",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "روان‌نویس یونیبال"
+          }
+        },
+        {
+          "id": "21630455",
+          "kind": "comment",
+          "text": "کالا غیر اصل و بسیار بی‌کیفیت و مغایر با عکس دیجیکالا بود مرجوع کردم",
+          "score": 0.7899851202964783,
+          "product_id": "151716",
+          "title": "فیک",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "فیک"
+          }
+        },
+        {
+          "id": "30639574",
+          "kind": "comment",
+          "text": "کیفیت قابل قبولی داره ولی گاهی نوکش خراب میشه و دیگه با وجود داشتن جوهر باید دور انداختش.",
+          "score": 0.7884995937347412,
+          "product_id": "151716",
+          "title": "حس نوشتن راحت رو به آدم میده",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": "کیفیت خوب",
+            "disadvantages": "خراب شدن زود هنگام نوک",
+            "title": "حس نوشتن راحت رو به آدم میده"
+          }
+        },
+        {
+          "id": "22514455",
+          "kind": "comment",
+          "text": "اینکه تولید کننده این کالا را بدون جوهر میفروشد یک مسئله است و اینکه دیجی کالا بدون کنترل و نظارت بر زنجیره, خود را در این شریک میکند مهم تر است.",
+          "score": 0.7875827550888062,
+          "product_id": "151716",
+          "title": "تاسف",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "تاسف"
+          }
+        },
+        {
+          "id": "49751370",
+          "kind": "comment",
+          "text": "کاملا نسبت به نمونه اصلی متفاوت و تقلبی است",
+          "score": 0.7866662740707397,
+          "product_id": "151716",
+          "title": "کیفیت بسیار پایین و تقلبی",
+          "meta": {
+            "rate": 2.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": "کیفیت پایین جوهر, در روانویس خوب بسته نمیشود",
+            "title": "کیفیت بسیار پایین و تقلبی"
+          }
+        },
+        {
+          "id": "17158931",
+          "kind": "comment",
+          "text": "من از همین دیجی کالا خریدم و خشک بود البته که یک سوم قیمت بیرون هست پس کالای معیوب که ارزونه و مرجوع کردم",
+          "score": 0.786370038986206,
+          "product_id": "151716",
+          "title": "نخرید",
+          "meta": {
+            "rate": 1.5,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "نخرید"
+          }
+        },
+        {
+          "id": "21802229",
+          "kind": "comment",
+          "text": "فروشنده عزیز چرا یک مارک دیگه میفرستین? چرا فکر میکنید مشتری متوجه نمیشه? تا به حال محصولی به این افتضاحی دریافت نکرده بودم. کلش که خالیه مارکشم که اصلا یونی بال نیست یانی بال هست.",
+          "score": 0.7863246202468872,
+          "product_id": "151716",
+          "title": "بدترین خریدم از دیجیکالا",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 13,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "بدترین خریدم از دیجیکالا"
+          }
+        },
+        {
+          "id": "22744454",
+          "kind": "comment",
+          "text": "من آبی سفارش داده بود مشکی فرستادن - جوهر تمام ریخته بود تو سری خودکار وفتی باز کردم دستم تمام جوهر شد . من قبلا از جاهای دیگر گرفتم خیلی با کیفیت تر و بهتر بود اصلا راضی نیستم از دیجی کالا خواهشمندم که پیگیری نمایند",
+          "score": 0.7859981060028076,
+          "product_id": "151716",
+          "title": "اصلا پیشنهاد نمیدم",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": "فقط ظالهر",
+            "disadvantages": "جوهر تمام ریخته بود تو سری روان نویس",
+            "title": "اصلا پیشنهاد نمیدم"
+          }
+        },
+        {
+          "id": "50942399",
+          "kind": "comment",
+          "text": "واقعا روان و خوبه ولی یکم جوهر زیادی میده بیرون که وقتی می‌نویسی باید صبر کنی تا خشک شده تا جوهر پخش نشه",
+          "score": 0.7839059829711914,
+          "product_id": "151716",
+          "title": "روان نویس",
+          "meta": {
+            "rate": 5.0,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "روان نویس"
+          }
+        },
+        {
+          "id": "29632898",
+          "kind": "comment",
+          "text": "چون اصلش گیر نمیاد کلا شانسیه. ممکنه عالی گیرتون بیاد و ممکنه ننویسه یا یه خط در میون بنویسه. این فیکها بیشتر از ده تومن نمی ارزه.",
+          "score": 0.7836574912071228,
+          "product_id": "151716",
+          "title": "عالی ولی شانسی",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "عالی ولی شانسی"
+          }
+        },
+        {
+          "id": "20711323",
+          "kind": "comment",
+          "text": "من ازش برای طراحی مهندس استفاده میکنم گاهی وقتا هم یاداشت. کلا خوبه. یکمی فقط گرونه. دقت کنید برای طراحی روی کاغذ نازک حوهرش میزنه پشت کاغذ. باید طراحی سریع که سرعت دست بره بالا خوبه.",
+          "score": 0.781981885433197,
+          "product_id": "151716",
+          "title": "مناسب یاداشت و طراحی",
+          "meta": {
+            "rate": 3.75,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "مناسب یاداشت و طراحی"
+          }
+        },
+        {
+          "id": "20850700",
+          "kind": "comment",
+          "text": "روان نویس با جوهر نصفه برای بنده ارسال شد . و کیفیت پایین متاسفانه محصول فیک هست عکس ارسالی با مورد تحویلی فرق دارد .",
+          "score": 0.778782844543457,
+          "product_id": "151716",
+          "title": "کم بودن جوهر",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "کم بودن جوهر"
+          }
+        },
+        {
+          "id": "20831168",
+          "kind": "comment",
+          "text": "من تعداد زیاد خریدم ولی بعضی ها اصلا نمینویسن نمیدونم غیر اصله یا تو گمرکی جایی مونده خراب شده ارزش برگردوندن نداشت البته من از دو تامین کننده مختلف خریدم و نمیدونم کدوم به کدومه اما اونهایی که مینویسن تا قطه آخر فوق العاده هستن",
+          "score": 0.7786927223205566,
+          "product_id": "151716",
+          "title": "گویا غیر اصل یا در انبار مانده",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": "بعضیاشون خوبن",
+            "disadvantages": "بعضی ها اصلا نمینویسن",
+            "title": "گویا غیر اصل یا در انبار مانده"
+          }
+        },
+        {
+          "id": "29467219",
+          "kind": "comment",
+          "text": "از 2 تا روان نویسی که خریداری کردیم یکیش نمینویسه و یکیشم کامل شکسته و جوهر پس میده ازهر فروشنده ای خرید کنید فیکه اصلص دیگه وجود نداره",
+          "score": 0.778679370880127,
+          "product_id": "151716",
+          "title": "افتضاح و آشغال به تمام معنا",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "افتضاح و آشغال به تمام معنا"
+          }
+        }
+      ],
+      "judgment": {
+        "judgment": {
+          "relevance_score": 5,
+          "grounding_score": 4,
+          "verdict": "grounded",
+          "claims": [
+            {
+              "claim": "این محصول دارای جوهر خشک شده و کیفیت پایین است و برخی کاربران از تقلبی بودن آن شکایت دارند.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:22413488",
+                "comment:18930530",
+                "comment:21630455",
+                "comment:49751370"
+              ],
+              "rationale": "Multiple users report dry ink and low quality, stating the product is fake."
+            },
+            {
+              "claim": "بعضی کاربران تجربه بدی از این محصول داشته‌اند و اظهار می‌کنند که کالای ارسال شده با آنچه که سفارش داده بودند متفاوت بوده است.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:21802229",
+                "comment:22744454",
+                "comment:20850700"
+              ],
+              "rationale": "Several comments specifically mention receiving incorrect products."
+            },
+            {
+              "claim": "کاربران گزارش کردند که بعضی از روان‌نویس‌ها اصلاً جوهر ندارند و غیرقابل استفاده‌اند.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:22520194",
+                "comment:20831168",
+                "comment:29467219"
+              ],
+              "rationale": "Multiple users complain of pens that either don’t write or have insufficient ink."
+            },
+            {
+              "claim": "تعداد زیادی از خریداران به این مسئله اشاره کرده‌اند که این محصول در کیفیت خوبی ندارد و به نظر می‌رسد تقلبی است.",
+              "verdict": "partially_supported",
+              "evidence_ids": [
+                "comment:49751370",
+                "comment:22514455"
+              ],
+              "rationale": "Several comments describe low quality; however, not all reports explicitly mention counterfeit concerns."
+            }
+          ],
+          "rationale": "The claims about dry ink, poor quality, and users receiving incorrect items are well-supported by multiple comments, while the statement about overall product quality leans on some reports without universal consensus."
+        },
+        "model": "gpt-4o-mini-2024-07-18",
+        "cache_hit": false,
+        "latency_ms": 4242.93576099808
+      }
+    },
+    {
+      "case_id": "qa06",
+      "product_id": "151716",
+      "product": "روان نویس یونی-بال Eye UB-157 (نوشت افزار)",
+      "question": "آیا با توجه به تجربه‌ی کاربران ارزش خرید دارد؟",
+      "evidence_count": 20,
+      "answer_fa": "بررسی‌ها نشان می‌دهد که برخی کاربران از کیفیت و راحتی نوشتن راضی‌اند و خرید مجدد انجام داده‌اند، اما تعدادی نیز به تقلبی بودن و بی‌کیفیتی محصول اشاره کرده‌اند.",
+      "sufficient_evidence": true,
+      "claims": [
+        {
+          "text": "کیفیت قابل قبولی دارد ولی گاهی نوکش خراب می‌شود و باید دور انداخته شود.",
+          "comment_ids": [
+            "30639574"
+          ]
+        },
+        {
+          "text": "تجربه مثبت با کیفیت و راحتی نوشتن، توصیه به خرید محصول می‌شود.",
+          "comment_ids": [
+            "28668191",
+            "31042212",
+            "30720013"
+          ]
+        },
+        {
+          "text": "برخی از محصولات موجود ممکن است تقلبی و بی‌کیفیت باشند و توصیه نمی‌شود.",
+          "comment_ids": [
+            "17158931",
+            "20636647",
+            "20831168",
+            "18930530",
+            "26150833",
+            "22120850",
+            "49751370",
+            "22413488",
+            "21802229",
+            "21630455"
+          ]
+        },
+        {
+          "text": "خرید مجدد تعداد بالایی از این محصول نشان‌دهنده رضایت برخی کاربران است.",
+          "comment_ids": [
+            "23404619"
+          ]
+        }
+      ],
+      "rendered_fa": "بررسی‌ها نشان می‌دهد که برخی کاربران از کیفیت و راحتی نوشتن راضی‌اند و خرید مجدد انجام داده‌اند، اما تعدادی نیز به تقلبی بودن و بی‌کیفیتی محصول اشاره کرده‌اند.\n\n- کیفیت قابل قبولی دارد ولی گاهی نوکش خراب می‌شود و باید دور انداخته شود. [comment:30639574]\n- تجربه مثبت با کیفیت و راحتی نوشتن، توصیه به خرید محصول می‌شود. [comment:28668191] [comment:31042212] [comment:30720013]\n- برخی از محصولات موجود ممکن است تقلبی و بی‌کیفیت باشند و توصیه نمی‌شود. [comment:17158931] [comment:20636647] [comment:20831168] [comment:18930530] [comment:26150833] [comment:22120850] [comment:49751370] [comment:22413488] [comment:21802229] [comment:21630455]\n- خرید مجدد تعداد بالایی از این محصول نشان‌دهنده رضایت برخی کاربران است. [comment:23404619]",
+      "citation_audit": {
+        "found": [
+          "[comment:30639574]",
+          "[comment:28668191]",
+          "[comment:31042212]",
+          "[comment:30720013]",
+          "[comment:17158931]",
+          "[comment:20636647]",
+          "[comment:20831168]",
+          "[comment:18930530]",
+          "[comment:26150833]",
+          "[comment:22120850]",
+          "[comment:49751370]",
+          "[comment:22413488]",
+          "[comment:21802229]",
+          "[comment:21630455]",
+          "[comment:23404619]"
+        ],
+        "valid": [
+          "[comment:30639574]",
+          "[comment:28668191]",
+          "[comment:31042212]",
+          "[comment:30720013]",
+          "[comment:17158931]",
+          "[comment:20636647]",
+          "[comment:20831168]",
+          "[comment:18930530]",
+          "[comment:26150833]",
+          "[comment:22120850]",
+          "[comment:49751370]",
+          "[comment:22413488]",
+          "[comment:21802229]",
+          "[comment:21630455]",
+          "[comment:23404619]"
+        ],
+        "invalid": [],
+        "integrity_score": 1.0
+      },
+      "citation_hallucination": {
+        "generated_ids": 15,
+        "invented_ids": [],
+        "dropped_claims": []
+      },
+      "hallucination_warning_fa": null,
+      "latency_ms": 3124.267145001795,
+      "evidence": [
+        {
+          "id": "23404619",
+          "kind": "comment",
+          "text": "یک تجربه خرید بنده برای امتحان نقاط قوت و تمامی موارد باعث گشت که تعداد(10 تایی) از این محصول را سفارش دهم, در نظر گرفتن تخفیف از سوی شما بزرگترین کمک به اینجانب و امثال بنده است.(دکتر امین بزی)",
+          "score": 0.8239789605140686,
+          "product_id": "151716",
+          "title": "خرید مجدد_تخفیف",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": "هیچ نقطه ضعفی نبود و مشاهده نشد و دیجی کالا به صورت شایسته پروسه سفارش تا تحویل را انجام داد.",
+            "title": "خرید مجدد_تخفیف"
+          }
+        },
+        {
+          "id": "30639574",
+          "kind": "comment",
+          "text": "کیفیت قابل قبولی داره ولی گاهی نوکش خراب میشه و دیگه با وجود داشتن جوهر باید دور انداختش.",
+          "score": 0.8046144843101501,
+          "product_id": "151716",
+          "title": "حس نوشتن راحت رو به آدم میده",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": "کیفیت خوب",
+            "disadvantages": "خراب شدن زود هنگام نوک",
+            "title": "حس نوشتن راحت رو به آدم میده"
+          }
+        },
+        {
+          "id": "17158931",
+          "kind": "comment",
+          "text": "من از همین دیجی کالا خریدم و خشک بود البته که یک سوم قیمت بیرون هست پس کالای معیوب که ارزونه و مرجوع کردم",
+          "score": 0.8021434545516968,
+          "product_id": "151716",
+          "title": "نخرید",
+          "meta": {
+            "rate": 1.5,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "نخرید"
+          }
+        },
+        {
+          "id": "20636647",
+          "kind": "comment",
+          "text": "روی روان نویس همانطور که در عکسهای خریداران هم مشخصه مارک یونی بال نوشته نشده و مارک مشابه است در حالیکه در عکس سایت دقیقا مارک یونی بال روی روان نویس مشاهده میشه . کیفیت و کارایی ندارد و قابل استفاده نیست .",
+          "score": 0.8002362251281738,
+          "product_id": "151716",
+          "title": "اصلا توصیه نمیکنم",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "اصلا توصیه نمیکنم"
+          }
+        },
+        {
+          "id": "20831168",
+          "kind": "comment",
+          "text": "من تعداد زیاد خریدم ولی بعضی ها اصلا نمینویسن نمیدونم غیر اصله یا تو گمرکی جایی مونده خراب شده ارزش برگردوندن نداشت البته من از دو تامین کننده مختلف خریدم و نمیدونم کدوم به کدومه اما اونهایی که مینویسن تا قطه آخر فوق العاده هستن",
+          "score": 0.7995774745941162,
+          "product_id": "151716",
+          "title": "گویا غیر اصل یا در انبار مانده",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": "بعضیاشون خوبن",
+            "disadvantages": "بعضی ها اصلا نمینویسن",
+            "title": "گویا غیر اصل یا در انبار مانده"
+          }
+        },
+        {
+          "id": "18930530",
+          "kind": "comment",
+          "text": "من این محصول را از تامین کننده ایران کالا نو خریدم بی کیفیت و غیر قابل استفاده بود حتی نتونستم یک جمله کامل با این روان نویس بنویسم. به نظر من شما پولتون را دور نریزید , یه تامین کننده معتبر انتخاب کنید.",
+          "score": 0.798123836517334,
+          "product_id": "151716",
+          "title": "مربوط به تامیین کننده",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "مربوط به تامیین کننده"
+          }
+        },
+        {
+          "id": "26150833",
+          "kind": "comment",
+          "text": "خیلی بی کیفیت بودن و نمی شود گفت روان نویس هستند اصلا نمی نویسند که روان باشند من چند ساله مشتری دیجی کالا هستم ولی حدود 1 سال هست کیفیت محصولات اومده پایین",
+          "score": 0.7954192161560059,
+          "product_id": "151716",
+          "title": null,
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "28668191",
+          "kind": "comment",
+          "text": "من از خیلی سال پیش از این روان نویس ها استفاده میکردم که همیشه انتخاب اولم بود و هست ولی قیمتش خیلی زیاد شده که حواسم رو بیشتر جمع میکنم تا گم نشه! مشابه های دیگه اش رو امتحان کردم ولی هیچ کدوم به روانی این نیست و اگه بخوای از نظر روان بودن مقایسه کنیم باید با خود نویس ها مقایسه بشه و نه با روان نویس ها",
+          "score": 0.7930384874343872,
+          "product_id": "151716",
+          "title": "بهترین روان نویسی که استفاده کردم",
+          "meta": {
+            "rate": 4.0,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": "روانی, خوش دست",
+            "disadvantages": "توی بعضی کاغذ ها جالب نیست, قیمتش خیلی زیاد شده",
+            "title": "بهترین روان نویسی که استفاده کردم"
+          }
+        },
+        {
+          "id": "50286857",
+          "kind": "comment",
+          "text": "روان‌نویس روانی هستش ولی متاسفانه موقعی که نوکش روی کاغذ قرار میدم جوهر خیلی زیادی میاد بیرون و این اصلا خوب نیست. پیشنهاد نمیکنم این محصول بخرید",
+          "score": 0.7921802401542664,
+          "product_id": "151716",
+          "title": "روان‌نویس یونیبال",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "روان‌نویس یونیبال"
+          }
+        },
+        {
+          "id": "22520194",
+          "kind": "comment",
+          "text": "خشک و افتضاح پول درو ریختن است - بدون جوهر! مرسی ار دیجی کالا بابت انتخاب افتضاح فروشنده ها و عدم رسیدگی و نظارت بر فروش",
+          "score": 0.7917041182518005,
+          "product_id": "151716",
+          "title": null,
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "29632898",
+          "kind": "comment",
+          "text": "چون اصلش گیر نمیاد کلا شانسیه. ممکنه عالی گیرتون بیاد و ممکنه ننویسه یا یه خط در میون بنویسه. این فیکها بیشتر از ده تومن نمی ارزه.",
+          "score": 0.7914313077926636,
+          "product_id": "151716",
+          "title": "عالی ولی شانسی",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "عالی ولی شانسی"
+          }
+        },
+        {
+          "id": "22120850",
+          "kind": "comment",
+          "text": "کاش آیهان سنتر به جای ارزان فروشی گران تر میفروخت ولی کالای با کیفیت دست مشتری میرسید. یانی بال هست, تقلبی و خالی از جوهر",
+          "score": 0.7911846041679382,
+          "product_id": "151716",
+          "title": "کالای تقلبی",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 5,
+            "advantages": null,
+            "disadvantages": "کالای تقلبی, , جوهر خالی, همه چی",
+            "title": "کالای تقلبی"
+          }
+        },
+        {
+          "id": "31042212",
+          "kind": "comment",
+          "text": "من از خریدهایی که کردم خیلی راضی هستم و به دیگر دوستان نیز توصیه میکنم حتما کالاهای خود را از همین کانال خرید نمایند.چون اطمینان,سلامت ونحوه ارسال خیلی عالی بود.متشکرم",
+          "score": 0.7903778553009033,
+          "product_id": "151716",
+          "title": "بسیار عالی بود.موفق باشید",
+          "meta": {
+            "rate": 5.0,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "بسیار عالی بود.موفق باشید"
+          }
+        },
+        {
+          "id": "22413488",
+          "kind": "comment",
+          "text": "بنده این روان نویس را از فروشگاه آیهان سنتر سفارش دادم که وقتی بدستم رسید متوجه شدم هم تقلبی هست هم جوهرش خشک شده بوده. فکر میکنم دیجی کالا باید قبل از ارسال خودش اقلام سفارشی رو چک کنه بعد ارسال کند.",
+          "score": 0.7901695966720581,
+          "product_id": "151716",
+          "title": "زهره",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 5,
+            "advantages": "ندارد",
+            "disadvantages": "تقلبی بود و بجای uni ball روی روان نویس yoni-ball نوشته شده.در ضمن جوهرش هم خشک بود",
+            "title": "زهره"
+          }
+        },
+        {
+          "id": "49751370",
+          "kind": "comment",
+          "text": "کاملا نسبت به نمونه اصلی متفاوت و تقلبی است",
+          "score": 0.7900413870811462,
+          "product_id": "151716",
+          "title": "کیفیت بسیار پایین و تقلبی",
+          "meta": {
+            "rate": 2.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": "کیفیت پایین جوهر, در روانویس خوب بسته نمیشود",
+            "title": "کیفیت بسیار پایین و تقلبی"
+          }
+        },
+        {
+          "id": "20711323",
+          "kind": "comment",
+          "text": "من ازش برای طراحی مهندس استفاده میکنم گاهی وقتا هم یاداشت. کلا خوبه. یکمی فقط گرونه. دقت کنید برای طراحی روی کاغذ نازک حوهرش میزنه پشت کاغذ. باید طراحی سریع که سرعت دست بره بالا خوبه.",
+          "score": 0.7889984846115112,
+          "product_id": "151716",
+          "title": "مناسب یاداشت و طراحی",
+          "meta": {
+            "rate": 3.75,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "مناسب یاداشت و طراحی"
+          }
+        },
+        {
+          "id": "22514455",
+          "kind": "comment",
+          "text": "اینکه تولید کننده این کالا را بدون جوهر میفروشد یک مسئله است و اینکه دیجی کالا بدون کنترل و نظارت بر زنجیره, خود را در این شریک میکند مهم تر است.",
+          "score": 0.787656307220459,
+          "product_id": "151716",
+          "title": "تاسف",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "تاسف"
+          }
+        },
+        {
+          "id": "21802229",
+          "kind": "comment",
+          "text": "فروشنده عزیز چرا یک مارک دیگه میفرستین? چرا فکر میکنید مشتری متوجه نمیشه? تا به حال محصولی به این افتضاحی دریافت نکرده بودم. کلش که خالیه مارکشم که اصلا یونی بال نیست یانی بال هست.",
+          "score": 0.7857299447059631,
+          "product_id": "151716",
+          "title": "بدترین خریدم از دیجیکالا",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 13,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "بدترین خریدم از دیجیکالا"
+          }
+        },
+        {
+          "id": "21630455",
+          "kind": "comment",
+          "text": "کالا غیر اصل و بسیار بی‌کیفیت و مغایر با عکس دیجیکالا بود مرجوع کردم",
+          "score": 0.785014271736145,
+          "product_id": "151716",
+          "title": "فیک",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "فیک"
+          }
+        },
+        {
+          "id": "30720013",
+          "kind": "comment",
+          "text": "روان نویس خوبیه هم رنگ نوشتاری خوبی داره و هم طراحی بدنه خوب است قیمتش هم مناسبه",
+          "score": 0.7836195230484009,
+          "product_id": "151716",
+          "title": "روان نویس خوب",
+          "meta": {
+            "rate": 4.25,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 0,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "روان نویس خوب"
+          }
+        }
+      ],
+      "judgment": {
+        "judgment": {
+          "relevance_score": 5,
+          "grounding_score": 3,
+          "verdict": "partially_grounded",
+          "claims": [
+            {
+              "claim": "برخی کاربران از کیفیت و راحتی نوشتن راضی‌اند و خرید مجدد انجام داده‌اند.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:23404619",
+                "comment:30639574",
+                "comment:28668191"
+              ],
+              "rationale": "خرید مجدد و نظرات مثبت درباره راحتی نوشتن تایید شده است."
+            },
+            {
+              "claim": "تعدادی نیز به تقلبی بودن و بی‌کیفیتی محصول اشاره کرده‌اند.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:17158931",
+                "comment:20636647",
+                "comment:18930530",
+                "comment:26150833",
+                "comment:22120850",
+                "comment:49751370",
+                "comment:22413488",
+                "comment:21802229",
+                "comment:21630455"
+              ],
+              "rationale": "نظرات منفی در مورد تقلبی بودن و بی‌کیفیتی محصول به وضوح بیان شده است."
+            },
+            {
+              "claim": "خرید مجدد تعداد بالایی از این محصول نشان‌دهنده رضایت برخی کاربران است.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:23404619"
+              ],
+              "rationale": "نظریه‌ی مثبت در مورد خرید مجدد از یک خریدار تایید شده است."
+            },
+            {
+              "claim": "کیفیت قابل قبولی دارد ولی گاهی نوکش خراب می‌شود و باید دور انداخته شود.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:30639574"
+              ],
+              "rationale": "نظر مثبت و منفی درباره کیفیت و خرابی نوک روان نویس موجود است."
+            },
+            {
+              "claim": "بسیاری از محصولات موجود ممکن است تقلبی و بی‌کیفیت باشند و توصیه نمی‌شود.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:17158931",
+                "comment:20636647",
+                "comment:22120850",
+                "comment:49751370"
+              ],
+              "rationale": "نظرات منفی زیادی در مورد کیفیت و تقلبی بودن وجود دارد."
+            }
+          ],
+          "rationale": "پاسخ با داده‌های موجود از تجربیات کاربران ارزیابی شده و در برخی موارد حمایت می‌شود، اما در برخی جزئیات کلیت قابل استناد یا حتی متناقض است."
+        },
+        "model": "gpt-4o-mini-2024-07-18",
+        "cache_hit": false,
+        "latency_ms": 5507.107442001143
+      }
+    },
+    {
+      "case_id": "qa07",
+      "product_id": "963758",
+      "product": "تی شرت زنانه طرح شازده کوچولو (لباس زنانه)",
+      "question": "خریداران درباره‌ی کیفیت این محصول چه گفته‌اند؟",
+      "evidence_count": 20,
+      "answer_fa": "کیفیت این محصول بسیار پایین است و عمدتاً از جنس پلاستیک نازک ساخته شده است. بسیاری از خریداران به بی‌کیفیتی، اشتباه در مشخصات و نامناسب بودن سایزها اشاره کردند.",
+      "sufficient_evidence": true,
+      "claims": [
+        {
+          "text": "کیفیت این محصول بسیار پایین است و جنس آن نازک و غیرقابل قبول توصیف شده است.",
+          "comment_ids": [
+            "49507388",
+            "24811550",
+            "18866450",
+            "21516141",
+            "19609852",
+            "21171502",
+            "23172261"
+          ]
+        },
+        {
+          "text": "برخی کاربران به اشتباه در مشخصات و استاندارد نبودن سایز اشاره کرده‌اند.",
+          "comment_ids": [
+            "21516141",
+            "9556018",
+            "40690012"
+          ]
+        },
+        {
+          "text": "جنس محصول عمدتاً از پلاستیک بوده و اصلا کیفیت لازم را ندارد.",
+          "comment_ids": [
+            "20054664",
+            "13369432",
+            "22790439"
+          ]
+        },
+        {
+          "text": "چاپ و طرح تی شرت‌ها نیز به نظر کاربران بی کیفیت بوده و با عکس‌های ارائه شده مطابقت ندارد.",
+          "comment_ids": [
+            "13636805",
+            "9620628"
+          ]
+        }
+      ],
+      "rendered_fa": "کیفیت این محصول بسیار پایین است و عمدتاً از جنس پلاستیک نازک ساخته شده است. بسیاری از خریداران به بی‌کیفیتی، اشتباه در مشخصات و نامناسب بودن سایزها اشاره کردند.\n\n- کیفیت این محصول بسیار پایین است و جنس آن نازک و غیرقابل قبول توصیف شده است. [comment:49507388] [comment:24811550] [comment:18866450] [comment:21516141] [comment:19609852] [comment:21171502] [comment:23172261]\n- برخی کاربران به اشتباه در مشخصات و استاندارد نبودن سایز اشاره کرده‌اند. [comment:21516141] [comment:9556018] [comment:40690012]\n- جنس محصول عمدتاً از پلاستیک بوده و اصلا کیفیت لازم را ندارد. [comment:20054664] [comment:13369432] [comment:22790439]\n- چاپ و طرح تی شرت‌ها نیز به نظر کاربران بی کیفیت بوده و با عکس‌های ارائه شده مطابقت ندارد. [comment:13636805] [comment:9620628]",
+      "citation_audit": {
+        "found": [
+          "[comment:49507388]",
+          "[comment:24811550]",
+          "[comment:18866450]",
+          "[comment:21516141]",
+          "[comment:19609852]",
+          "[comment:21171502]",
+          "[comment:23172261]",
+          "[comment:9556018]",
+          "[comment:40690012]",
+          "[comment:20054664]",
+          "[comment:13369432]",
+          "[comment:22790439]",
+          "[comment:13636805]",
+          "[comment:9620628]"
+        ],
+        "valid": [
+          "[comment:49507388]",
+          "[comment:24811550]",
+          "[comment:18866450]",
+          "[comment:21516141]",
+          "[comment:19609852]",
+          "[comment:21171502]",
+          "[comment:23172261]",
+          "[comment:9556018]",
+          "[comment:40690012]",
+          "[comment:20054664]",
+          "[comment:13369432]",
+          "[comment:22790439]",
+          "[comment:13636805]",
+          "[comment:9620628]"
+        ],
+        "invalid": [],
+        "integrity_score": 1.0
+      },
+      "citation_hallucination": {
+        "generated_ids": 15,
+        "invented_ids": [],
+        "dropped_claims": []
+      },
+      "hallucination_warning_fa": null,
+      "latency_ms": 3248.3319390012184,
+      "evidence": [
+        {
+          "id": "49507388",
+          "kind": "comment",
+          "text": "جنسش بسیار نازکه و کیفیت بسیار پایین. البته با این قیمت انتظار بیشتری نمیشه داشت",
+          "score": 0.8435491323471069,
+          "product_id": "963758",
+          "title": "افتضاح",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "افتضاح"
+          }
+        },
+        {
+          "id": "24811550",
+          "kind": "comment",
+          "text": "اصلا پیشنهاد نمیکنم. با خرید این کالای بی کیفیت انگار پولتون رو دورریختین. اصلا مشخصاتش درست قید نشده و جنسش آشغاله",
+          "score": 0.838564395904541,
+          "product_id": "963758",
+          "title": "پیشنهاد نمیکنم",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "پیشنهاد نمیکنم"
+          }
+        },
+        {
+          "id": "18866450",
+          "kind": "comment",
+          "text": "من تیشرت بهتر خریدم از دی جی کالا با قیمت پایین تر از این. نازکه و بدن کاملا دیده میشه. خوب نیست",
+          "score": 0.8356673717498779,
+          "product_id": "963758",
+          "title": "با این قیمت کیفیتش بده",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": "چاپش کم رنگه, خیلی نازکه",
+            "title": "با این قیمت کیفیتش بده"
+          }
+        },
+        {
+          "id": "21516141",
+          "kind": "comment",
+          "text": "کیفیت کاملا بد است. عکس قرار داده شده کاملا با نوع محصول متفاوت است. سایز بندی اصلا استاندارد نیست. امیدوارم نظارت بیشتری بر روی کالاهای قرار داده شده اعمال شود.",
+          "score": 0.8353985548019409,
+          "product_id": "963758",
+          "title": "کیفیت بسیار بد",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": "بسیار نازک, سایز بندی کاملا اشتباه",
+            "title": "کیفیت بسیار بد"
+          }
+        },
+        {
+          "id": "19609852",
+          "kind": "comment",
+          "text": "خیلی بی کیفیت بود . حیف پول. جنس پلاستیک خالص بود و بسیار نازک بدن کاملا مشخص",
+          "score": 0.8307508230209351,
+          "product_id": "963758",
+          "title": "بسیار بسیار افتضاح. بی کیفیت . جنس پلاستیک و مثل اینکه پلاستیک زباله پوشیدی. بدن کاملا پیداست و بی نهایت نازک",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "بسیار بسیار افتضاح. بی کیفیت . جنس پلاستیک و مثل اینکه پلاستیک زباله پوشیدی. بدن کاملا پیداست و بی نهایت نازک"
+          }
+        },
+        {
+          "id": "18740785",
+          "kind": "comment",
+          "text": "فروشنده محترم مرسی واقعا,انصافا از کجا تهیه کردی این جنس رو خیلی گشتم پیدا نکردم تو مشخصات کالا و جنس مشخص کنید فاصله تارو و پود تی شرت چند سانت هستش. دیجی شما هم هر چی اومد دستت بفروش یه کنترلی یه واحد صحت سنجی چیزی هم مهیا کنی بد نیست با هژمونی خودت بازی نکن",
+          "score": 0.8292593359947205,
+          "product_id": "963758",
+          "title": "پوست پیاز",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 10,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "پوست پیاز"
+          }
+        },
+        {
+          "id": "20054664",
+          "kind": "comment",
+          "text": "کامل پلاستیک و بدرد توری پنجره میخورد",
+          "score": 0.8235878944396973,
+          "product_id": "963758",
+          "title": "فقط میتونم بگم حیف از اعتماد ما برند دیجی کلا بعیده چنین کالاهایی بفروشه",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "فقط میتونم بگم حیف از اعتماد ما برند دیجی کلا بعیده چنین کالاهایی بفروشه"
+          }
+        },
+        {
+          "id": "13636805",
+          "kind": "comment",
+          "text": "تو ذوقم زد. جنسش اصلا خوب نیست. طرحش خیلی بی کیفیت تر از چیزیه که تو عکس می بینید",
+          "score": 0.823175311088562,
+          "product_id": "963758",
+          "title": null,
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "9556018",
+          "kind": "comment",
+          "text": "مرجوع میکنم. جنسش جالب نیست. سایزش استاندارد نیست. پشتش هم نخ کشه",
+          "score": 0.8169070482254028,
+          "product_id": "963758",
+          "title": "خوب نیست",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "خوب نیست"
+          }
+        },
+        {
+          "id": "9620628",
+          "kind": "comment",
+          "text": "من با قیمت بسیار کمتر از دیحی تیشرت گرفتم خیلی خیلی بهتر از این بود. جنسش خیلی نامرغوبه و چاپش اونقدر بد هست که حین چاپ لباس نخ کش شده",
+          "score": 0.8168776035308838,
+          "product_id": "963758",
+          "title": "جنس بسیار نا مرغوب",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "جنس بسیار نا مرغوب"
+          }
+        },
+        {
+          "id": "21171502",
+          "kind": "comment",
+          "text": "بسیار بی کیفیت است جنس پارچه تی شرت با عکس یکی نیست",
+          "score": 0.8126362562179565,
+          "product_id": "963758",
+          "title": "جنس این تی شرت افتضاح است",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "جنس این تی شرت افتضاح است"
+          }
+        },
+        {
+          "id": "26224656",
+          "kind": "comment",
+          "text": "جنس کاملا پلاستیک و خیلی نازک بود کیفیتش پایینخ قبلا هم گرفته بودم ولی اون نخی بود خیلی بهتر بود",
+          "score": 0.8114954233169556,
+          "product_id": "963758",
+          "title": "بدک نبود",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 3,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "بدک نبود"
+          }
+        },
+        {
+          "id": "40690012",
+          "kind": "comment",
+          "text": "اگر توضیحات واضحتری برای کالا ثبت شود مشتری راحتتر جنس را انتخاب می کند و لزومی ب مرجوعی کالا نیست.",
+          "score": 0.8094006776809692,
+          "product_id": "963758",
+          "title": null,
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": null,
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "38665469",
+          "kind": "comment",
+          "text": "جنس محصولات رو درست بنویسید مثلا اگه لباس از جنس پلاستیک هست نوشته شود نه اینکه بنویسید نخ پنبه",
+          "score": 0.8049535751342773,
+          "product_id": "963758",
+          "title": null,
+          "meta": {
+            "rate": 4.0,
+            "recommendation_status": null,
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "23172261",
+          "kind": "comment",
+          "text": "افتضاحه حالم بهم خورد وقتی دیدمش جنسش خیلی بده چاپشم اصلا خوب نیست اصلا فکر نمی کردم انقد نازکه فقط به درد دستمال میخوره نه لباس",
+          "score": 0.8045997023582458,
+          "product_id": "963758",
+          "title": "جنس افتضاح",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "جنس افتضاح"
+          }
+        },
+        {
+          "id": "22310152",
+          "kind": "comment",
+          "text": "جنسش خیلی نازکه حتی لباس زیر پیداست ولی نسبت به قیمتی که میخریم ارزش داره",
+          "score": 0.802347719669342,
+          "product_id": "963758",
+          "title": null,
+          "meta": {
+            "rate": 4.0,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "23019217",
+          "kind": "comment",
+          "text": "پارچه اصلا کیفیت ندارد",
+          "score": 0.8013197779655457,
+          "product_id": "963758",
+          "title": "کیفیت پارچه",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "کیفیت پارچه"
+          }
+        },
+        {
+          "id": "13369432",
+          "kind": "comment",
+          "text": "جنسش کاملا پلاستیکه خالصه و کارایی نداره",
+          "score": 0.7992969751358032,
+          "product_id": "963758",
+          "title": "جنس پلاستیکی",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 3,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "جنس پلاستیکی"
+          }
+        },
+        {
+          "id": "22790439",
+          "kind": "comment",
+          "text": "اصلا نخرید من پشیمون شدم دو لایه تور سفید روش عکس داره ب هیچ دردی نمیخوره :(",
+          "score": 0.7981315851211548,
+          "product_id": "963758",
+          "title": "افتضاح خیلی خیلی بد",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": "پارچه توری, جنس نامرغوب",
+            "title": "افتضاح خیلی خیلی بد"
+          }
+        },
+        {
+          "id": "21833564",
+          "kind": "comment",
+          "text": "هنوز نپوشیدم اما جنس خوبی نداره و زیش پیداست ولی من طرحش رو دوست داشتم",
+          "score": 0.7974936962127686,
+          "product_id": "963758",
+          "title": null,
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        }
+      ],
+      "judgment": {
+        "judgment": {
+          "relevance_score": 5,
+          "grounding_score": 5,
+          "verdict": "grounded",
+          "claims": [
+            {
+              "claim": "کیفیت این محصول بسیار پایین است و عمدتاً از جنس پلاستیک نازک ساخته شده است.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:49507388",
+                "comment:20054664",
+                "comment:13369432",
+                "comment:19609852"
+              ],
+              "rationale": "این ادعا با نظرات مشتریان درباره کیفیت پایین و جنس پلاستیکی تایید شده است."
+            },
+            {
+              "claim": "بسیاری از خریداران به بی‌کیفیتی اشاره کردند.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:49507388",
+                "comment:24811550",
+                "comment:21516141",
+                "comment:21171502"
+              ],
+              "rationale": "تعدادی از نظرات مشتریان به بی‌کیفیتی محصول اشاره می‌کنند."
+            },
+            {
+              "claim": "اشتباه در مشخصات و نامناسب بودن سایزها اشاره شده است.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:21516141",
+                "comment:9556018",
+                "comment:40690012"
+              ],
+              "rationale": "نظرات تایید می‌کنند که مشخصات و سایزها نادرست هستند."
+            },
+            {
+              "claim": "چاپ و طرح تی شرت‌ها بی کیفیت بوده و با عکس‌های ارائه شده مطابقت ندارد.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:13636805",
+                "comment:9620628"
+              ],
+              "rationale": "نظرات مشتریان به بی‌کیفیتی چاپ و عدم تطابق با عکس‌ها اشاره دارند."
+            }
+          ],
+          "rationale": "تمام ادعاهای مطرح شده به وضوح با ارائه نظرات مختلف خریداران تایید می‌شوند."
+        },
+        "model": "gpt-4o-mini-2024-07-18",
+        "cache_hit": false,
+        "latency_ms": 3835.840615000052
+      }
+    },
+    {
+      "case_id": "qa08",
+      "product_id": "963758",
+      "product": "تی شرت زنانه طرح شازده کوچولو (لباس زنانه)",
+      "question": "مردم بیشتر از چه چیزی در این محصول راضی بودند؟",
+      "evidence_count": 20,
+      "answer_fa": "به طور کلی، مردم بیشتر از طراحی محصول راضی بودند، هر چند انتقادات زیادی درباره کیفیت پایین جنسی و نازکی پارچه وجود دارد.",
+      "sufficient_evidence": true,
+      "claims": [
+        {
+          "text": "بسیاری از خریداران به کیفیت پایین جنس اشاره کردند و اظهار نمودند که این محصول به هیچ وجه با عکس و توضیحات آن مطابقت ندارد.",
+          "comment_ids": [
+            "13636805",
+            "18866450",
+            "19609852",
+            "24811550"
+          ]
+        },
+        {
+          "text": "برخی از کاربران اعلام کردند که این تی‌شرت خیلی نازک است و کیفیت چاپ نیز بسیار پایین است.",
+          "comment_ids": [
+            "9620628",
+            "23172261",
+            "9556018"
+          ]
+        },
+        {
+          "text": "تعدادی از نظرات به عدم صداقت در توضیحات کالای ارائه شده اشاره کردند و گفتند که جنس محصول با آنچه در توضیحات آمده مطابقت ندارد.",
+          "comment_ids": [
+            "40690012",
+            "38665469"
+          ]
+        },
+        {
+          "text": "با وجود انتقادات، چند کاربر از طراحی محصول راضی بودند و بیان کردند که طرح تی‌شرت جذاب است.",
+          "comment_ids": [
+            "21833564",
+            "17177615"
+          ]
+        }
+      ],
+      "rendered_fa": "⚠ هشدار استناد: 1 از 12 شناسه‌ی استنادشده در شواهد وجود نداشت و حذف شد (8% از استنادها).\n\nبه طور کلی، مردم بیشتر از طراحی محصول راضی بودند، هر چند انتقادات زیادی درباره کیفیت پایین جنسی و نازکی پارچه وجود دارد.\n\n- بسیاری از خریداران به کیفیت پایین جنس اشاره کردند و اظهار نمودند که این محصول به هیچ وجه با عکس و توضیحات آن مطابقت ندارد. [comment:13636805] [comment:18866450] [comment:19609852] [comment:24811550]\n- برخی از کاربران اعلام کردند که این تی‌شرت خیلی نازک است و کیفیت چاپ نیز بسیار پایین است. [comment:9620628] [comment:23172261] [comment:9556018]\n- تعدادی از نظرات به عدم صداقت در توضیحات کالای ارائه شده اشاره کردند و گفتند که جنس محصول با آنچه در توضیحات آمده مطابقت ندارد. [comment:40690012] [comment:38665469]\n- با وجود انتقادات، چند کاربر از طراحی محصول راضی بودند و بیان کردند که طرح تی‌شرت جذاب است. [comment:21833564] [comment:17177615]",
+      "citation_audit": {
+        "found": [
+          "[comment:13636805]",
+          "[comment:18866450]",
+          "[comment:19609852]",
+          "[comment:24811550]",
+          "[comment:9620628]",
+          "[comment:23172261]",
+          "[comment:9556018]",
+          "[comment:40690012]",
+          "[comment:38665469]",
+          "[comment:21833564]",
+          "[comment:17177615]"
+        ],
+        "valid": [
+          "[comment:13636805]",
+          "[comment:18866450]",
+          "[comment:19609852]",
+          "[comment:24811550]",
+          "[comment:9620628]",
+          "[comment:23172261]",
+          "[comment:9556018]",
+          "[comment:40690012]",
+          "[comment:38665469]",
+          "[comment:21833564]",
+          "[comment:17177615]"
+        ],
+        "invalid": [],
+        "integrity_score": 1.0
+      },
+      "citation_hallucination": {
+        "generated_ids": 12,
+        "invented_ids": [
+          "495073"
+        ],
+        "dropped_claims": []
+      },
+      "hallucination_warning_fa": "⚠ هشدار استناد: 1 از 12 شناسه‌ی استنادشده در شواهد وجود نداشت و حذف شد (8% از استنادها).",
+      "latency_ms": 3989.795696001238,
+      "evidence": [
+        {
+          "id": "13636805",
+          "kind": "comment",
+          "text": "تو ذوقم زد. جنسش اصلا خوب نیست. طرحش خیلی بی کیفیت تر از چیزیه که تو عکس می بینید",
+          "score": 0.7846519947052002,
+          "product_id": "963758",
+          "title": null,
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "18866450",
+          "kind": "comment",
+          "text": "من تیشرت بهتر خریدم از دی جی کالا با قیمت پایین تر از این. نازکه و بدن کاملا دیده میشه. خوب نیست",
+          "score": 0.7799214720726013,
+          "product_id": "963758",
+          "title": "با این قیمت کیفیتش بده",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": "چاپش کم رنگه, خیلی نازکه",
+            "title": "با این قیمت کیفیتش بده"
+          }
+        },
+        {
+          "id": "49507388",
+          "kind": "comment",
+          "text": "جنسش بسیار نازکه و کیفیت بسیار پایین. البته با این قیمت انتظار بیشتری نمیشه داشت",
+          "score": 0.7768172025680542,
+          "product_id": "963758",
+          "title": "افتضاح",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "افتضاح"
+          }
+        },
+        {
+          "id": "40690012",
+          "kind": "comment",
+          "text": "اگر توضیحات واضحتری برای کالا ثبت شود مشتری راحتتر جنس را انتخاب می کند و لزومی ب مرجوعی کالا نیست.",
+          "score": 0.774994969367981,
+          "product_id": "963758",
+          "title": null,
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": null,
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "9620628",
+          "kind": "comment",
+          "text": "من با قیمت بسیار کمتر از دیحی تیشرت گرفتم خیلی خیلی بهتر از این بود. جنسش خیلی نامرغوبه و چاپش اونقدر بد هست که حین چاپ لباس نخ کش شده",
+          "score": 0.7738804817199707,
+          "product_id": "963758",
+          "title": "جنس بسیار نا مرغوب",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "جنس بسیار نا مرغوب"
+          }
+        },
+        {
+          "id": "21833564",
+          "kind": "comment",
+          "text": "هنوز نپوشیدم اما جنس خوبی نداره و زیش پیداست ولی من طرحش رو دوست داشتم",
+          "score": 0.773327648639679,
+          "product_id": "963758",
+          "title": null,
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "26224656",
+          "kind": "comment",
+          "text": "جنس کاملا پلاستیک و خیلی نازک بود کیفیتش پایینخ قبلا هم گرفته بودم ولی اون نخی بود خیلی بهتر بود",
+          "score": 0.7728914618492126,
+          "product_id": "963758",
+          "title": "بدک نبود",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 3,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "بدک نبود"
+          }
+        },
+        {
+          "id": "18740785",
+          "kind": "comment",
+          "text": "فروشنده محترم مرسی واقعا,انصافا از کجا تهیه کردی این جنس رو خیلی گشتم پیدا نکردم تو مشخصات کالا و جنس مشخص کنید فاصله تارو و پود تی شرت چند سانت هستش. دیجی شما هم هر چی اومد دستت بفروش یه کنترلی یه واحد صحت سنجی چیزی هم مهیا کنی بد نیست با هژمونی خودت بازی نکن",
+          "score": 0.7723819613456726,
+          "product_id": "963758",
+          "title": "پوست پیاز",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 10,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "پوست پیاز"
+          }
+        },
+        {
+          "id": "19609852",
+          "kind": "comment",
+          "text": "خیلی بی کیفیت بود . حیف پول. جنس پلاستیک خالص بود و بسیار نازک بدن کاملا مشخص",
+          "score": 0.7687661647796631,
+          "product_id": "963758",
+          "title": "بسیار بسیار افتضاح. بی کیفیت . جنس پلاستیک و مثل اینکه پلاستیک زباله پوشیدی. بدن کاملا پیداست و بی نهایت نازک",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "بسیار بسیار افتضاح. بی کیفیت . جنس پلاستیک و مثل اینکه پلاستیک زباله پوشیدی. بدن کاملا پیداست و بی نهایت نازک"
+          }
+        },
+        {
+          "id": "20054664",
+          "kind": "comment",
+          "text": "کامل پلاستیک و بدرد توری پنجره میخورد",
+          "score": 0.7662684917449951,
+          "product_id": "963758",
+          "title": "فقط میتونم بگم حیف از اعتماد ما برند دیجی کلا بعیده چنین کالاهایی بفروشه",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "فقط میتونم بگم حیف از اعتماد ما برند دیجی کلا بعیده چنین کالاهایی بفروشه"
+          }
+        },
+        {
+          "id": "21516141",
+          "kind": "comment",
+          "text": "کیفیت کاملا بد است. عکس قرار داده شده کاملا با نوع محصول متفاوت است. سایز بندی اصلا استاندارد نیست. امیدوارم نظارت بیشتری بر روی کالاهای قرار داده شده اعمال شود.",
+          "score": 0.7652356028556824,
+          "product_id": "963758",
+          "title": "کیفیت بسیار بد",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": "بسیار نازک, سایز بندی کاملا اشتباه",
+            "title": "کیفیت بسیار بد"
+          }
+        },
+        {
+          "id": "23172261",
+          "kind": "comment",
+          "text": "افتضاحه حالم بهم خورد وقتی دیدمش جنسش خیلی بده چاپشم اصلا خوب نیست اصلا فکر نمی کردم انقد نازکه فقط به درد دستمال میخوره نه لباس",
+          "score": 0.7605856657028198,
+          "product_id": "963758",
+          "title": "جنس افتضاح",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "جنس افتضاح"
+          }
+        },
+        {
+          "id": "38665469",
+          "kind": "comment",
+          "text": "جنس محصولات رو درست بنویسید مثلا اگه لباس از جنس پلاستیک هست نوشته شود نه اینکه بنویسید نخ پنبه",
+          "score": 0.7572901844978333,
+          "product_id": "963758",
+          "title": null,
+          "meta": {
+            "rate": 4.0,
+            "recommendation_status": null,
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "9556018",
+          "kind": "comment",
+          "text": "مرجوع میکنم. جنسش جالب نیست. سایزش استاندارد نیست. پشتش هم نخ کشه",
+          "score": 0.7544256448745728,
+          "product_id": "963758",
+          "title": "خوب نیست",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "خوب نیست"
+          }
+        },
+        {
+          "id": "19479808",
+          "kind": "comment",
+          "text": "اون چیزی که اینجا سفارش میدی بااونی که تحویلت میدن خیلی فرق میکنه اصن ادمو پشیمون میکنن",
+          "score": 0.7538584470748901,
+          "product_id": "963758",
+          "title": null,
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 5,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "24811550",
+          "kind": "comment",
+          "text": "اصلا پیشنهاد نمیکنم. با خرید این کالای بی کیفیت انگار پولتون رو دورریختین. اصلا مشخصاتش درست قید نشده و جنسش آشغاله",
+          "score": 0.753261923789978,
+          "product_id": "963758",
+          "title": "پیشنهاد نمیکنم",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "پیشنهاد نمیکنم"
+          }
+        },
+        {
+          "id": "19294989",
+          "kind": "comment",
+          "text": "نخرید بخدا که پولتونو بریزید آشغال بهتر ازاین جنس بی کیفیته انصافم خوب چیزیه این چیه آخه تحویل ملت میدین",
+          "score": 0.7531248331069946,
+          "product_id": "963758",
+          "title": null,
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 5,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "22310152",
+          "kind": "comment",
+          "text": "جنسش خیلی نازکه حتی لباس زیر پیداست ولی نسبت به قیمتی که میخریم ارزش داره",
+          "score": 0.7529805302619934,
+          "product_id": "963758",
+          "title": null,
+          "meta": {
+            "rate": 4.0,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "17617433",
+          "kind": "comment",
+          "text": "نخی نیست مطابق سلیقه من نبود",
+          "score": 0.7520375847816467,
+          "product_id": "963758",
+          "title": "معمولی است",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "معمولی است"
+          }
+        },
+        {
+          "id": "17177615",
+          "kind": "comment",
+          "text": "بسیار زیبا و مورد پسند بود",
+          "score": 0.7516207695007324,
+          "product_id": "963758",
+          "title": "عالی",
+          "meta": {
+            "rate": 5.0,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "عالی"
+          }
+        }
+      ],
+      "judgment": {
+        "judgment": {
+          "relevance_score": 5,
+          "grounding_score": 4,
+          "verdict": "grounded",
+          "claims": [
+            {
+              "claim": "مردم بیشتر از طراحی محصول راضی بودند.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:21833564",
+                "comment:17177615"
+              ],
+              "rationale": "Several users expressed satisfaction with the design of the T-shirt."
+            },
+            {
+              "claim": "خیلی انتقادات درباره کیفیت پایین جنسی و نازکی پارچه وجود دارد.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:13636805",
+                "comment:18866450",
+                "comment:49507388",
+                "comment:19609852",
+                "comment:23172261"
+              ],
+              "rationale": "Numerous comments criticized the low quality of the material and the thinness of the fabric."
+            }
+          ],
+          "rationale": "The answer accurately reflects a balance of satisfaction with the design and dissatisfaction with quality and thickness, supported by user comments."
+        },
+        "model": "gpt-4o-mini-2024-07-18",
+        "cache_hit": false,
+        "latency_ms": 2940.921753997827
+      }
+    },
+    {
+      "case_id": "qa09",
+      "product_id": "803867",
+      "product": "فوم ماینوکسیدیل ۵٪ ماینو کسیدیل (شامپو و مراقبت مو)",
+      "question": "آیا با توجه به تجربه‌ی کاربران ارزش خرید دارد؟",
+      "evidence_count": 20,
+      "answer_fa": "تجربه‌ی کاربران به‌طور کلی منفی بوده و اکثراً از بی‌کیفیتی و عدم کارایی محصول گلایه دارند.",
+      "sufficient_evidence": true,
+      "claims": [
+        {
+          "text": "این محصول به شدت بی کیفیت و حساسیت‌زا است و برخی کاربران به عوارضی چون خارش و شوره زدن اشاره کرده‌اند.",
+          "comment_ids": [
+            "38243131",
+            "24021507"
+          ]
+        },
+        {
+          "text": "بسیاری از کاربران اعلام کرده‌اند که نتیجه‌ای از این محصول مشاهده نکرده‌اند و برخی حتی ادعا کرده‌اند که باعث ریزش مو می‌شود.",
+          "comment_ids": [
+            "29794491",
+            "28698262",
+            "30639979"
+          ]
+        },
+        {
+          "text": "برخی دیگر از کاربران نسبت به ارسال محصولات فاسد و تغییر کیفیت در مقایسه با خریدهای قبلی شکایت کرده‌اند.",
+          "comment_ids": [
+            "22781491",
+            "23845328",
+            "23275284"
+          ]
+        },
+        {
+          "text": "در مقابل، تعدادی از کاربران تجربیات مثبتی داشته و اثرات مفیدی از این محصول گزارش کرده‌اند، اما این موارد به شدت کمتر از انتقادات منفی بود.",
+          "comment_ids": [
+            "27782496",
+            "25422228"
+          ]
+        }
+      ],
+      "rendered_fa": "⚠ هشدار استناد: 1 از 11 شناسه‌ی استنادشده در شواهد وجود نداشت و حذف شد (9% از استنادها).\n\nتجربه‌ی کاربران به‌طور کلی منفی بوده و اکثراً از بی‌کیفیتی و عدم کارایی محصول گلایه دارند.\n\n- این محصول به شدت بی کیفیت و حساسیت‌زا است و برخی کاربران به عوارضی چون خارش و شوره زدن اشاره کرده‌اند. [comment:38243131] [comment:24021507]\n- بسیاری از کاربران اعلام کرده‌اند که نتیجه‌ای از این محصول مشاهده نکرده‌اند و برخی حتی ادعا کرده‌اند که باعث ریزش مو می‌شود. [comment:29794491] [comment:28698262] [comment:30639979]\n- برخی دیگر از کاربران نسبت به ارسال محصولات فاسد و تغییر کیفیت در مقایسه با خریدهای قبلی شکایت کرده‌اند. [comment:22781491] [comment:23845328] [comment:23275284]\n- در مقابل، تعدادی از کاربران تجربیات مثبتی داشته و اثرات مفیدی از این محصول گزارش کرده‌اند، اما این موارد به شدت کمتر از انتقادات منفی بود. [comment:27782496] [comment:25422228]",
+      "citation_audit": {
+        "found": [
+          "[comment:38243131]",
+          "[comment:24021507]",
+          "[comment:29794491]",
+          "[comment:28698262]",
+          "[comment:30639979]",
+          "[comment:22781491]",
+          "[comment:23845328]",
+          "[comment:23275284]",
+          "[comment:27782496]",
+          "[comment:25422228]"
+        ],
+        "valid": [
+          "[comment:38243131]",
+          "[comment:24021507]",
+          "[comment:29794491]",
+          "[comment:28698262]",
+          "[comment:30639979]",
+          "[comment:22781491]",
+          "[comment:23845328]",
+          "[comment:23275284]",
+          "[comment:27782496]",
+          "[comment:25422228]"
+        ],
+        "invalid": [],
+        "integrity_score": 1.0
+      },
+      "citation_hallucination": {
+        "generated_ids": 11,
+        "invented_ids": [
+          "22203102"
+        ],
+        "dropped_claims": []
+      },
+      "hallucination_warning_fa": "⚠ هشدار استناد: 1 از 11 شناسه‌ی استنادشده در شواهد وجود نداشت و حذف شد (9% از استنادها).",
+      "latency_ms": 3629.8119989987754,
+      "evidence": [
+        {
+          "id": "31038411",
+          "kind": "comment",
+          "text": "خیلی بد شده اینو منی میگم که سه ساله دارم استفاده میکنم درسته همیشه کیفیت کمتر میشد اما این اخرین بار واقعا دستمریزاد داشت اولا دیگه فوم نیست کفه دقیقا حباب مایع لباسشویی و صابونه فوم اصلا اینجوری کف نمیکرد این توهین به مصرف کنندست یعنی ما انقدر خنگیم این کالا رو تولید میکنید میدید دستمون. دوستان این مدل که دست من رسیده اولا این عکس که زده نیست یکم طرح رو اسپری فرق کرده و به شدت به درد نخوره هیچوقت نگیرین من ادمی نیستم الکی انتقاد کنم اما این محصول با قبلا کاملا متفاوته و به درد نخور اب صابون بزنین سرتون بهتر از اینه هم فوم نیست هم بوش فرق میکنه هم اثری نداره",
+          "score": 0.8007857799530029,
+          "product_id": "803867",
+          "title": "خرید",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 11,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "خرید"
+          }
+        },
+        {
+          "id": "38243131",
+          "kind": "comment",
+          "text": "حتی فکر استفاده از این رو نکنید به عنوان کسی که چندین سال فوم و قطره ماینوکسیدیل استفاده کردم خدمتتون عرض میکنم بی کیفیت ترین محصول در بین همه محصولات این فوم هست. به شدت حساسیت زا , خارش آور و باعث شوره زدن میشه, و این عوارض خودشون بدترین عوامل ریزش مو هستند.",
+          "score": 0.7964107990264893,
+          "product_id": "803867",
+          "title": "واقعا بد",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 8,
+            "advantages": null,
+            "disadvantages": "حساسیت زا, خارش آور, باعث شوره شدید و وحشتناک, و در نهایت باعث ریزش شدیدتر موها",
+            "title": "واقعا بد"
+          }
+        },
+        {
+          "id": "29794491",
+          "kind": "comment",
+          "text": "من نزدیک به 5 ماه استفاده کردم... به هیچ.عنوان اثری ندیدم ازش... اصلا تاثیری نداره که هیچ امیدوارم میشی بهش کاری نمیکنی بقیه موهاتم میریزه",
+          "score": 0.7949278950691223,
+          "product_id": "803867",
+          "title": "بی اثر",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": "چرب نشدن پوست سر",
+            "disadvantages": null,
+            "title": "بی اثر"
+          }
+        },
+        {
+          "id": "27782496",
+          "kind": "comment",
+          "text": "من از نمونه خارجی استفاده کردم که با توجه به میلیونی شدن قیمتش این اسپری رو انتخاب کردم. کیفیتش خوب بوده تا به امروز. فقط دوستانی که استفاده می کنن در جریان هستن که باید به صورت مداوم استفاده بشه چون اگر قطع بشه مو به همان حالت قبلی بر میگرده.",
+          "score": 0.7933269143104553,
+          "product_id": "803867",
+          "title": "بسیار مناسب برای ریزش مو",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": "قیمت مناسب تر نسبت به نمونه خارجی",
+            "disadvantages": null,
+            "title": "بسیار مناسب برای ریزش مو"
+          }
+        },
+        {
+          "id": "29291110",
+          "kind": "comment",
+          "text": "اگه ریزش شدید ندارید استفاده نکنید که اعتیاد آوره و باید تا آخر عمرتون استفاده کنید. بعد قطع کردن مصرف شدید میریزه و یک ماهه کچل میشید",
+          "score": 0.7924920916557312,
+          "product_id": "803867",
+          "title": "مطمین نیستم",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "مطمین نیستم"
+          }
+        },
+        {
+          "id": "22781491",
+          "kind": "comment",
+          "text": "سلام.من سه تا خریدم همش تاریخ گذشته است.رنگش زرد شده و اصلا کیفیت فوم و نداره.چون بعد یک‌هفته هم از تحویل باز کردم شکایتم بی هیچ جا نرسید",
+          "score": 0.7915537357330322,
+          "product_id": "803867",
+          "title": "افتضاح",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 3,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "افتضاح"
+          }
+        },
+        {
+          "id": "24021507",
+          "kind": "comment",
+          "text": "محصول فاسد رسید به دستم قیمت روی محصول زده 45 هزار تومن ولی اینجا 86 هزار تومن میده اونم با تخفیف و منت",
+          "score": 0.7906676530838013,
+          "product_id": "803867",
+          "title": "محصول فاسد بود",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 3,
+            "advantages": null,
+            "disadvantages": "فاسد",
+            "title": "محصول فاسد بود"
+          }
+        },
+        {
+          "id": "25982273",
+          "kind": "comment",
+          "text": "ایجاد فیلید برای تاریخ تولید و انقضا, در خصوص آن دسته از کالاهایی که داری مهلت اعتبار می باشند",
+          "score": 0.7901518940925598,
+          "product_id": "803867",
+          "title": "پیشنهاد",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": "نیاز به کالا و دسترسی به آن",
+            "disadvantages": "نداشته",
+            "title": "پیشنهاد"
+          }
+        },
+        {
+          "id": "23845328",
+          "kind": "comment",
+          "text": "برای بار چهارم در چند وقت اخیر محصول فاسد شده دریافت کردم. تفاوت فوم فاسد با فوم سالمی که 6 ماه پیش خریداری کرده‌ام در تصویر مشخص است. به نظر می‌آید پشتکار من در خرید این محصول به نتیجه‌ای نمی‌رسد و باید از جای دیگری تهیه کنم. خوشحالم که دیجیکالا به سرعت کالا را دریافت و مبلغ را عودت می‌دهد اما دریافت چندباره کالای فاسد تعجب‌برانگیز است.",
+          "score": 0.7900819182395935,
+          "product_id": "803867",
+          "title": null,
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "45649514",
+          "kind": "comment",
+          "text": "من از این محصول خیلی وقته استفاده میکنم ولی اینی که دست من رسید با قبلیا فرق داشت. تو اولین استفاده سرش شکست و همش خالی شد. انداختمش دور.",
+          "score": 0.78959059715271,
+          "product_id": "803867",
+          "title": null,
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "23210887",
+          "kind": "comment",
+          "text": "رنگ فوم دریافتی زرد هست در حالی که محصولات استفاده شده در سری های قبل کاملا سفید بودن بوی الکل نسبت به محصولات قبلی خیلی بیشتر هست به شدت کف دست رو چرپ میکنه. به نظرم تو این شرایط بود استفاده نکنید. احتمال حساسیت و گرفتن نتیجه عکس خیلی بیشتره",
+          "score": 0.7891330718994141,
+          "product_id": "803867",
+          "title": null,
+          "meta": {
+            "rate": 1.25,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": "فاسد شده",
+            "title": null
+          }
+        },
+        {
+          "id": "23823116",
+          "kind": "comment",
+          "text": "وقتی از این پیج سفارش این کالارو میزنی انتظار داری همین رو هم ارسال کنند . ولی متاسفانه به بهانه نمونه ی خارجی یه جنس فاسد شده که رنگ قوطیش هم فرق داره رو ارسال میکنند . و به جای اینکه به تولید درست محصول مثل قبل ادامه بدن , هرماه یه مقداری هم گرونتر میکنند . ماینوکسیدیل اینطوریه که بعد از مدتی استفاده باعث میشه موهایی که دارین رو حفظ میکنه در دراز مدت موجب رشد مجدد میشه . اگه قطعش کنین تاثیر عکس داره . الانم مردم رو بهش معتاد کردن بعد جنس بنجولشون رو به قیمت نمونه های خارجی به مردم میفروشن .",
+          "score": 0.7888143062591553,
+          "product_id": "803867",
+          "title": "حرکت رونالدینیویی",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 14,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "حرکت رونالدینیویی"
+          }
+        },
+        {
+          "id": "30462691",
+          "kind": "comment",
+          "text": "محصول بسیار خوبیه ومن ازش راضی بدوم و برعکس بقیه محصولات اصلا حساسیت زا نیست.",
+          "score": 0.7876585125923157,
+          "product_id": "803867",
+          "title": "فوم",
+          "meta": {
+            "rate": 3.5,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "فوم"
+          }
+        },
+        {
+          "id": "25422228",
+          "kind": "comment",
+          "text": "به نظرم به مراتب از ماینوکسیدیل محلول با کیفیت تره و در یک دوره 6 ماهه میشه به نتایج نسبی رسید. البته برای افرادی توصیه میشه که کم پشتی یا طاسی سکه ای دارن وگرنه در طاسی شدید با توجه به رویش موهای مینیاتوری آن چنان تاثیر گذار نیست و کلا برای افرادی مناسبه که موهاشون کم پشت شده و این فوم حدود 20 یا 30 درصدی حجم موهاشونو افزایش میده که ظاهر موهارو قابل قبول تر از قبل میکنه و در صورت ادامه مصرف میتونن تا مدت ها موهاشونو حفظ کنن.",
+          "score": 0.7876116037368774,
+          "product_id": "803867",
+          "title": "پیشنهاد خرید",
+          "meta": {
+            "rate": 3.5,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 3,
+            "advantages": "اثرگذاری و رشد موهای جدید در میان مدت, حالت دهنده و ضخیم تر شدن مو, جذب بهتر نسبت به نسخه ی محلول",
+            "disadvantages": "مادام العمر بودن دوره مصرف و ریزش با شدت بیشتر در صورت قطع مصرف, ترکیدن محصول در هوای گرم, قیمت بالا, فوم اگر زرد باشد به شدت چرب کننده است",
+            "title": "پیشنهاد خرید"
+          }
+        },
+        {
+          "id": "49352392",
+          "kind": "comment",
+          "text": "متاسفانه هنگام استفاده با توجه به ایراد اساسی کالا سیلندر محصول تا انتها خالی میشه و پولت رو عملا میریزه دور!",
+          "score": 0.7867815494537354,
+          "product_id": "803867",
+          "title": "ایراد اساسی در سیلندر حاوی محصول",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": null,
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "ایراد اساسی در سیلندر حاوی محصول"
+          }
+        },
+        {
+          "id": "28698262",
+          "kind": "comment",
+          "text": "بعد 4 ماه استفاده, اثر خاصی ندیدم.",
+          "score": 0.7864106893539429,
+          "product_id": "803867",
+          "title": "اثر خاصی ندیدم",
+          "meta": {
+            "rate": 2.5,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "اثر خاصی ندیدم"
+          }
+        },
+        {
+          "id": "30851467",
+          "kind": "comment",
+          "text": "من یه بار ماینوکسیدیل شرکت پاک دارو رو خریدم بعد یک ماه استفاده یکم موی سرم رفته بو تو قسمت پیشانیم هم دوباره رشد کرد",
+          "score": 0.7859580516815186,
+          "product_id": "803867",
+          "title": null,
+          "meta": {
+            "rate": 5.0,
+            "recommendation_status": null,
+            "is_buyer": false,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "40984871",
+          "kind": "comment",
+          "text": "فوم بهتر از مایع ماینوکسیدیل هست ولی کلا من نتیجه ایی از استفاده از ماینو کسیدیل ندیدم",
+          "score": 0.7852597236633301,
+          "product_id": "803867",
+          "title": null,
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "23275284",
+          "kind": "comment",
+          "text": "من قبلا خیلی مصرف میکردم. تا الان 4 بار رنگ زرد و فاسد داره. که به شدت خارش سر میاره و بوی بد میده. همرو ریختم بیرون. چون دیر متوجه شدم.",
+          "score": 0.7851420640945435,
+          "product_id": "803867",
+          "title": "خیلی بی کیفیت شده و رنگ زرد شده",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 5,
+            "advantages": "ندارد",
+            "disadvantages": null,
+            "title": "خیلی بی کیفیت شده و رنگ زرد شده"
+          }
+        },
+        {
+          "id": "30639979",
+          "kind": "comment",
+          "text": "چندین ماه استفاده کردم و هیچ تاثیری روم نداشت. توصیه نمی کنم",
+          "score": 0.782456636428833,
+          "product_id": "803867",
+          "title": "تاثیری نداشت",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": "بی تاثیر",
+            "disadvantages": null,
+            "title": "تاثیری نداشت"
+          }
+        }
+      ],
+      "judgment": {
+        "judgment": {
+          "relevance_score": 5,
+          "grounding_score": 4,
+          "verdict": "grounded",
+          "claims": [
+            {
+              "claim": "تجربه‌ی کاربران به‌طور کلی منفی بوده و اکثراً از بی‌کیفیتی و عدم کارایی محصول گلایه دارند.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:38243131",
+                "comment:24021507",
+                "comment:29794491",
+                "comment:22781491"
+              ],
+              "rationale": "تعدادی از نظرات، انتقادات زیادی درباره بی‌کیفیتی و عدم کارایی محصول مطرح کرده‌اند."
+            },
+            {
+              "claim": "این محصول به شدت بی کیفیت و حساسیت‌زا است و برخی کاربران به عوارضی چون خارش و شوره زدن اشاره کرده‌اند.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:38243131",
+                "comment:24021507"
+              ],
+              "rationale": "شواهد ارائه‌شده تجربه‌های منفی مربوط به حساسیت و عوارض جانبی مانند خارش و شوره زدن را تأیید می‌کنند."
+            },
+            {
+              "claim": "بسیاری از کاربران اعلام کرده‌اند که نتیجه‌ای از این محصول مشاهده نکرده‌اند و برخی حتی ادعا کرده‌اند که باعث ریزش مو می‌شود.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:29794491",
+                "comment:28698262",
+                "comment:30639979"
+              ],
+              "rationale": "چندین کاربر به عدم کارایی و ریزش مو بعد از استفاده از این محصول اشاره کرده‌اند."
+            },
+            {
+              "claim": "برخی دیگر از کاربران نسبت به ارسال محصولات فاسد و تغییر کیفیت در مقایسه با خریدهای قبلی شکایت کرده‌اند.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:22781491",
+                "comment:24021507",
+                "comment:23845328"
+              ],
+              "rationale": "نظرات به وضوح شکایات مربوط به دریافت محصولات فاسد را گزارش کرده‌اند."
+            },
+            {
+              "claim": "در مقابل، تعدادی از کاربران تجربیات مثبتی داشته و اثرات مفیدی از این محصول گزارش کرده‌اند، اما این موارد به شدت کمتر از انتقادات منفی بود.",
+              "verdict": "partially_supported",
+              "evidence_ids": [
+                "comment:27782496",
+                "comment:25422228"
+              ],
+              "rationale": "تجربیات مثبت وجود دارد، ولی خیلی کمتر از انتقادات منفی است."
+            }
+          ],
+          "rationale": "اکثریت نظرات شامل تجارب منفی و شکایات از بی‌کیفیتی و عدم کارایی محصول است، در حالی که نظرات مثبت نادرتر هستند."
+        },
+        "model": "gpt-4o-mini-2024-07-18",
+        "cache_hit": false,
+        "latency_ms": 4862.4486650005565
+      }
+    },
+    {
+      "case_id": "qa10",
+      "product_id": "803867",
+      "product": "فوم ماینوکسیدیل ۵٪ ماینو کسیدیل (شامپو و مراقبت مو)",
+      "question": "ایرادهای پرتکرار این محصول چیست؟",
+      "evidence_count": 20,
+      "answer_fa": "محصول با ایراداتی چون فاسد بودن، تغییر رنگ و کیفیت، و مشکلات حساسیتی مواجه است.",
+      "sufficient_evidence": true,
+      "claims": [
+        {
+          "text": "محصول دارای ایرادات کیفیتی جدی است و عمدتا به فاسد بودن یا نشت آن اشاره شده است.",
+          "comment_ids": [
+            "49352392",
+            "24021507",
+            "23845328",
+            "38243131",
+            "23823116",
+            "34814919"
+          ]
+        },
+        {
+          "text": "بسیاری از خریداران به تغییر رنگ و کیفیت فوم اشاره کرده و از آن ناراضی هستند.",
+          "comment_ids": [
+            "22956990",
+            "23210887",
+            "23275284",
+            "31038411"
+          ]
+        },
+        {
+          "text": "مشکلاتی مانند حساسیت و ایجاد خارش بعد از استفاده نیز گزارش شده است.",
+          "comment_ids": [
+            "38243131",
+            "23275284",
+            "34791028"
+          ]
+        }
+      ],
+      "rendered_fa": "محصول با ایراداتی چون فاسد بودن، تغییر رنگ و کیفیت، و مشکلات حساسیتی مواجه است.\n\n- محصول دارای ایرادات کیفیتی جدی است و عمدتا به فاسد بودن یا نشت آن اشاره شده است. [comment:49352392] [comment:24021507] [comment:23845328] [comment:38243131] [comment:23823116] [comment:34814919]\n- بسیاری از خریداران به تغییر رنگ و کیفیت فوم اشاره کرده و از آن ناراضی هستند. [comment:22956990] [comment:23210887] [comment:23275284] [comment:31038411]\n- مشکلاتی مانند حساسیت و ایجاد خارش بعد از استفاده نیز گزارش شده است. [comment:38243131] [comment:23275284] [comment:34791028]",
+      "citation_audit": {
+        "found": [
+          "[comment:49352392]",
+          "[comment:24021507]",
+          "[comment:23845328]",
+          "[comment:38243131]",
+          "[comment:23823116]",
+          "[comment:34814919]",
+          "[comment:22956990]",
+          "[comment:23210887]",
+          "[comment:23275284]",
+          "[comment:31038411]",
+          "[comment:34791028]"
+        ],
+        "valid": [
+          "[comment:49352392]",
+          "[comment:24021507]",
+          "[comment:23845328]",
+          "[comment:38243131]",
+          "[comment:23823116]",
+          "[comment:34814919]",
+          "[comment:22956990]",
+          "[comment:23210887]",
+          "[comment:23275284]",
+          "[comment:31038411]",
+          "[comment:34791028]"
+        ],
+        "invalid": [],
+        "integrity_score": 1.0
+      },
+      "citation_hallucination": {
+        "generated_ids": 13,
+        "invented_ids": [],
+        "dropped_claims": []
+      },
+      "hallucination_warning_fa": null,
+      "latency_ms": 2689.949561001413,
+      "evidence": [
+        {
+          "id": "49352392",
+          "kind": "comment",
+          "text": "متاسفانه هنگام استفاده با توجه به ایراد اساسی کالا سیلندر محصول تا انتها خالی میشه و پولت رو عملا میریزه دور!",
+          "score": 0.8137749433517456,
+          "product_id": "803867",
+          "title": "ایراد اساسی در سیلندر حاوی محصول",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": null,
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "ایراد اساسی در سیلندر حاوی محصول"
+          }
+        },
+        {
+          "id": "22956990",
+          "kind": "comment",
+          "text": "متاسفانه فوم زرد دستم رسید, که غیر عادی روی سر کف میکنه و فوق العاده مو روچرب میکنه. کاملا مشخص محتوای فوم ایراد داره ولی نمیدونم چرا جلوش رو نمیگیرن",
+          "score": 0.8023816347122192,
+          "product_id": "803867",
+          "title": null,
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 3,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "23823116",
+          "kind": "comment",
+          "text": "وقتی از این پیج سفارش این کالارو میزنی انتظار داری همین رو هم ارسال کنند . ولی متاسفانه به بهانه نمونه ی خارجی یه جنس فاسد شده که رنگ قوطیش هم فرق داره رو ارسال میکنند . و به جای اینکه به تولید درست محصول مثل قبل ادامه بدن , هرماه یه مقداری هم گرونتر میکنند . ماینوکسیدیل اینطوریه که بعد از مدتی استفاده باعث میشه موهایی که دارین رو حفظ میکنه در دراز مدت موجب رشد مجدد میشه . اگه قطعش کنین تاثیر عکس داره . الانم مردم رو بهش معتاد کردن بعد جنس بنجولشون رو به قیمت نمونه های خارجی به مردم میفروشن .",
+          "score": 0.7997404336929321,
+          "product_id": "803867",
+          "title": "حرکت رونالدینیویی",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 14,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "حرکت رونالدینیویی"
+          }
+        },
+        {
+          "id": "23210887",
+          "kind": "comment",
+          "text": "رنگ فوم دریافتی زرد هست در حالی که محصولات استفاده شده در سری های قبل کاملا سفید بودن بوی الکل نسبت به محصولات قبلی خیلی بیشتر هست به شدت کف دست رو چرپ میکنه. به نظرم تو این شرایط بود استفاده نکنید. احتمال حساسیت و گرفتن نتیجه عکس خیلی بیشتره",
+          "score": 0.7993128299713135,
+          "product_id": "803867",
+          "title": null,
+          "meta": {
+            "rate": 1.25,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": "فاسد شده",
+            "title": null
+          }
+        },
+        {
+          "id": "27782496",
+          "kind": "comment",
+          "text": "من از نمونه خارجی استفاده کردم که با توجه به میلیونی شدن قیمتش این اسپری رو انتخاب کردم. کیفیتش خوب بوده تا به امروز. فقط دوستانی که استفاده می کنن در جریان هستن که باید به صورت مداوم استفاده بشه چون اگر قطع بشه مو به همان حالت قبلی بر میگرده.",
+          "score": 0.7979664206504822,
+          "product_id": "803867",
+          "title": "بسیار مناسب برای ریزش مو",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": "قیمت مناسب تر نسبت به نمونه خارجی",
+            "disadvantages": null,
+            "title": "بسیار مناسب برای ریزش مو"
+          }
+        },
+        {
+          "id": "24021507",
+          "kind": "comment",
+          "text": "محصول فاسد رسید به دستم قیمت روی محصول زده 45 هزار تومن ولی اینجا 86 هزار تومن میده اونم با تخفیف و منت",
+          "score": 0.7942078113555908,
+          "product_id": "803867",
+          "title": "محصول فاسد بود",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 3,
+            "advantages": null,
+            "disadvantages": "فاسد",
+            "title": "محصول فاسد بود"
+          }
+        },
+        {
+          "id": "38243131",
+          "kind": "comment",
+          "text": "حتی فکر استفاده از این رو نکنید به عنوان کسی که چندین سال فوم و قطره ماینوکسیدیل استفاده کردم خدمتتون عرض میکنم بی کیفیت ترین محصول در بین همه محصولات این فوم هست. به شدت حساسیت زا , خارش آور و باعث شوره زدن میشه, و این عوارض خودشون بدترین عوامل ریزش مو هستند.",
+          "score": 0.7934355735778809,
+          "product_id": "803867",
+          "title": "واقعا بد",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 8,
+            "advantages": null,
+            "disadvantages": "حساسیت زا, خارش آور, باعث شوره شدید و وحشتناک, و در نهایت باعث ریزش شدیدتر موها",
+            "title": "واقعا بد"
+          }
+        },
+        {
+          "id": "23275284",
+          "kind": "comment",
+          "text": "من قبلا خیلی مصرف میکردم. تا الان 4 بار رنگ زرد و فاسد داره. که به شدت خارش سر میاره و بوی بد میده. همرو ریختم بیرون. چون دیر متوجه شدم.",
+          "score": 0.7923393249511719,
+          "product_id": "803867",
+          "title": "خیلی بی کیفیت شده و رنگ زرد شده",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 5,
+            "advantages": "ندارد",
+            "disadvantages": null,
+            "title": "خیلی بی کیفیت شده و رنگ زرد شده"
+          }
+        },
+        {
+          "id": "25982273",
+          "kind": "comment",
+          "text": "ایجاد فیلید برای تاریخ تولید و انقضا, در خصوص آن دسته از کالاهایی که داری مهلت اعتبار می باشند",
+          "score": 0.7921220064163208,
+          "product_id": "803867",
+          "title": "پیشنهاد",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": "نیاز به کالا و دسترسی به آن",
+            "disadvantages": "نداشته",
+            "title": "پیشنهاد"
+          }
+        },
+        {
+          "id": "45649514",
+          "kind": "comment",
+          "text": "من از این محصول خیلی وقته استفاده میکنم ولی اینی که دست من رسید با قبلیا فرق داشت. تو اولین استفاده سرش شکست و همش خالی شد. انداختمش دور.",
+          "score": 0.7913367748260498,
+          "product_id": "803867",
+          "title": null,
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "34814919",
+          "kind": "comment",
+          "text": "محصول پس از استفاده خود به خود ریزش دارد و قطع نمیشه",
+          "score": 0.7911801338195801,
+          "product_id": "803867",
+          "title": "محلول پس از استفاده میریزه و بند نمیاد",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 12,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "محلول پس از استفاده میریزه و بند نمیاد"
+          }
+        },
+        {
+          "id": "30462691",
+          "kind": "comment",
+          "text": "محصول بسیار خوبیه ومن ازش راضی بدوم و برعکس بقیه محصولات اصلا حساسیت زا نیست.",
+          "score": 0.790827751159668,
+          "product_id": "803867",
+          "title": "فوم",
+          "meta": {
+            "rate": 3.5,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 1,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "فوم"
+          }
+        },
+        {
+          "id": "23845328",
+          "kind": "comment",
+          "text": "برای بار چهارم در چند وقت اخیر محصول فاسد شده دریافت کردم. تفاوت فوم فاسد با فوم سالمی که 6 ماه پیش خریداری کرده‌ام در تصویر مشخص است. به نظر می‌آید پشتکار من در خرید این محصول به نتیجه‌ای نمی‌رسد و باید از جای دیگری تهیه کنم. خوشحالم که دیجیکالا به سرعت کالا را دریافت و مبلغ را عودت می‌دهد اما دریافت چندباره کالای فاسد تعجب‌برانگیز است.",
+          "score": 0.7906869053840637,
+          "product_id": "803867",
+          "title": null,
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": null
+          }
+        },
+        {
+          "id": "29291110",
+          "kind": "comment",
+          "text": "اگه ریزش شدید ندارید استفاده نکنید که اعتیاد آوره و باید تا آخر عمرتون استفاده کنید. بعد قطع کردن مصرف شدید میریزه و یک ماهه کچل میشید",
+          "score": 0.787563681602478,
+          "product_id": "803867",
+          "title": "مطمین نیستم",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 4,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "مطمین نیستم"
+          }
+        },
+        {
+          "id": "31038411",
+          "kind": "comment",
+          "text": "خیلی بد شده اینو منی میگم که سه ساله دارم استفاده میکنم درسته همیشه کیفیت کمتر میشد اما این اخرین بار واقعا دستمریزاد داشت اولا دیگه فوم نیست کفه دقیقا حباب مایع لباسشویی و صابونه فوم اصلا اینجوری کف نمیکرد این توهین به مصرف کنندست یعنی ما انقدر خنگیم این کالا رو تولید میکنید میدید دستمون. دوستان این مدل که دست من رسیده اولا این عکس که زده نیست یکم طرح رو اسپری فرق کرده و به شدت به درد نخوره هیچوقت نگیرین من ادمی نیستم الکی انتقاد کنم اما این محصول با قبلا کاملا متفاوته و به درد نخور اب صابون بزنین سرتون بهتر از اینه هم فوم نیست هم بوش فرق میکنه هم اثری نداره",
+          "score": 0.7874107360839844,
+          "product_id": "803867",
+          "title": "خرید",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 11,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "خرید"
+          }
+        },
+        {
+          "id": "32187859",
+          "kind": "comment",
+          "text": "شب استفاده کردم گذاشتم کنار صبح که خواستم استفاده کنم دیدم تو در فوم پر شده نشتی داره دریچه.",
+          "score": 0.7867790460586548,
+          "product_id": "803867",
+          "title": "نشتی کالا",
+          "meta": {
+            "rate": 1.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 6,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "نشتی کالا"
+          }
+        },
+        {
+          "id": "34791028",
+          "kind": "comment",
+          "text": "خود ماده تاثیر گذار و برای رویش مو عالیه ولی متاسفانه از لحاظ فنی مشکل بزرگی داره که محلول الکی ازش خارج میشه! فقط مربوط به اینبار هم نیست اکثرا این مشکل رو دارن ولی اینبار نشتیش شدیدتره فکر نکنم یک هفته هم بتونه محلول رو توی خودش نگه داره قبلاها حدودا 2 سال پیش خیلی کیفیتش خوب بود ولی یکسالیه واقعا افتضاح شده نمیدونم چرا دیگه نمیتونن درب سالم بسازن",
+          "score": 0.7864832878112793,
+          "product_id": "803867",
+          "title": "خروج ماده به دلیل مشکل فنی درب",
+          "meta": {
+            "rate": 2.25,
+            "recommendation_status": "not_recommended",
+            "is_buyer": true,
+            "likes": 13,
+            "advantages": null,
+            "disadvantages": "خارج شدن بی دلیل ماده بعد استفاده اول, درب محصول نشتی شدید دارد",
+            "title": "خروج ماده به دلیل مشکل فنی درب"
+          }
+        },
+        {
+          "id": "25422228",
+          "kind": "comment",
+          "text": "به نظرم به مراتب از ماینوکسیدیل محلول با کیفیت تره و در یک دوره 6 ماهه میشه به نتایج نسبی رسید. البته برای افرادی توصیه میشه که کم پشتی یا طاسی سکه ای دارن وگرنه در طاسی شدید با توجه به رویش موهای مینیاتوری آن چنان تاثیر گذار نیست و کلا برای افرادی مناسبه که موهاشون کم پشت شده و این فوم حدود 20 یا 30 درصدی حجم موهاشونو افزایش میده که ظاهر موهارو قابل قبول تر از قبل میکنه و در صورت ادامه مصرف میتونن تا مدت ها موهاشونو حفظ کنن.",
+          "score": 0.7859703302383423,
+          "product_id": "803867",
+          "title": "پیشنهاد خرید",
+          "meta": {
+            "rate": 3.5,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 3,
+            "advantages": "اثرگذاری و رشد موهای جدید در میان مدت, حالت دهنده و ضخیم تر شدن مو, جذب بهتر نسبت به نسخه ی محلول",
+            "disadvantages": "مادام العمر بودن دوره مصرف و ریزش با شدت بیشتر در صورت قطع مصرف, ترکیدن محصول در هوای گرم, قیمت بالا, فوم اگر زرد باشد به شدت چرب کننده است",
+            "title": "پیشنهاد خرید"
+          }
+        },
+        {
+          "id": "22781491",
+          "kind": "comment",
+          "text": "سلام.من سه تا خریدم همش تاریخ گذشته است.رنگش زرد شده و اصلا کیفیت فوم و نداره.چون بعد یک‌هفته هم از تحویل باز کردم شکایتم بی هیچ جا نرسید",
+          "score": 0.7858343124389648,
+          "product_id": "803867",
+          "title": "افتضاح",
+          "meta": {
+            "rate": null,
+            "recommendation_status": "recommended",
+            "is_buyer": true,
+            "likes": 3,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "افتضاح"
+          }
+        },
+        {
+          "id": "26824449",
+          "kind": "comment",
+          "text": "با توجه به حجمش , گرونه, و هنوز اثری ندیدم ازش, اگر بعداز چندماه استفاده اثر کرد حتما اعلام میکنم",
+          "score": 0.7853384017944336,
+          "product_id": "803867",
+          "title": "فوم محرک رشد مو",
+          "meta": {
+            "rate": 3.0,
+            "recommendation_status": "no_idea",
+            "is_buyer": true,
+            "likes": 2,
+            "advantages": null,
+            "disadvantages": null,
+            "title": "فوم محرک رشد مو"
+          }
+        }
+      ],
+      "judgment": {
+        "judgment": {
+          "relevance_score": 5,
+          "grounding_score": 5,
+          "verdict": "grounded",
+          "claims": [
+            {
+              "claim": "محصول با ایراداتی چون فاسد بودن، تغییر رنگ و کیفیت، و مشکلات حساسیتی مواجه است.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:49352392",
+                "comment:24021507",
+                "comment:23823116",
+                "comment:38243131",
+                "comment:23845328",
+                "comment:22956990",
+                "comment:23210887",
+                "comment:23275284",
+                "comment:34791028"
+              ],
+              "rationale": "The claim is strongly supported by multiple comments indicating issues with the product being spoiled, color changes, and allergic reactions."
+            },
+            {
+              "claim": "محصول دارای ایرادات کیفیتی جدی است و عمدتا به فاسد بودن یا نشت آن اشاره شده است.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:49352392",
+                "comment:24021507",
+                "comment:23823116",
+                "comment:38243131"
+              ],
+              "rationale": "Numerous comments highlight significant quality issues, particularly spoiling and leakage."
+            },
+            {
+              "claim": "بسیاری از خریداران به تغییر رنگ و کیفیت فوم اشاره کرده و از آن ناراضی هستند.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:22956990",
+                "comment:23210887",
+                "comment:23275284",
+                "comment:31038411"
+              ],
+              "rationale": "Several comments express dissatisfaction regarding the foam's color change and quality."
+            },
+            {
+              "claim": "مشکلاتی مانند حساسیت و ایجاد خارش بعد از استفاده نیز گزارش شده است.",
+              "verdict": "supported",
+              "evidence_ids": [
+                "comment:38243131",
+                "comment:23275284",
+                "comment:34791028"
+              ],
+              "rationale": "Comments explicitly report problems such as allergies and itchiness following use."
+            }
+          ],
+          "rationale": "All claims are substantiated by various comments discussing specific negative experiences with the product, thus confirming the issues presented."
+        },
+        "model": "gpt-4o-mini-2024-07-18",
+        "cache_hit": false,
+        "latency_ms": 4877.445298996463
+      }
+    }
+  ]
+}
