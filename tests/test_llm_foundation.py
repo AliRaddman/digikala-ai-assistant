@@ -81,6 +81,27 @@ class LLMFoundationTests(unittest.TestCase):
         self.assertEqual(plan.price_max_rial, 5_000_000)
         self.assertEqual(plan.search_query, "شلوار جین مردانه راحت")
 
+    def test_worded_toman_price_is_converted_to_rial(self) -> None:
+        plan = RuleBasedFilterExtractor().extract(
+            "عطر مردانه تلخ و ماندگار زیر یک میلیون تومن"
+        )
+        self.assertEqual(plan.price_max_rial, 10_000_000)
+        self.assertEqual(plan.search_query, "عطر مردانه تلخ و ماندگار")
+
+    def test_compound_worded_price_and_minimum_are_supported(self) -> None:
+        plan = RuleBasedFilterExtractor().extract(
+            "گوشی بیشتر از یک و نیم میلیون تومان"
+        )
+        self.assertEqual(plan.price_min_rial, 15_000_000)
+        self.assertEqual(plan.search_query, "گوشی")
+
+    def test_grouped_numeric_price_is_not_read_as_a_decimal(self) -> None:
+        plan = RuleBasedFilterExtractor().extract(
+            "کفش حداکثر 2,500,000 ریال"
+        )
+        self.assertEqual(plan.price_max_rial, 2_500_000)
+        self.assertEqual(plan.search_query, "کفش")
+
     def test_unknown_model_does_not_silently_report_zero_cost(self) -> None:
         with self.assertRaises(ValueError):
             estimate_cost_usd("unknown-model", TokenUsage(input_tokens=100))
