@@ -10,6 +10,18 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
+def _env_flag(name: str, default: bool = False) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    normalised = value.strip().lower()
+    if normalised in {"1", "true", "yes", "on"}:
+        return True
+    if normalised in {"0", "false", "no", "off"}:
+        return False
+    raise ValueError(f"{name} must be one of: 1/0, true/false, yes/no, on/off")
+
+
 @dataclass(frozen=True, slots=True)
 class LLMSettings:
     backend: str = "openai"
@@ -20,6 +32,10 @@ class LLMSettings:
     usage_path: Path = Path("data/cache/llm_usage.sqlite3")
     timeout_seconds: float = 30.0
     max_retries: int = 2
+    semantic_cache_enabled: bool = False
+    semantic_cache_model: str = "intfloat/multilingual-e5-base"
+    semantic_cache_device: str | None = None
+    semantic_cache_threshold: float = 0.96
 
     @classmethod
     def from_env(cls) -> "LLMSettings":
@@ -36,6 +52,16 @@ class LLMSettings:
             ),
             timeout_seconds=float(os.getenv("LLM_TIMEOUT_SECONDS", "30")),
             max_retries=int(os.getenv("LLM_MAX_RETRIES", "2")),
+            semantic_cache_enabled=_env_flag("LLM_SEMANTIC_CACHE_ENABLED"),
+            semantic_cache_model=os.getenv(
+                "LLM_SEMANTIC_CACHE_MODEL", "intfloat/multilingual-e5-base"
+            ).strip(),
+            semantic_cache_device=(
+                os.getenv("LLM_SEMANTIC_CACHE_DEVICE") or None
+            ),
+            semantic_cache_threshold=float(
+                os.getenv("LLM_SEMANTIC_CACHE_THRESHOLD", "0.96")
+            ),
         )
 
     def require_api_key(self) -> str:

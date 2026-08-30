@@ -6,7 +6,7 @@ Owner: Benyamin.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-from typing import Any
+from typing import Any, Literal
 
 
 @dataclass(frozen=True, slots=True)
@@ -49,6 +49,8 @@ class StructuredResult:
     cache_hit: bool
     cost_usd: float
     saved_cost_usd: float = 0.0
+    cache_type: Literal["none", "exact", "semantic"] = "none"
+    cache_similarity: float | None = None
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -60,4 +62,6 @@ class StructuredResult:
             "cache_hit": self.cache_hit,
             "cost_usd": self.cost_usd,
             "saved_cost_usd": self.saved_cost_usd,
+            "cache_type": self.cache_type,
+            "cache_similarity": self.cache_similarity,
         }

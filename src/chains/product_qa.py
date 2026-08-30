@@ -31,6 +31,7 @@ from pydantic import (
 )
 
 from src.llm.client import CachedLLMClient, build_openai_client
+from src.llm.semantic_cache import SemanticCacheRequest
 from src.retrieval.base import Evidence, RetrievalFilters, Retriever, build_retriever
 
 PROMPT_VERSION = "product-qa-v4-evidence-bound-citations"
@@ -415,6 +416,14 @@ class ProductQAChain:
             ],
             response_model=response_model,
             cache_namespace=PROMPT_VERSION,
+            semantic_cache=SemanticCacheRequest(
+                text=question,
+                guard={
+                    "system_prompt": SYSTEM_PROMPT,
+                    "product_id": product_id,
+                    "evidence": evidence_block,
+                },
+            ),
         )
         # Validate here as well: the production OpenAI provider already parses
         # against response_model, but test/local providers may only return a

@@ -6,7 +6,7 @@ This document tracks Benyamin's LLM, evaluation and orchestration work as it
 exists on the integrated system, not only the original foundation checkpoint:
 
 - OpenAI Responses API adapter with Structured Outputs
-- SQLite exact-match cache
+- SQLite exact-match cache plus an opt-in guarded semantic cache
 - per-request token, latency, cost and cache-savings ledger
 - conservative zero-cost Persian filter-extraction baseline
 - LLM Persian filter extractor
@@ -49,6 +49,43 @@ The default cache and usage databases are ignored by the repository's existing
 No prompt or response text is stored in the usage ledger. The exact-response
 cache necessarily stores the validated structured JSON result; its key is a
 SHA-256 hash of the model, messages, schema and prompt version.
+
+Semantic lookup is disabled by default. Enable it with:
+
+```bash
+export LLM_SEMANTIC_CACHE_ENABLED=true
+export LLM_SEMANTIC_CACHE_MODEL=intfloat/multilingual-e5-base
+export LLM_SEMANTIC_CACHE_THRESHOLD=0.96
+```
+
+The encoder loads lazily. Exact lookup runs first and pays no embedding cost.
+On an exact miss, eligible callers embed only the user text; model, prompt
+namespace, response schema and caller-supplied guard must match exactly. The
+guard carries evidence and product context for QA/comparison, answer and
+evidence for the grounding judge. This prevents a similar question from
+reusing an answer across products or evidence snapshots. LLM filter extraction
+is deliberately excluded: embedding similarity is not safe for numeric
+constraints such as "under 500k" versus "under 600k".
+
+`cache_type` distinguishes `none`, `exact` and `semantic`; semantic hits also
+record cosine similarity. The ledger summary exposes exact and semantic hit
+counts separately. SQLite stores embeddings as normalized float32 blobs and
+never puts prompt text in the usage ledger.
+
+The reproducible offline benchmark is:
+
+```bash
+python -m scripts.benchmark_semantic_cache \
+  --output data/eval/semantic_cache_offline_benchmark_v1.json
+```
+
+With four paraphrase hits among eight unique requests, it avoided 4 API calls,
+reduced estimated cost by 50%, wall latency by 47.3%, and per-hit latency by
+97.9%. It uses a deterministic test encoder and fixed-delay provider, so it is
+an infrastructure benchmark, not a live semantic-quality claim. Combining the
+previously measured warm local query-encoding p50 (18.9 ms) with Product QA API
+p50 (3,113 ms) projects 99.4% latency reduction per warm hit; a live A/B is
+still required before reporting a production result.
 
 Pricing is currently configured for `gpt-4o-mini` and its snapshots. Selecting
 an unknown model raises an error instead of silently recording a false zero
