@@ -1,8 +1,10 @@
 """Intent routing and chain orchestration for the shopping assistant.
 
-Owner: Benyamin. This module deliberately depends on chain contracts, not on
-the comment index. Missing teammate chains are registered later and currently
-produce an explicit dependency status instead of crashing the whole system.
+Owner: Benyamin. The default build registers all four mandatory capabilities
+through shared chain and retriever contracts: Product Discovery, Product QA,
+Product Comparison and Category Analytics. Missing inputs, omitted handlers in
+custom builds and handler failures remain structured results instead of
+crashing the whole assistant.
 """
 
 from __future__ import annotations
@@ -330,13 +332,12 @@ class ProductQAHandler:
 
 @dataclass(slots=True)
 class ProductComparisonHandler:
-    """Adapter for Fatemeh's ProductComparisonChain.
+    """Adapter combining exact product facts and product-scoped reviews.
 
-    Two retrievers rather than one: the chain resolves each selected product
-    through the product index and then pulls product-scoped review evidence
-    through the comment index. Fatemeh's notebook left the review side empty
-    because the comment index did not exist yet; it does now, so this wires
-    both and the evidence section of the answer is populated.
+    The chain resolves each selected product through the product index, then
+    pulls its review evidence through the shared comment index. Keeping both
+    retrievers explicit makes the facts/evidence boundary visible and prevents
+    comments from one product leaking into another product's comparison.
 
     The LLM client is optional on purpose. ProductComparisonChain renders
     facts and review evidence with no model at all and only skips the
@@ -507,7 +508,7 @@ def build_default_orchestrator(
     *,
     retriever_mode: str = "mock",
 ) -> ShoppingAssistantOrchestrator:
-    """Build today's runnable system; teammate handlers can be added later."""
+    """Build the runnable assistant with all four mandatory handlers."""
 
     discovery_retriever = build_retriever("product", mode=retriever_mode)
     discovery = ProductDiscoveryHandler(
