@@ -19,14 +19,22 @@ from __future__ import annotations
 import argparse
 import re
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    create_model,
+    field_validator,
+    model_validator,
+)
 
 from src.llm.client import CachedLLMClient, build_openai_client
+from src.llm.semantic_cache import SemanticCacheRequest
 from src.retrieval.base import Evidence, RetrievalFilters, Retriever, build_retriever
 
-PROMPT_VERSION = "product-qa-v3"
+PROMPT_VERSION = "product-qa-v4-evidence-bound-citations"
 
 SYSTEM_PROMPT = """You answer a Persian shopping question about ONE product using
 only the user review evidence supplied below. Do not use outside knowledge about
@@ -44,8 +52,10 @@ reading of the tone when a question asks whether the product is worth buying.
 Rules:
 - Fill claims first. Every claim must be backed by at least one comment_id
   taken from the evidence's citation tags, e.g. [comment:123] -> comment_id
-  "123". claims is a required field: send an empty array only when you truly
-  have nothing, never by omitting it.
+  "123". The response schema lists the only permitted comment_id values: pick
+  from that list and never type or infer a new id. If none of the permitted ids
+  supports a statement, do not make that claim. claims is a required field:
+  send an empty array only when you truly have nothing, never by omitting it.
 - Reviews that are negative, angry, or about the product being counterfeit
   still answer a question about complaints or quality. Only set
   sufficient_evidence to false when the reviews say nothing about what was
@@ -66,8 +76,9 @@ def _bare_comment_id(value: str) -> str:
     instead (see the docstring of src/eval/grounding.py, bug 1) -- there a
     purely cosmetic bracket mismatch destroyed 34 paid-for judgments. Rather
     than wait for that to repeat here, the tag form is normalised on the way
-    in. Only the wrapper is stripped: the id itself is compared verbatim by
-    _validate_comment_ids, so an invented id is still rejected.
+    in. Only the wrapper is stripped: the id itself is first constrained by
+    the evidence-bound schema and then checked again by the quarantine layer,
+    so an invented id is still rejected.
 
     Normalising at parse time rather than only inside the validator also keeps
     render_fa correct -- it re-wraps each id as `[comment:{id}]`, so an
@@ -118,6 +129,56 @@ class ProductQAAnswer(BaseModel):
         if not self.sufficient_evidence and self.claims:
             raise ValueError("claims must be empty when sufficient_evidence is false")
         return self
+
+
+def _allowed_comment_id_forms(evidence: list[Evidence]) -> tuple[str, ...]:
+    """Return every accepted spelling of each supplied citation id.
+
+    The schema asks the model for bare ids, but the first live integration run
+    proved that models can copy the surrounding ``comment:`` tag as well. All
+    three spellings are therefore enumerated while remaining evidence-bound:
+    accepting ``[comment:123]`` does not open the schema to ``comment:999``.
+    """
+    forms: list[str] = []
+    for item in evidence:
+        forms.extend((item.id, f"comment:{item.id}", f"[comment:{item.id}]"))
+    return tuple(dict.fromkeys(forms))
+
+
+def _evidence_bound_answer_model(evidence: list[Evidence]) -> type[BaseModel]:
+    """Build the structured-output schema with citation ids fixed to evidence.
+
+    Prompt-only citation rules did not prevent the 4.1% id-level and 30%
+    response-level hallucination observed in the v3 live run. A per-request
+    ``Literal`` turns the supplied ids into a JSON Schema ``enum`` instead.
+    OpenAI structured output must then choose one of those values before the
+    response reaches application code.
+
+    ``_quarantine_invented_ids`` is deliberately retained after this boundary
+    as defence in depth for old/manual data and providers that do not enforce
+    the schema themselves.
+    """
+    allowed_forms = _allowed_comment_id_forms(evidence)
+    if not allowed_forms:
+        raise ValueError("cannot build an evidence-bound schema without evidence")
+
+    allowed_comment_id = Literal.__getitem__(allowed_forms)
+    claim_model = create_model(
+        "EvidenceBoundQAClaim",
+        __config__=ConfigDict(extra="forbid"),
+        text=(str, Field(min_length=1)),
+        comment_ids=(
+            list[allowed_comment_id],  # type: ignore[valid-type]
+            Field(min_length=1),
+        ),
+    )
+    return create_model(
+        "EvidenceBoundProductQAAnswer",
+        __config__=ConfigDict(extra="forbid"),
+        claims=(list[claim_model], ...),
+        sufficient_evidence=(bool, ...),
+        answer_fa=(str, Field(min_length=1)),
+    )
 
 
 class CitationHallucination(BaseModel):
@@ -343,6 +404,7 @@ class ProductQAChain:
             )
 
         evidence_block = "\n\n".join(_evidence_block(item) for item in evidence)
+        response_model = _evidence_bound_answer_model(evidence)
         result = self.client.generate_structured(
             operation="answer_product_qa",
             messages=[
@@ -352,10 +414,22 @@ class ProductQAChain:
                     "content": f"Question: {question}\n\nEvidence:\n{evidence_block}",
                 },
             ],
-            response_model=ProductQAAnswer,
+            response_model=response_model,
             cache_namespace=PROMPT_VERSION,
+            semantic_cache=SemanticCacheRequest(
+                text=question,
+                guard={
+                    "system_prompt": SYSTEM_PROMPT,
+                    "product_id": product_id,
+                    "evidence": evidence_block,
+                },
+            ),
         )
-        answer = ProductQAAnswer.model_validate(result.data)
+        # Validate here as well: the production OpenAI provider already parses
+        # against response_model, but test/local providers may only return a
+        # dictionary. This keeps the citation boundary provider-independent.
+        constrained = response_model.model_validate(result.data)
+        answer = ProductQAAnswer.model_validate(constrained.model_dump(mode="json"))
         answer, hallucination = _quarantine_invented_ids(answer, evidence)
         return ProductQAResult(
             question=question,

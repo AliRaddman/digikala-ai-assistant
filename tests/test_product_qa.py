@@ -10,12 +10,15 @@ from src.chains.product_qa import (
     NO_EVIDENCE_ANSWER_FA,
     ProductQAAnswer,
     ProductQAChain,
+    ProductQAResult,
+    _evidence_bound_answer_model,
+    _quarantine_invented_ids,
 )
 from src.llm.cache import SQLiteLLMCache
 from src.llm.client import CachedLLMClient, ProviderResult
 from src.llm.types import TokenUsage
 from src.llm.usage import SQLiteUsageLedger
-from src.retrieval.base import MockRetriever
+from src.retrieval.base import MockRetriever, RetrievalFilters
 
 
 class FakeProvider:
@@ -100,8 +103,7 @@ class ProductQAChainTests(unittest.TestCase):
         self.assertEqual(result.answer.claims, [])
         self.assertEqual(result.render_fa(), "نظرات کافی برای پاسخ به این سؤال وجود ندارد.")
 
-    def test_a_wholly_invented_claim_is_dropped_and_recorded(self) -> None:
-        """Was assertRaises before 2026-08-30; see _quarantine_invented_ids."""
+    def test_an_invented_id_is_rejected_at_the_structured_boundary(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             provider = FakeProvider(
                 response={
@@ -116,17 +118,10 @@ class ProductQAChainTests(unittest.TestCase):
                 retriever=MockRetriever("comment"),
                 client=_build_client(provider, Path(directory)),
             )
-            result = chain.run("ایراد این محصول چیست؟", product_id="3901234")
+            with self.assertRaisesRegex(ValueError, "comment_ids"):
+                chain.run("ایراد این محصول چیست؟", product_id="3901234")
 
-        report = result.citation_hallucination
-        self.assertEqual(result.answer.claims, [])
-        self.assertEqual(report.invented_ids, ["00000000"])
-        self.assertEqual(report.generated_ids, 1)
-        self.assertEqual(report.rate, 1.0)
-        self.assertEqual(len(report.dropped_claims), 1)
-        self.assertEqual(report.dropped_claims[0]["text"], "ادعای ساختگی")
-        # the invented id must never reach the rendered answer
-        self.assertNotIn("00000000", result.render_fa())
+        self.assertEqual(provider.calls, 1)
 
     def test_empty_question_or_product_id_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -183,11 +178,9 @@ class CommentIdFormatTests(unittest.TestCase):
 
         self.assertEqual(result.answer.claims[0].comment_ids, ["51230044"])
 
-    def test_an_invented_id_inside_a_citation_tag_is_still_caught(self) -> None:
-        result = self._run(["[comment:00000000]"])
-
-        self.assertEqual(result.citation_hallucination.invented_ids, ["00000000"])
-        self.assertEqual(result.answer.claims, [])
+    def test_an_invented_id_inside_a_citation_tag_is_rejected(self) -> None:
+        with self.assertRaisesRegex(ValueError, "comment_ids"):
+            self._run(["[comment:00000000]"])
 
 
 class AnswerSchemaContractTests(unittest.TestCase):
@@ -217,28 +210,74 @@ class AnswerSchemaContractTests(unittest.TestCase):
                 {"answer_fa": "متن نمونه", "sufficient_evidence": False}
             )
 
+    def test_comment_ids_are_an_enum_derived_only_from_this_evidence(self) -> None:
+        evidence = MockRetriever("comment").retrieve(
+            "ایرادها چیست؟",
+            top_k=20,
+            filters=RetrievalFilters(product_ids=["3901234"]),
+        )
+        schema = _evidence_bound_answer_model(evidence).model_json_schema()
+        allowed = schema["$defs"]["EvidenceBoundQAClaim"]["properties"][
+            "comment_ids"
+        ]["items"]["enum"]
+
+        expected = []
+        for item in evidence:
+            expected += [item.id, f"comment:{item.id}", f"[comment:{item.id}]"]
+        self.assertEqual(allowed, expected)
+        self.assertNotIn("00000000", allowed)
+        self.assertNotIn("[comment:00000000]", allowed)
+
+    def test_evidence_bound_schema_rejects_an_invented_id(self) -> None:
+        evidence = MockRetriever("comment").retrieve(
+            "ایرادها چیست؟",
+            top_k=20,
+            filters=RetrievalFilters(product_ids=["3901234"]),
+        )
+        response_model = _evidence_bound_answer_model(evidence)
+
+        with self.assertRaisesRegex(ValueError, "comment_ids"):
+            response_model.model_validate(
+                {
+                    "claims": [
+                        {"text": "ادعای ساختگی", "comment_ids": ["00000000"]}
+                    ],
+                    "sufficient_evidence": True,
+                    "answer_fa": "متن نمونه",
+                }
+            )
+
 
 class CitationQuarantineTests(unittest.TestCase):
-    """Partly-invented citations: keep the sound half, measure the rest.
+    """Defence in depth for old/manual outputs that bypass the live schema.
 
     Ali, 2026-08-30. Modelled on the first live answer for product 262958,
-    which cited 15 ids of which 12 were real and 3 were invented.
+    which cited 15 ids of which 12 were real and 3 were invented. New model
+    calls are stopped by the evidence-bound enum before reaching this layer;
+    keeping these tests proves stale or manually supplied outputs stay safe.
     """
 
     def _run(self, claims: list[dict]) -> object:
-        with tempfile.TemporaryDirectory() as directory:
-            provider = FakeProvider(
-                response={
-                    "answer_fa": "خلاصه‌ی نظرات کاربران.",
-                    "sufficient_evidence": True,
-                    "claims": claims,
-                }
-            )
-            chain = ProductQAChain(
-                retriever=MockRetriever("comment"),
-                client=_build_client(provider, Path(directory)),
-            )
-            return chain.run("ایرادهای پرتکرار این محصول چیست؟", product_id="3901234")
+        evidence = MockRetriever("comment").retrieve(
+            "ایرادهای پرتکرار این محصول چیست؟",
+            top_k=20,
+            filters=RetrievalFilters(product_ids=["3901234"]),
+        )
+        answer = ProductQAAnswer.model_validate(
+            {
+                "answer_fa": "خلاصه‌ی نظرات کاربران.",
+                "sufficient_evidence": True,
+                "claims": claims,
+            }
+        )
+        answer, report = _quarantine_invented_ids(answer, evidence)
+        return ProductQAResult(
+            question="ایرادهای پرتکرار این محصول چیست؟",
+            product_id="3901234",
+            evidence=evidence,
+            answer=answer,
+            citation_hallucination=report,
+        )
 
     def test_a_claim_keeps_its_real_ids_and_loses_only_the_invented_one(self) -> None:
         result = self._run(

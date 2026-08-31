@@ -103,8 +103,54 @@ class LLMFilterExtractor:
         return ProductFilterPlan.model_validate(result.data)
 
 
-_NUMBER = r"(?P<number>\d+(?:[.,]\d+)?)"
-_SCALE = r"(?P<scale>میلیون|هزار)?"
+_NUMBER_WORD_VALUES = {
+    "صفر": 0,
+    "نیم": 0.5,
+    "یک": 1,
+    "یه": 1,
+    "دو": 2,
+    "سه": 3,
+    "چهار": 4,
+    "پنج": 5,
+    "شش": 6,
+    "هفت": 7,
+    "هشت": 8,
+    "نه": 9,
+    "ده": 10,
+    "یازده": 11,
+    "دوازده": 12,
+    "سیزده": 13,
+    "چهارده": 14,
+    "پانزده": 15,
+    "شانزده": 16,
+    "هفده": 17,
+    "هجده": 18,
+    "نوزده": 19,
+    "بیست": 20,
+    "سی": 30,
+    "چهل": 40,
+    "پنجاه": 50,
+    "شصت": 60,
+    "هفتاد": 70,
+    "هشتاد": 80,
+    "نود": 90,
+    "صد": 100,
+    "یکصد": 100,
+    "دویست": 200,
+    "سیصد": 300,
+    "چهارصد": 400,
+    "پانصد": 500,
+    "ششصد": 600,
+    "هفتصد": 700,
+    "هشتصد": 800,
+    "نهصد": 900,
+}
+_NUMBER_WORD = "(?:" + "|".join(
+    sorted(map(re.escape, _NUMBER_WORD_VALUES), key=len, reverse=True)
+) + ")"
+_NUMBER_WORD_SEQUENCE = rf"{_NUMBER_WORD}(?:\s+(?:و\s+)?{_NUMBER_WORD})*"
+_NUMBER = rf"(?P<number>\d[\d,]*(?:\.\d+)?|{_NUMBER_WORD_SEQUENCE})"
+_SCALE = r"(?P<scale>میلیارد|میلیون|هزار)?"
 _CURRENCY = r"(?P<currency>تومان|تومن|ریال)"
 _MAX_PRICE_RE = re.compile(
     rf"(?:زیر|کمتر از|حداکثر|تا)\s*{_NUMBER}\s*{_SCALE}\s*{_CURRENCY}"
@@ -114,13 +160,28 @@ _MIN_PRICE_RE = re.compile(
 )
 
 
+def _parse_number(value: str) -> float:
+    if value[0].isdigit():
+        if "," not in value:
+            return float(value)
+        groups = value.split(",")
+        if len(groups) > 1 and all(len(group) == 3 for group in groups[1:]):
+            return float("".join(groups))
+        return float(value.replace(",", "."))
+
+    tokens = [token for token in value.split() if token != "و"]
+    return sum(_NUMBER_WORD_VALUES[token] for token in tokens)
+
+
 def _price_to_rial(match: re.Match[str]) -> float:
-    number = float(match.group("number").replace(",", "."))
+    number = _parse_number(match.group("number"))
     scale = match.group("scale")
     if scale == "هزار":
         number *= 1_000
     elif scale == "میلیون":
         number *= 1_000_000
+    elif scale == "میلیارد":
+        number *= 1_000_000_000
     if match.group("currency") in {"تومان", "تومن"}:
         number *= 10
     return number
