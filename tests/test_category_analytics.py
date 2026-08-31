@@ -14,16 +14,20 @@ import pandas as pd
 
 from src.chains.category_analytics import (
     CategoryAnalyticsNarrative,
+    CategoryAnalyticsReport,
     CategoryInsight,
     CategoryScope,
     _numeric_pool,
     _validate_insight_values,
     brand_feedback_comparison,
+    category_from_product_ids,
+    classify_analytics_question,
     count_no_complaint_mentions,
     dissatisfied_feature_complaints,
     high_volume_low_recommend,
     is_no_complaint,
     resolve_category_from_query,
+    suggest_categories,
     top_complaints,
 )
 
@@ -162,6 +166,174 @@ class ResolveCategoryFromQueryTests(unittest.TestCase):
         products = pd.DataFrame({"cat1": ["کیف", "کیف چرم"]})
         scope = resolve_category_from_query("کیف چرم مشکی رو نشونم بده", products)
         self.assertEqual(scope, CategoryScope(cat1="کیف چرم"))
+
+
+class AnalyticsQuestionRoutingTests(unittest.TestCase):
+    """One answer per question type, not one answer for all four.
+
+    Ali, 2026-08-30. The four questions below are copied verbatim from section
+    4 of docs/PROJECT_BRIEF.md. Before this, the question text never reached
+    the chain, so all four returned the complaints table.
+    """
+
+    def test_the_four_brief_questions_each_pick_their_own_table(self) -> None:
+        cases = {
+            "پرتکرارترین شکایت کاربران در این دسته چیست؟": "top_complaints",
+            "کاربران بیشتر درباره‌ی چه ویژگی‌هایی از محصولات این دسته ناراضی هستند؟":
+                "dissatisfied_features",
+            "کدام محصولات نظر زیادی دارند اما درصد پیشنهاد خرید آن‌ها پایین است؟":
+                "low_recommend_products",
+            "بازخورد کاربران درباره‌ی چند برند اصلی این دسته چه تفاوتی دارد؟":
+                "brand_feedback",
+        }
+        for query, expected in cases.items():
+            with self.subTest(query=query):
+                self.assertEqual(classify_analytics_question(query), expected)
+
+    def test_an_unrecognised_question_falls_back_to_overview(self) -> None:
+        """Better a category summary than a confidently wrong table."""
+        self.assertEqual(
+            classify_analytics_question("تحلیل دسته اسباب بازی"), "overview"
+        )
+
+    def test_a_brand_question_about_complaints_is_a_brand_question(self) -> None:
+        self.assertEqual(
+            classify_analytics_question("پرتکرارترین شکایت برندهای این دسته"),
+            "brand_feedback",
+        )
+
+
+class CategoryFallbackTests(unittest.TestCase):
+    """"این دسته" with no category named -- the brief's own phrasing."""
+
+    @staticmethod
+    def _products() -> pd.DataFrame:
+        return pd.DataFrame(
+            {
+                "product_id": ["1", "2", "3", "4"],
+                "cat1": ["اسباب بازی", "اسباب بازی", "لباس زنانه", "اسباب بازی"],
+                "cat2": [None] * 4,
+                "sub_cat": ["toy", "toy", "clothe", "toy"],
+                "brand": ["A", "B", "C", "D"],
+            }
+        )
+
+    def test_the_category_is_taken_from_products_already_in_context(self) -> None:
+        scope = category_from_product_ids(self._products(), ["3"])
+
+        self.assertIsNotNone(scope)
+        self.assertEqual(scope.cat1, "لباس زنانه")
+
+    def test_one_stray_id_cannot_outvote_the_rest(self) -> None:
+        scope = category_from_product_ids(self._products(), ["1", "2", "3"])
+
+        self.assertEqual(scope.cat1, "اسباب بازی")
+
+    def test_unknown_ids_resolve_to_nothing_rather_than_a_guess(self) -> None:
+        self.assertIsNone(category_from_product_ids(self._products(), ["9999"]))
+        self.assertIsNone(category_from_product_ids(self._products(), []))
+
+    def test_suggestions_are_real_categories_ordered_by_size(self) -> None:
+        suggestions = suggest_categories(self._products(), limit=2)
+
+        self.assertEqual(suggestions, ["اسباب بازی", "لباس زنانه"])
+
+
+class ReportRenderingTests(unittest.TestCase):
+    """Each question renders its own table, and the numbers reach the user."""
+
+    @staticmethod
+    def _report(question: str, narrative=None) -> CategoryAnalyticsReport:
+        return CategoryAnalyticsReport(
+            scope=CategoryScope(cat1="اسباب بازی"),
+            product_count=2,
+            comment_count=7,
+            no_complaint_mentions=0,
+            top_complaints=pd.DataFrame(
+                {"complaint": ["قیمت بالا", "کیفیت پایین"], "count": [836, 453]}
+            ),
+            dissatisfied_feature_complaints=pd.DataFrame(
+                {"complaint": ["بی کیفیت"], "count": [256]}
+            ),
+            high_volume_low_recommend=pd.DataFrame(
+                {
+                    "product_id": ["1092337"],
+                    "review_count": [65],
+                    "recommended_count": [0],
+                    "recommended_rate": [0.0],
+                }
+            ),
+            brand_feedback=pd.DataFrame(
+                {
+                    "brand": ["فکرآذین", "پروت"],
+                    "review_count": [36, 30],
+                    "recommended_rate": [0.962, 0.0],
+                    "mean_rate": [4.29, 1.5],
+                }
+            ),
+            narrative=narrative,
+            question=question,
+        )
+
+    def test_the_complaints_question_lists_complaints_with_counts(self) -> None:
+        rendered = self._report("top_complaints").render_fa()
+
+        self.assertIn("قیمت بالا", rendered)
+        self.assertIn("836", rendered)
+        self.assertNotIn("فکرآذین", rendered)
+
+    def test_the_brand_question_lists_brands_not_complaints(self) -> None:
+        rendered = self._report("brand_feedback").render_fa()
+
+        self.assertIn("فکرآذین", rendered)
+        self.assertIn("96.2", rendered)
+        self.assertIn("ضعیف‌ترین برند", rendered)
+        self.assertNotIn("قیمت بالا", rendered)
+
+    def test_the_low_recommend_question_lists_products(self) -> None:
+        rendered = self._report("low_recommend_products").render_fa()
+
+        self.assertIn("1092337", rendered)
+        self.assertIn("65", rendered)
+        self.assertNotIn("قیمت بالا", rendered)
+
+    def test_the_dissatisfied_question_uses_its_own_table(self) -> None:
+        rendered = self._report("dissatisfied_features").render_fa()
+
+        self.assertIn("بی کیفیت", rendered)
+        self.assertIn("256", rendered)
+
+    def test_the_narrative_is_appended_and_never_replaces_the_table(self) -> None:
+        """It used to be returned alone, hiding every computed number."""
+        narrative = CategoryAnalyticsNarrative(
+            summary_fa="خلاصه‌ی مدل.", insights=[]
+        )
+        rendered = self._report("brand_feedback", narrative).render_fa()
+
+        self.assertIn("فکرآذین", rendered)
+        self.assertIn("جمع‌بندی مدل:", rendered)
+        self.assertIn("خلاصه‌ی مدل.", rendered)
+
+    def test_an_empty_table_says_so_instead_of_crashing(self) -> None:
+        report = self._report("brand_feedback")
+        empty = CategoryAnalyticsReport(
+            scope=report.scope,
+            product_count=0,
+            comment_count=0,
+            no_complaint_mentions=0,
+            top_complaints=pd.DataFrame(columns=["complaint", "count"]),
+            dissatisfied_feature_complaints=pd.DataFrame(columns=["complaint", "count"]),
+            high_volume_low_recommend=pd.DataFrame(
+                columns=["product_id", "review_count", "recommended_count", "recommended_rate"]
+            ),
+            brand_feedback=pd.DataFrame(
+                columns=["brand", "review_count", "recommended_rate", "mean_rate"]
+            ),
+            narrative=None,
+            question="brand_feedback",
+        )
+
+        self.assertIn("هیچ برندی", empty.render_fa())
 
 
 class ValidateInsightValuesTests(unittest.TestCase):

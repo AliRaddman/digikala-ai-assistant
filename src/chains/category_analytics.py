@@ -18,12 +18,12 @@ from collections import Counter
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import pandas as pd
 from pydantic import BaseModel, ConfigDict, Field
 
-from src.data.normalize import normalize
+from src.data.normalize import normalize, to_search_text
 from src.llm.client import CachedLLMClient, build_openai_client
 
 DEFAULT_PRODUCTS_PATH = Path("data/processed/products_clean_v1.parquet")
@@ -142,10 +142,12 @@ class CategoryAnalyticsReport:
     high_volume_low_recommend: pd.DataFrame
     brand_feedback: pd.DataFrame
     narrative: CategoryAnalyticsNarrative | None
+    question: AnalyticsQuestion = "overview"
 
     def as_dict(self) -> dict[str, Any]:
         return {
             "scope": {"cat1": self.scope.cat1, "sub_cat": self.scope.sub_cat},
+            "question": self.question,
             "product_count": self.product_count,
             "comment_count": self.comment_count,
             "no_complaint_mentions": self.no_complaint_mentions,
@@ -156,19 +158,106 @@ class CategoryAnalyticsReport:
             "narrative": self.narrative.model_dump(mode="json") if self.narrative else None,
         }
 
-    def render_fa(self) -> str:
+    def render_fa(self, top_n: int = 5) -> str:
+        """The table the question asked for, then the model's summary if any.
+
+        Ali, 2026-08-30. This used to return `narrative.summary_fa` alone when
+        a narrative existed and the single top complaint otherwise, so all four
+        section-4 question types produced the same answer and three of the four
+        computed tables never reached the user at all. The facts now come
+        first and the model's prose is appended under its own heading, keeping
+        the facts/inference split the brief asks for in section 3.
+        """
+        header = (
+            f"تحلیل دسته «{self.scope.label_fa()}» بر پایه‌ی {self.comment_count:,} نظر "
+            f"از {self.product_count:,} محصول:"
+        )
+        lines = [header, ""]
+        lines.extend(self._question_lines(top_n))
         if self.narrative:
-            return self.narrative.summary_fa
-        lines = [
-            f"تحلیل دسته «{self.scope.label_fa()}» بر پایه‌ی {self.comment_count} نظر "
-            f"از {self.product_count} محصول:"
+            lines += ["", "جمع‌بندی مدل:", self.narrative.summary_fa]
+        return "\n".join(lines).strip()
+
+    def _question_lines(self, top_n: int) -> list[str]:
+        if self.question == "brand_feedback":
+            return _render_brand_feedback(self.brand_feedback, top_n)
+        if self.question == "low_recommend_products":
+            return _render_low_recommend(self.high_volume_low_recommend, top_n)
+        if self.question == "dissatisfied_features":
+            return _render_complaints(
+                self.dissatisfied_feature_complaints,
+                top_n,
+                "ویژگی‌هایی که ناراضی‌ها بیشتر به آن‌ها اشاره کرده‌اند:",
+            )
+        if self.question == "top_complaints":
+            return _render_complaints(
+                self.top_complaints, top_n, "پرتکرارترین شکایت‌ها:"
+            )
+        return _render_overview(self.top_complaints, self.brand_feedback, top_n)
+
+
+def _render_complaints(table: pd.DataFrame, top_n: int, heading: str) -> list[str]:
+    if table.empty:
+        return ["شکایت ثبت‌شده‌ای برای این دسته پیدا نشد."]
+    lines = [heading]
+    for _, row in table.head(top_n).iterrows():
+        lines.append(f"- «{row['complaint']}» — {int(row['count']):,} بار")
+    return lines
+
+
+def _render_low_recommend(table: pd.DataFrame, top_n: int) -> list[str]:
+    if table.empty:
+        return [
+            "هیچ محصولی در این دسته به آستانه‌ی حداقل تعداد نظر برای این رتبه‌بندی نرسید."
         ]
-        if not self.top_complaints.empty:
-            top = self.top_complaints.iloc[0]
-            lines.append(f"پرتکرارترین شکایت: «{top['complaint']}» ({int(top['count'])} بار)")
-        else:
-            lines.append("نظری برای این دسته پیدا نشد.")
-        return "\n".join(lines)
+    lines = ["محصولاتی که نظر زیادی دارند ولی نرخ پیشنهاد خریدشان پایین است:"]
+    for _, row in table.head(top_n).iterrows():
+        rate = row["recommended_rate"]
+        rate_fa = "نامشخص" if pd.isna(rate) else f"{float(rate) * 100:.1f}٪"
+        lines.append(
+            f"- محصول {row['product_id']} — {int(row['review_count']):,} نظر — "
+            f"نرخ پیشنهاد {rate_fa}"
+        )
+    return lines
+
+
+def _render_brand_feedback(table: pd.DataFrame, top_n: int) -> list[str]:
+    if table.empty:
+        return ["هیچ برندی در این دسته به آستانه‌ی حداقل تعداد نظر نرسید."]
+    ranked = table.sort_values("recommended_rate", ascending=False)
+    lines = ["بازخورد کاربران به تفکیک برند (مرتب بر اساس نرخ پیشنهاد):"]
+    for _, row in ranked.head(top_n).iterrows():
+        rate = row["recommended_rate"]
+        rate_fa = "نامشخص" if pd.isna(rate) else f"{float(rate) * 100:.1f}٪"
+        mean_rate = row["mean_rate"]
+        mean_fa = "—" if pd.isna(mean_rate) else f"{float(mean_rate):.2f} از ۵"
+        lines.append(
+            f"- {row['brand']} — {int(row['review_count']):,} نظر — "
+            f"نرخ پیشنهاد {rate_fa} — میانگین امتیاز {mean_fa}"
+        )
+    weakest = ranked.iloc[-1]
+    weakest_rate = weakest["recommended_rate"]
+    if not pd.isna(weakest_rate) and len(ranked) > 1:
+        lines.append(
+            f"ضعیف‌ترین برند این دسته: {weakest['brand']} با نرخ پیشنهاد "
+            f"{float(weakest_rate) * 100:.1f}٪."
+        )
+    return lines
+
+
+def _render_overview(
+    complaints: pd.DataFrame, brands: pd.DataFrame, top_n: int
+) -> list[str]:
+    lines = _render_complaints(complaints, min(top_n, 3), "پرتکرارترین شکایت‌ها:")
+    if not brands.empty:
+        best = brands.sort_values("recommended_rate", ascending=False).iloc[0]
+        rate = best["recommended_rate"]
+        if not pd.isna(rate):
+            lines.append(
+                f"بهترین برند از نظر نرخ پیشنهاد: {best['brand']} "
+                f"({float(rate) * 100:.1f}٪)."
+            )
+    return lines
 
 
 def _records(df: pd.DataFrame) -> list[dict[str, Any]]:
@@ -206,6 +295,83 @@ def resolve_category_from_query(query: str, products: pd.DataFrame) -> CategoryS
         if value in normalized_query:
             return CategoryScope(cat1=value)
     return None
+
+
+AnalyticsQuestion = Literal[
+    "top_complaints",
+    "dissatisfied_features",
+    "low_recommend_products",
+    "brand_feedback",
+    "overview",
+]
+
+# Section 4 of docs/PROJECT_BRIEF.md names four analytical questions. Each maps
+# to one already-computed table; the signals below are the phrases those four
+# questions and their natural paraphrases actually contain.
+#
+# Rule-based rather than a model call: it is free, deterministic, testable, and
+# the whole set is four classes over a closed vocabulary -- exactly the shape
+# where a regex beats an LLM (see failure 8 in docs/FAILURES.md, where the
+# model lost to the rule-based filter extractor on the same kind of task).
+#
+# Ordered most-specific first. A question naming both a brand and a complaint
+# is a brand question about complaints, and the brand table is the one that
+# cannot be reconstructed from the complaint table.
+_QUESTION_SIGNALS: tuple[tuple[AnalyticsQuestion, tuple[str, ...]], ...] = (
+    (
+        "low_recommend_products",
+        ("پیشنهاد خرید", "درصد پیشنهاد", "نرخ پیشنهاد", "نظر زیادی", "پرنظر",
+         "نظر زیاد", "توصیه پایین"),
+    ),
+    ("brand_feedback", ("برند",)),
+    (
+        "dissatisfied_features",
+        ("ویژگی", "ناراضی", "نارضایتی", "رضایت ندارند"),
+    ),
+    (
+        "top_complaints",
+        ("شکایت", "مشکل", "ایراد", "انتقاد", "نقطه ضعف", "نقاط ضعف"),
+    ),
+)
+
+
+def classify_analytics_question(query: str) -> AnalyticsQuestion:
+    """Which of the four section-4 tables this question is asking for.
+
+    Falls back to "overview" rather than guessing, so an unrecognised question
+    gets the category summary instead of a confidently wrong table.
+    """
+    text = f" {to_search_text(query)} "
+    for question, signals in _QUESTION_SIGNALS:
+        if any(signal in text for signal in signals):
+            return question
+    return "overview"
+
+
+def category_from_product_ids(
+    products: pd.DataFrame,
+    product_ids: list[str],
+) -> CategoryScope | None:
+    """The category of the products already in the conversation.
+
+    All four example questions in the brief say "این دسته" without naming one,
+    which is only answerable if the session already has products in context.
+    The most common cat1 among them wins, so one stray id cannot redirect the
+    whole analysis.
+    """
+    if not product_ids:
+        return None
+    wanted = {str(product_id) for product_id in product_ids}
+    matched = products.loc[products["product_id"].isin(wanted), "cat1"].dropna()
+    if matched.empty:
+        return None
+    return CategoryScope(cat1=str(matched.mode().iloc[0]))
+
+
+def suggest_categories(products: pd.DataFrame, limit: int = 6) -> list[str]:
+    """The largest real cat1 values, to offer as a concrete choice."""
+    counts = products["cat1"].dropna().value_counts()
+    return [str(value) for value in counts.head(limit).index]
 
 
 def category_product_ids(products: pd.DataFrame, scope: CategoryScope) -> list[str]:
@@ -367,6 +533,7 @@ class CategoryAnalyticsChain:
         self,
         scope: CategoryScope,
         *,
+        question: AnalyticsQuestion = "overview",
         min_reviews_for_ranking: int = 20,
         top_n: int = 10,
     ) -> CategoryAnalyticsReport:
@@ -400,6 +567,7 @@ class CategoryAnalyticsChain:
             high_volume_low_recommend=low_recommend,
             brand_feedback=brands,
             narrative=narrative,
+            question=question,
         )
 
     def _summarize(
@@ -443,6 +611,19 @@ def main() -> None:
     parser.add_argument("--products", type=Path, default=DEFAULT_PRODUCTS_PATH)
     parser.add_argument("--comments", type=Path, default=DEFAULT_COMMENTS_PATH)
     parser.add_argument("--no-summary", action="store_true")
+    parser.add_argument(
+        "--question",
+        default="overview",
+        choices=[
+            "overview",
+            "top_complaints",
+            "dissatisfied_features",
+            "low_recommend_products",
+            "brand_feedback",
+        ],
+        help="which section-4 table to render; --ask classifies this from Persian text",
+    )
+    parser.add_argument("--ask", help="a Persian question; overrides --question")
     args = parser.parse_args()
 
     chain = CategoryAnalyticsChain(
@@ -450,7 +631,10 @@ def main() -> None:
         comments_path=args.comments,
         client=None if args.no_summary else build_openai_client(),
     )
-    report = chain.run(CategoryScope(cat1=args.cat1, sub_cat=args.sub_cat))
+    question = classify_analytics_question(args.ask) if args.ask else args.question
+    report = chain.run(
+        CategoryScope(cat1=args.cat1, sub_cat=args.sub_cat), question=question
+    )
     print(report.render_fa())
 
 
