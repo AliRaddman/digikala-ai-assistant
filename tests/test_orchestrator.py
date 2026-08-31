@@ -264,6 +264,81 @@ class ProductComparisonRouteTests(unittest.TestCase):
         self.assertNotEqual(result.status, "dependency_unavailable")
 
 
+class CategoryAnalyticsRoutingTests(unittest.TestCase):
+    """The handler side of section-4 question routing (Ali, 2026-08-30)."""
+
+    @staticmethod
+    def _fixture(root: Path):
+        products_path = root / "products.parquet"
+        comments_path = root / "comments.parquet"
+        pd.DataFrame(
+            [
+                {"product_id": "1", "cat1": "اسباب بازی", "cat2": None,
+                 "sub_cat": "toy", "brand": "الف"},
+                {"product_id": "2", "cat1": "اسباب بازی", "cat2": None,
+                 "sub_cat": "toy", "brand": "ب"},
+            ]
+        ).to_parquet(products_path, index=False)
+        pd.DataFrame(
+            [
+                {"product_id": "1", "disadvantages": "قیمت بالا",
+                 "recommendation_status": "not_recommended", "rate": 2.0},
+                {"product_id": "2", "disadvantages": "کیفیت پایین",
+                 "recommendation_status": "recommended", "rate": 5.0},
+            ]
+        ).to_parquet(comments_path, index=False)
+        return ShoppingAssistantOrchestrator(
+            router=RuleBasedIntentRouter(),
+            handlers={
+                "category_analytics": CategoryAnalyticsHandler(
+                    products_path=products_path,
+                    comments_path=comments_path,
+                    client=None,
+                )
+            },
+        )
+
+    def test_the_category_comes_from_context_when_the_question_omits_it(self) -> None:
+        """All four brief examples say "این دسته" and name no category."""
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator = self._fixture(Path(directory))
+            load_products.cache_clear()
+            with mock.patch.dict(os.environ, {}, clear=True):
+                result = orchestrator.run(
+                    "پرتکرارترین شکایت کاربران در این دسته چیست؟",
+                    context_product_ids=["2"],
+                )
+            load_products.cache_clear()
+
+        self.assertEqual(result.status, "success")
+        self.assertEqual(result.payload["scope"]["cat1"], "اسباب بازی")
+        self.assertEqual(result.payload["question"], "top_complaints")
+
+    def test_the_brand_question_returns_the_brand_table(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator = self._fixture(Path(directory))
+            load_products.cache_clear()
+            with mock.patch.dict(os.environ, {}, clear=True):
+                result = orchestrator.run(
+                    "بازخورد کاربران درباره‌ی برندهای دسته اسباب بازی چه تفاوتی دارد؟"
+                )
+            load_products.cache_clear()
+
+        self.assertEqual(result.payload["question"], "brand_feedback")
+        self.assertIn("برند", result.answer)
+
+    def test_an_unresolvable_category_offers_real_names(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator = self._fixture(Path(directory))
+            load_products.cache_clear()
+            with mock.patch.dict(os.environ, {}, clear=True):
+                result = orchestrator.run("پرتکرارترین شکایت کاربران در این دسته چیست؟")
+            load_products.cache_clear()
+
+        # a real category from the catalogue, not a vague apology
+        self.assertIn("اسباب بازی", result.answer)
+
+
 class OrchestratorTests(unittest.TestCase):
     def test_product_ids_are_extracted_without_treating_price_as_an_id(self) -> None:
         query = "محصول [product:۱۲۳۴۵] را با شناسه محصول: 67890 زیر ۵۰۰۰۰۰ تومان مقایسه کن"
