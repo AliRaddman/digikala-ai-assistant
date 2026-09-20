@@ -1,0 +1,46 @@
+{
+  "baseline_exact_only": {
+    "api_calls": 8,
+    "cost_usd": 0.00168,
+    "exact_cache_hits": 0,
+    "logical_requests": 8,
+    "mean_request_latency_ms": 50.37398362503609,
+    "mean_semantic_hit_latency_ms": null,
+    "saved_cost_usd": 0.0,
+    "semantic_cache_hits": 0,
+    "wall_latency_ms": 414.5821820002311
+  },
+  "benchmark": "semantic-cache-offline-v1",
+  "measured_reduction": {
+    "api_calls_avoided": 4,
+    "cost_reduction_pct": 50.0,
+    "semantic_hit_latency_reduction_vs_baseline_mean_pct": 97.90788930312033,
+    "wall_latency_reduction_pct": 47.33008641450105
+  },
+  "method": {
+    "encoder": "deterministic vectors for four Persian paraphrase pairs",
+    "provider": "fake provider with fixed per-call delay",
+    "provider_delay_ms": 50.0,
+    "threshold": 0.96,
+    "warning": "Infrastructure benchmark only; it does not measure live embedding false-hit/false-miss quality."
+  },
+  "production_projection_from_recorded_metrics": {
+    "historical_local_query_encode_p50_ms": 18.9,
+    "historical_product_qa_api_p50_ms": 3113.0,
+    "historical_product_qa_mean_cost_per_api_call_usd": 0.0004923636363636364,
+    "local_embedding_cost_per_hit_usd": 0.0,
+    "projected_per_hit_latency_reduction_pct": 99.39286861548345,
+    "warning": "Projection combines previously recorded components; rerun with the configured embedding model and live traffic before claiming a production A/B result."
+  },
+  "semantic_cache": {
+    "api_calls": 4,
+    "cost_usd": 0.00084,
+    "exact_cache_hits": 0,
+    "logical_requests": 8,
+    "mean_request_latency_ms": 25.86727224996821,
+    "mean_semantic_hit_latency_ms": 1.0538794998637968,
+    "saved_cost_usd": 0.00084,
+    "semantic_cache_hits": 4,
+    "wall_latency_ms": 218.36007700039772
+  }
+}

@@ -43,6 +43,24 @@ unset ALL_PROXY all_proxy          # پروکسی socks باعث کرش httpx م
 متیس آن‌جا `401` می‌گیرد. مقدار درست:
 `LLM_BASE_URL=https://api.metisai.ir/openai/v1`
 
+Semantic Cache اختیاری و در حالت پیش‌فرض خاموش است. برای فعال‌کردنش:
+
+</div>
+
+```bash
+export LLM_SEMANTIC_CACHE_ENABLED=true
+export LLM_SEMANTIC_CACHE_MODEL=intfloat/multilingual-e5-base
+export LLM_SEMANTIC_CACHE_THRESHOLD=0.96
+```
+
+<div dir="rtl">
+
+مدل embedding در اولین درخواست واجد شرایط به‌صورت lazy لود می‌شود. Cache فقط
+وقتی پاسخ معنایی را reuse می‌کند که نسخه‌ی prompt، مدل، JSON schema و Context
+حفاظتی (Evidence/جدول/محصول) دقیقاً یکسان باشند؛ شباهت سؤال به‌تنهایی کافی
+نیست. Ledger از این پس `exact_cache_hits` و `semantic_cache_hits` را جدا ثبت
+می‌کند.
+
 `torch` با همان `pip install -r requirements.txt` نصب می‌شود (چون `sentence-transformers` وابستگی سختی به `torch>=2.2` دارد و به‌هرحال آن را می‌کشد). نسخه‌ای که از PyPI می‌آید عمومی است؛ **اگر GPU دارید**، بعد از نصب، build مخصوص CUDA خودتان را از [pytorch.org](https://pytorch.org/get-started/locally/) دوباره نصب کنید — GPUهای جدید (Blackwell / sm_120) به build تازه‌تری از پیش‌فرض PyPI نیاز دارند. نسخه CPU برای کوئری زدن به ایندکس‌های آماده کافی است، ولی برای ساخت ایندکس روی کل کاتالوگ عملی نیست.
 
 برای اجرای تست‌ها `requirements-dev.txt` را نصب کنید (شامل `pytest`).
@@ -107,17 +125,20 @@ src/
 ├── eval/
 │   ├── retrieval_metrics.py   Recall@k، nDCG@k، MRR@k
 │   ├── grounding.py           ممیزی استناد + LLM-as-a-Judge
-│   └── harness.py             harness ارزیابی بخش ۱
+│   ├── harness.py             harness ارزیابی بخش ۱
+│   └── product_comparison.py  ارزیابی ساختار، استناد و grounding مقایسه
 ├── llm/                 کلاینت، کش، شمارش توکن و هزینه
 ├── chains/
 │   ├── product_discovery.py    بخش ۱: جست‌وجو و کشف محصول
 │   ├── product_filters.py      استخراج فیلتر از متن فارسی
 │   ├── product_qa.py           بخش ۲: پرسش‌وپاسخ مستند به comment_id
+│   ├── product_comparison.py   مقایسه facts / evidence / inference
 │   └── category_analytics.py   بخش ۴: تحلیل سطح دسته (تجمیع، نه بازیابی)
 └── classifier/          خالی — کد طبقه‌بند فعلاً فقط در notebooks/fatemeh/
 
 scripts/                 اسکریپت‌های اجرایی (ساخت ایندکس، بنچمارک، ارزیابی)
 │   ├── run_product_qa_eval.py        بخش ۲ روی مدل واقعی + داور + نرخ توهم استناد
+│   ├── eval_product_comparison.py    بخش مقایسه؛ retrieval-only یا LLM+judge
 │   ├── build_human_labeling_set.py   برگه برچسب‌گذاری انسانی (نمرات داور جدا نگه داشته می‌شود)
 │   └── compare_human_vs_judge.py     کاپای کوهن، همبستگی، موارد اختلاف
 data/eval/human/         اعتبارسنجی انسانی: برگه، rubric، نمرات داور — در گیت هست
@@ -318,7 +339,12 @@ result.as_dict()                   # ساختار کامل برای harness
 
 <div dir="rtl">
 
-پاسخ به ازای هر ادعا حداقل یک `[comment:...]` دارد — این الزام در خود schema است (`comment_ids` با `min_length=1`)، نه فقط در پرامپت، و بعد از دریافت پاسخ هر شناسه با شواهد واقعی مقایسه می‌شود.
+پاسخ به ازای هر ادعا حداقل یک `[comment:...]` دارد. در نسخه‌ی
+`product-qa-v4-evidence-bound-citations`، schema هر درخواست علاوه بر
+`min_length=1`، فقط شناسه‌های همان Evidence را به‌صورت `enum` مجاز می‌کند؛
+مدل از نظر ساختاری نمی‌تواند شناسه‌ی تازه بسازد. پس از دریافت نیز قرنطینه‌ی
+قبلی به‌عنوان دفاع دوم برای خروجی‌های قدیمی یا Provider ناسازگار باقی مانده
+است.
 
 **دو خروجی مجاز که خطا نیستند:**
 
@@ -510,9 +536,17 @@ push کن، artifact را روی درایو بگذار — حتی اگر ناق�
 | Failure Analysis | نمونه‌های واقعی شکست، علت و تلاش برای بهبود | همه | ✅ | **دوازده شکست** با اندازه‌گیری کمّی — `docs/FAILURES.md` |
 | Grounding | نسبت claim های دارای شاهد معتبر | بنیامین / علی | ✅ | `citation_integrity = ۱.۰`؛ **نرخ توهم شناسه ۴.۱٪، نرخ توهم پاسخ ۳۰٪** |
 | کیفیت پاسخ | judge ۱–۵ | بنیامین / علی | ✅ | بخش ۱: grounding ۴.۳۱ / relevance ۴.۷۸ روی ۳۶ کوئری · بخش ۲: **۴.۳۰ / ۵.۰۰** روی ۱۰ سوال |
+| مقایسه محصول | completeness + citation integrity + judge اختیاری | فاطمه / بنیامین | 🟡 زیرساخت کامل | اجرای تاریخی ۲۴/۲۴ فقط ساختار retrieval را سنجیده؛ `inference = 0/24` و کیفیت متن هنوز عدد ندارد |
 | Cost | تعداد فراخوانی، توکن ورودی/خروجی، دلار | بنیامین / علی | ✅ | ۱۶۹ درخواست، ۹۳ تماس، **$0.041497** — جدول پایین |
 | برچسب انسانی | کاپای کوهن در برابر judge | علی | 🟡 در جریان | ۲۵ مورد آماده‌ی برچسب‌گذاری — `data/eval/human/labels_v1.csv` |
 | طبقه‌بندی | **Macro F1** — متریک اصلی بخش سوم | فاطمه | 🟡 نصفه | baseline TF-IDF روی test = **۰.۶۸۳۳**؛ ParsBERT فقط validation = ۰.۷۱۳۱، عدد test ندارد |
+
+خلاصه‌ی قابل‌ردیابی اجرای تاریخی مقایسه در
+`data/eval/runs/product_comparison_retrieval_historical_v1.json` ثبت شده است.
+این اجرا با `llm_client=None` انجام شده؛ بنابراین ۲۴/۲۴ فقط یعنی دو محصول و
+reviewهای scoped آن‌ها بازیابی شده‌اند. Harness جدید latency مورد اول را جدا از
+حالت گرم گزارش می‌کند و کیفیت معنایی را فقط وقتی inference و judge واقعاً حاضر
+باشند اندازه‌گیری‌شده می‌نامد.
 
 زیرساخت `src/llm` و `src/eval` کار بنیامین است؛ اجرای زنده، رفع باگ‌های
 اعتبارسنجی و اعداد این جدول کار علی در روز آخر.
@@ -555,14 +589,17 @@ gateway متیس رفته‌اند و نرخ واقعی متیس در دست م�
 
 ### چیزهایی که اعداد بالا نمی‌گویند
 
-- **`constraint_pass_rate = ۱.۰` تقریباً بی‌معناست.** این متریک می‌سنجد که
-  نتایج قیدِ اعلام‌شده را رعایت کرده‌اند، نه اینکه قیدِ اعلام‌شده درست بوده.
-  روی `q026` هر دو مسیر ۱.۰ گرفتند و هر دو خروجی غلط بود. شکست ۷.
+- **`constraint_pass_rate = ۱.۰` صحت استخراج را ثابت نمی‌کند.** این متریک
+  می‌سنجد نتایج قیدِ اعلام‌شده را رعایت کرده‌اند، نه اینکه خود قید درست بوده.
+  در اجرای تاریخی `q026` هر دو مسیر ۱.۰ گرفتند و هر دو غلط بودند؛ parser عدد
+  حروفی baseline بعداً رفع شد، ولی ضعف مفهومی متریک باقی است. شکست ۷.
 - **استخراج فیلتر با LLM از رجکس بدتر بود** — ۳ کوئری بدتر، ۰ بهتر، ۹۰ برابر
   کندتر. به همین دلیل خاموش است. شکست ۸.
-- **دو عدد توهم استناد را با هم بخوانید.** ۴.۱٪ شناسه‌ها ساختگی بودند، ولی
-  ۳۰٪ پاسخ‌ها دست‌کم یکی داشتند. برای کاربری که یک سوال می‌پرسد، عدد مربوط
-  ۳۰٪ است. شکست ۱۰.
+- **دو عدد توهم استناد اجرای تاریخی v3 را با هم بخوانید.** ۴.۱٪ شناسه‌ها
+  ساختگی بودند، ولی ۳۰٪ پاسخ‌ها دست‌کم یکی داشتند. در v4 شناسه‌های مجاز به
+  Evidence همان درخواست محدود شده‌اند و Regression test، شناسه‌ی ساختگی را
+  پیش از قرنطینه رد می‌کند. نرخ خام مدل بعد از این تغییر هنوز به اجرای زنده‌ی
+  جدید نیاز دارد و نباید بدون آن صفر گزارش شود. شکست ۱۰.
 - **کاپای انسانی هنوز محاسبه نشده** و وقتی شد، روی نمونه‌ی **طبقاتی** خواهد
   بود نه یکنواخت — بخش ۲ عمداً ۴۰٪ وزن دارد در حالی که سهم واقعی‌اش ۲۲٪ است.
   دلیلش و پیامدش در `docs/FAILURES.md` بخش «محدودیت‌های خودِ روش ارزیابی».
@@ -572,6 +609,47 @@ gateway متیس رفته‌اند و نرخ واقعی متیس در دست م�
 **بودجه:** سقف ۵ دلار برای کل گروه شامل توسعه و تست. embedding و مدل‌های محلی
 از بودجه کم نمی‌کنند — و همین یک تصمیم، بین $2.05 و $3.08 صرفه‌جویی کرد
 (`docs/DECISIONS.md`).
+
+### Semantic Cache
+
+Semantic Cache در مسیرهای Product QA، Comparison و داور Grounding وصل شده،
+اما opt-in است. برای QA و Comparison، Evidence و مشخصات
+محصول داخل guard دقیق قرار دارند؛ پس سؤال مشابه درباره‌ی Context متفاوت cache
+hit نمی‌شود. Exact cache همیشه قبل از encode بررسی می‌شود و سریع‌ترین مسیر
+باقی می‌ماند.
+
+مسیر استخراج فیلتر عمداً semantic نمی‌شود: دو کوئری «زیر ۵۰۰ هزار» و «زیر
+۶۰۰ هزار» ممکن است embedding بسیار نزدیک داشته باشند، اما reuse کردن خروجی
+اول برای دومی قید عددی غلط می‌سازد. این مسیر فقط Exact Cache دارد.
+
+Benchmark آفلاین ثبت‌شده در
+`data/eval/semantic_cache_offline_benchmark_v1.json` روی ۸ درخواست یکتا و ۴
+جفت paraphrase این نتیجه را داد:
+
+| حالت | API call | semantic hit | هزینه‌ی تخمینی | wall latency |
+|---|---:|---:|---:|---:|
+| فقط Exact Cache | ۸ | ۰ | $0.001680 | 414.6 ms |
+| Semantic Cache | ۴ | ۴ | $0.000840 | 218.4 ms |
+
+در این workload با hit rate پنجاه‌درصدی، هزینه **۵۰٪** و wall latency
+**۴۷.۳٪** کم شد؛ latency خود semantic hit نسبت به میانگین baseline **۹۷.۹٪**
+کمتر بود. Provider دارای delay ثابت ۵۰ms و encoder بردارهای deterministic دارد
+تا تست بدون API و دانلود مدل بازتولید شود؛ بنابراین این اعداد کیفیت hit مدل
+واقعی را ثابت نمی‌کنند.
+
+بر پایه‌ی دو عدد واقعی قبلی پروژه — p50 تماس Product QA برابر ۳,۱۱۳ms و p50
+encode محلی کوئری برابر ۱۸.۹ms — کاهش latency هر hit در حالت گرم حدود **۹۹.۴٪**
+برآورد می‌شود. این ترکیب دو اندازه‌گیری قبلی است، نه A/B زنده؛ پیش از ادعای
+production باید با مدل تنظیم‌شده و ترافیک واقعی دوباره سنجیده شود.
+
+</div>
+
+```bash
+python -m scripts.benchmark_semantic_cache \
+  --output data/eval/semantic_cache_offline_benchmark_v1.json
+```
+
+<div dir="rtl">
 
 </div>
 
@@ -589,9 +667,18 @@ python -m src.eval.harness --input data/eval/queries_v1.jsonl \
   --qrels data/eval/qrels_d50_v2_labeled.csv --retriever-mode real \
   --judge-grounding --output data/eval/runs/discovery_real_judged_v2.json
 
-# بخش ۲ روی ۱۰ سوال و ۵ محصول واقعی، با داور
+# بخش ۲ روی ۱۰ سوال و ۵ محصول واقعی، با داور و schema جدید Citation
 python scripts/run_product_qa_eval.py --judge \
-  --output data/eval/runs/product_qa_real_v1.json
+  --output data/eval/runs/product_qa_real_v2_citation_enum.json
+
+# مقایسه محصول روی ۲۴ case واقعی؛ بدون تماس LLM و بدون هزینه API
+python -m scripts.eval_product_comparison --retriever-mode real \
+  --output data/eval/runs/product_comparison_retrieval_v1.json
+
+# فقط با تأیید هزینه: تولید inference و داوری grounding
+python -m scripts.eval_product_comparison --retriever-mode real \
+  --with-llm --judge-grounding \
+  --output data/eval/runs/product_comparison_llm_judged_v1.json
 
 # ساخت برگه‌ی برچسب‌گذاری انسانی (بدون تماس API)
 python scripts/build_human_labeling_set.py
@@ -605,9 +692,10 @@ python -m src.eval.harness --retriever-mode mock --top-k 5
 
 <div dir="rtl">
 
-هر اجرای دوباره‌ی دستورهای بالا از کش دیسکی می‌خواند و **صفر دلار** هزینه
-دارد، مادام که پرامپت، نام مدل و JSON schema پاسخ عوض نشده باشند — هر سه در
-کلید کش هستند. جزئیات خروجی و نحوه‌ی اتصال qrels در
+هر اجرای دوباره‌ی یک نسخه‌ی یکسان از دستورهای بالا از کش دیسکی می‌خواند و
+**صفر دلار** هزینه دارد، مادام که پرامپت، نام مدل و JSON schema پاسخ عوض نشده
+باشند — هر سه در کلید کش هستند. تغییر v3 به schema پویای v4 عمداً cache miss
+می‌دهد و یک اجرای زنده‌ی تازه لازم دارد. جزئیات خروجی و نحوه‌ی اتصال qrels در
 `docs/BENYAMIN_LLM_FOUNDATION.md` آمده است.
 
 ---

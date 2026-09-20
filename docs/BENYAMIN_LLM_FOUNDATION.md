@@ -2,10 +2,11 @@
 
 Owner: Benyamin.
 
-This checkpoint implements Benyamin's LLM and evaluation foundation:
+This document tracks Benyamin's LLM, evaluation and orchestration work as it
+exists on the integrated system, not only the original foundation checkpoint:
 
 - OpenAI Responses API adapter with Structured Outputs
-- SQLite exact-match cache
+- SQLite exact-match cache plus an opt-in guarded semantic cache
 - per-request token, latency, cost and cache-savings ledger
 - conservative zero-cost Persian filter-extraction baseline
 - LLM Persian filter extractor
@@ -14,6 +15,10 @@ This checkpoint implements Benyamin's LLM and evaluation foundation:
 - chain and end-to-end latency reports with mean, p50, p95 and max
 - checkpoint-scoped API call, cache, token and USD accounting
 - citation-integrity audit plus an optional structured grounding judge
+- default orchestration of all four mandatory capabilities
+- real comment retrieval shared by Product QA and Product Comparison
+- live Product Discovery and Product QA evaluation with recorded API usage
+- a 25-item human-labeling handoff for validating the LLM judge
 
 ## Offline demo
 
@@ -44,6 +49,43 @@ The default cache and usage databases are ignored by the repository's existing
 No prompt or response text is stored in the usage ledger. The exact-response
 cache necessarily stores the validated structured JSON result; its key is a
 SHA-256 hash of the model, messages, schema and prompt version.
+
+Semantic lookup is disabled by default. Enable it with:
+
+```bash
+export LLM_SEMANTIC_CACHE_ENABLED=true
+export LLM_SEMANTIC_CACHE_MODEL=intfloat/multilingual-e5-base
+export LLM_SEMANTIC_CACHE_THRESHOLD=0.96
+```
+
+The encoder loads lazily. Exact lookup runs first and pays no embedding cost.
+On an exact miss, eligible callers embed only the user text; model, prompt
+namespace, response schema and caller-supplied guard must match exactly. The
+guard carries evidence and product context for QA/comparison, answer and
+evidence for the grounding judge. This prevents a similar question from
+reusing an answer across products or evidence snapshots. LLM filter extraction
+is deliberately excluded: embedding similarity is not safe for numeric
+constraints such as "under 500k" versus "under 600k".
+
+`cache_type` distinguishes `none`, `exact` and `semantic`; semantic hits also
+record cosine similarity. The ledger summary exposes exact and semantic hit
+counts separately. SQLite stores embeddings as normalized float32 blobs and
+never puts prompt text in the usage ledger.
+
+The reproducible offline benchmark is:
+
+```bash
+python -m scripts.benchmark_semantic_cache \
+  --output data/eval/semantic_cache_offline_benchmark_v1.json
+```
+
+With four paraphrase hits among eight unique requests, it avoided 4 API calls,
+reduced estimated cost by 50%, wall latency by 47.3%, and per-hit latency by
+97.9%. It uses a deterministic test encoder and fixed-delay provider, so it is
+an infrastructure benchmark, not a live semantic-quality claim. Combining the
+previously measured warm local query-encoding p50 (18.9 ms) with Product QA API
+p50 (3,113 ms) projects 99.4% latency reduction per warm hit; a live A/B is
+still required before reporting a production result.
 
 Pricing is currently configured for `gpt-4o-mini` and its snapshots. Selecting
 an unknown model raises an error instead of silently recording a false zero
@@ -136,20 +178,48 @@ Inline gold IDs remain supported for small or standalone evaluation sets:
 ```
 
 The LLM judge still needs validation against the team's independent human
-labels. The prompt, rubric, disagreement cases and human agreement must be
-reported; judge scores alone are not a substitute for human evaluation.
+labels. `data/eval/human/labels_v1.csv` contains 25 stratified cases, but its
+`grounding_1_5` and `relevance_1_5` columns are currently empty. After an
+independent teammate fills both columns, run
+`scripts/compare_human_vs_judge.py` to report Cohen's kappa, correlations and
+disagreement cases. Judge scores alone are not a substitute for human
+evaluation.
 
-## Remaining dependency
+## Runtime artifacts and integrated status
 
-Ali's `ali/retrieval` branch has now been integrated locally. Product retrieval
-supports BM25, dense FAISS and hybrid RRF through
-`build_retriever("product", mode="real")`. A real run still needs the index
-artifacts from Drive and the retrieval dependencies installed locally.
+Product retrieval supports BM25, dense FAISS and hybrid RRF through
+`build_retriever("product", mode="real")`; hybrid is the configured default.
+Comment retrieval is also implemented through
+`build_retriever("comment", mode="real")`. Product QA and Product Comparison
+share the same CommentRetriever instance so the 10.6 GB embedding memmap is
+not loaded twice.
 
-The comment index is not implemented yet, so
-`build_retriever("comment", mode="real")` still raises `NotImplementedError`.
+Real mode still requires the versioned product/comment metadata and index
+artifacts documented in `README.md`. These large artifacts live outside Git
+and must be copied into `data/indexes/`; code, evaluation inputs and recorded
+reports remain versioned in the repository.
 
-No live API request was made while implementing or testing this checkpoint.
+Live API evaluation was completed on 2026-08-30 and is recorded under
+`data/eval/runs/`. The current aggregate ledger reports 169 logical requests,
+93 API calls, 76 cache hits, 153,405 input tokens, 30,811 output tokens and an
+estimated cost of $0.041497. Dollar figures use the configured OpenAI rates;
+the requests went through the Metis gateway, whose actual billing rate was not
+available to the team.
+
+The final 36-query Discovery judge run completed without judge errors and
+reported mean grounding 4.31/5 and relevance 4.78/5. The 10-case Product QA
+run reported grounding 4.30/5 and relevance 5.00/5. These are model-judge
+scores and must remain separate from the pending independent human agreement
+measurement described above.
+
+That Product QA report is also the historical v3 citation baseline: 5 of 123
+generated comment IDs were absent from evidence (4.1%), affecting 3 of 10
+answers. Product QA now uses the
+`product-qa-v4-evidence-bound-citations` schema, whose per-request enum permits
+only IDs supplied in that request's evidence. The existing quarantine remains
+as defence in depth. Offline schema and regression tests verify that fabricated
+IDs cannot cross the structured-output boundary; a new live v4 run is still
+required before reporting a new raw model hallucination rate.
 
 ## Real BM25 product-discovery checkpoint
 
@@ -193,8 +263,8 @@ presented as "no answer in the full catalogue."
 
 ## Orchestrator checkpoint
 
-`src/orchestrator.py` now owns intent routing and chain invocation without
-depending on the unfinished comment index. Its stable intents are:
+`src/orchestrator.py` owns intent routing and chain invocation through the
+shared chain and retriever contracts. Its stable intents are:
 
 - `product_discovery`
 - `product_qa`
@@ -206,11 +276,23 @@ language takes precedence over satisfaction words, so a request such as
 "find me a bag buyers liked" is not mistaken for Q&A about one product.
 Category analytics and comparisons have stronger dedicated signals.
 
-Only Product Discovery is registered in today's default build. A recognized
-route whose teammate chain is not available returns either `needs_input` or
-`dependency_unavailable`; it does not import the missing chain, instantiate a
-comment retriever, or crash the entire request. Later integration only adds a
-handler to the map and does not change routing or the response schema.
+All four handlers are registered in the default build:
+
+- Product Discovery uses the shared product retriever and the rule-based
+  filter baseline.
+- Product QA uses product-scoped comment evidence and requires a model only
+  when an answer must be generated.
+- Product Comparison combines exact product lookup, product-scoped reviews
+  and an optional model inference. Facts and evidence still render without an
+  API key.
+- Category Analytics computes its tables directly from the cleaned Parquet
+  data and uses the model only for optional narration.
+
+Missing product IDs return `needs_input`. The generic
+`dependency_unavailable` path remains part of the stable contract for custom
+or partial orchestrator builds whose handler map omits a route. Handler
+exceptions are isolated as structured `error` results rather than crashing
+the whole assistant.
 
 Offline demo:
 
@@ -220,10 +302,20 @@ python -m src.orchestrator \
   --retriever-mode mock --top-k 3
 ```
 
-Dependency-safe Q&A routing:
+Product Q&A routing:
 
 ```bash
 python -m src.orchestrator \
   "ایرادهای پرتکرار این محصول چیست؟" \
   --product-id 3901234
+```
+
+End-to-end smoke coverage for all four routes:
+
+```bash
+# Mock retrievers; a configured LLM key is needed for Product QA to answer.
+python scripts/smoke_all_capabilities.py --answers
+
+# Real product/comment artifacts and all four integrated handlers.
+python scripts/smoke_all_capabilities.py --retriever-mode real --answers
 ```
